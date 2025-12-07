@@ -1,13 +1,13 @@
 import CarParts from "./CarParts";
 import WhyAutoRent from "./WhyAutoRent";
 const MainSite = () => {
-    return (
-      <>
+  return (
+    <>
       <CarParts/>
       <WhyAutoRent/>
-
-      </>
-    );
+  
+    </>
+  );
 };
 
 export default MainSite;
