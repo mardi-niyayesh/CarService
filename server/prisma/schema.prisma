@@ -7,3 +7,22 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// <=== User Schema ===>
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid(4))
+  email        String   @unique @db.VarChar(255)
+  role         UserRole @default(USER)
+  display_name String?  @db.VarChar(50)
+  age          Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
