@@ -24,9 +24,13 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, swaggerConfigV1);
   SwaggerModule.setup("api/docs", app, document);
 
+  console.log(process.env.PORT);
+
+  /** listen app on port */
   await app.listen(process.env.PORT ?? 3000);
 }
 
+/** bootstrap and run application */
 bootstrap()
   .then(() => console.log("nest successfully started."))
   .catch(e => console.error(e));

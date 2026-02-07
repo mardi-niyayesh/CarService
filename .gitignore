@@ -59,6 +59,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # prisma
 prisma/generated
 src/prisma/generated
+src/modules/prisma/generated
 
 # Dependencies
 node_modules/
