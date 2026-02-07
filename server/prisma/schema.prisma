@@ -18,6 +18,7 @@ enum UserRole {
 model User {
   id           String   @id @default(uuid(4))
   email        String   @unique @db.VarChar(255)
+  password     String   @db.VarChar(255)
   role         UserRole @default(USER)
   display_name String?  @db.VarChar(50)
   age          Int?
