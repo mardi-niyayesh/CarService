@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import {TransformInterceptors} from "./lib";
