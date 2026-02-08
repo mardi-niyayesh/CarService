@@ -1,8 +1,9 @@
 import z from "zod";
+import {date} from "../../../lib";
 import {createZodDto} from "nestjs-zod";
 import {ApiProperty} from "@nestjs/swagger";
 import {BaseUserSchema} from "./users.validators";
-import {date, type CreateUserResponse} from "../../../lib";
+import type {CreateUserResponse} from "../../../types";
 import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "../../../common";
 
 /** create user schema */

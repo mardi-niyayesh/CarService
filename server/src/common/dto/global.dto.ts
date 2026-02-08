@@ -1,6 +1,6 @@
 import z from "zod";
 import {ApiProperty} from "@nestjs/swagger";
-import {BaseApiResponseType} from "../../lib";
+import {BaseApiResponseType} from "../../types";
 
 export class ApiResponse<T> {
   success: boolean;
