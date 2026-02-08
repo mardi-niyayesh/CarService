@@ -4,13 +4,12 @@ import {
   ApiOperation,
   ApiCreatedResponse,
   ApiConflictResponse,
-  ApiBadRequestResponse,
+  ApiBadRequestResponse, ApiNotFoundResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
 import {Body, Controller, HttpCode, Post} from '@nestjs/common';
-import {LoginUserBadRequestResponse} from "../users/dto";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -48,12 +47,10 @@ export class AuthController {
   })
   @ApiBody({type: UserDto.LoginUserSchema})
   @ApiBadRequestResponse({type: UserDto.LoginUserBadRequestResponse})
+  @ApiNotFoundResponse({type: UserDto.GetUserNotFoundResponse})
   login(
     @Body(new ZodPipe(UserDto.LoginUser)) data: UserDto.LoginUserInput,
   ) {
-    console.log(data);
-    return {
-      ...data,
-    };
+    return this.authService.login(data);
   }
 }

@@ -1,7 +1,7 @@
 import z from "zod";
 import {createZodDto} from "nestjs-zod";
 import {BaseUserSchema} from "./users.validators";
-import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema} from "../../../common";
+import {getBaseErrorBodyResponseSchema} from "../../../common";
 
 /** login users schema */
 export const LoginUser = BaseUserSchema.pick({
