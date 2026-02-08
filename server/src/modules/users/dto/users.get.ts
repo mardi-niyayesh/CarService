@@ -1,7 +1,7 @@
+import {ApiProperty} from "@nestjs/swagger";
 import {CreateUserResponse} from "../../../lib";
 import {createUserResponse} from "./users.create";
 import {getBaseOkResponseSchema} from "../../../common";
-import {ApiProperty} from "@nestjs/swagger";
 
 /** ok example for get one user by id */
 export class GetUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
