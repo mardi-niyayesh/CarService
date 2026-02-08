@@ -48,22 +48,18 @@ export interface ZodFieldError {
   message: string;
 }
 
-export function getBaseErrorResponseSchema(props: {
-  statusCode: number;
-  message: string;
-  errors: ZodFieldError[];
-}) {
+export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
   class BaseErrorResponse {
-    @ApiProperty({example: props.statusCode})
+    @ApiProperty({example: 400})
     statusCode: number;
 
     @ApiProperty({
-      example: props.errors,
+      example: errors,
       isArray: true,
     })
     errors: ZodFieldError[];
 
-    @ApiProperty({example: props.message})
+    @ApiProperty({example: "Validation failed."})
     message: string;
   }
 
@@ -82,3 +78,7 @@ export const UUID4Dto = {
   description: "UUID",
   example: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca"
 };
+
+export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
+  {fields: "id", message: "Invalid UUID"}
+]) {}
