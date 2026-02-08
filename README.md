@@ -1,5 +1,8 @@
 # 🚗 **Car Service – Full‑Stack Car Rental Platform**
 
+[🇮🇷  نسخه فارسی](./README.FA.md)
+[🇮🇷 Read in Persian](./README.FA.md)
+
 A complete full‑stack car rental platform built with a modern, scalable, and modular architecture.  
 This project includes both:
 
@@ -185,3 +188,8 @@ http://localhost:3000/api
 - Multi‑language support (i18n)  
 - Webhooks for important events  
 - Mobile‑friendly UI redesign  
+
+---
+
+[🇮🇷  نسخه فارسی](./README.FA.md)
+[🇮🇷 Read in Persian](./README.FA.md)
