@@ -12,10 +12,13 @@ export type CreateUserResponse = {
 export interface AccessTokenPayload {
   sub: string;
   role: UserRole;
+  type: "access";
   display_name?: string;
 }
 
 /** RefreshToken payload on JWT */
-export interface RefreshTokenPayload extends AccessTokenPayload {
+export interface RefreshTokenPayload extends Omit<AccessTokenPayload, "type"> {
+  jti: string;
   remember: boolean;
+  type: "refresh";
 }

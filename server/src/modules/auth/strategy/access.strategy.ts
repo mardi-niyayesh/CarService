@@ -1,23 +1,26 @@
-import {Injectable} from "@nestjs/common";
-import type {UserPayload} from "../../../lib";
 import {Strategy, ExtractJwt} from "passport-jwt";
 import {PassportStrategy} from "@nestjs/passport";
+import type {AccessTokenPayload} from "../../../lib";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 
 @Injectable()
-export class AccessStrategy extends PassportStrategy(Strategy) {
+export class AccessStrategy extends PassportStrategy(Strategy, "jwt-access") {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: true,
-      secretOrKey: process.env.JWT_SECRET!
+      ignoreExpiration: false,
+      passReqToCallback: false,
+      secretOrKey: process.env.JWT_SECRET!,
     });
   }
 
-  validate(payload: UserPayload) {
+  validate(payload: AccessTokenPayload) {
+    if (payload.type !== "access") throw new UnauthorizedException("invalid access token");
+
     return {
+      type: "access",
       userID: payload.sub,
       role: payload.role,
-      remember: payload.remember ?? false,
       display_name: payload.display_name ?? "",
     };
   }
