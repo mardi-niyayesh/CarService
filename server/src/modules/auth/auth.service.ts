@@ -2,7 +2,7 @@ import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable} from '@nestjs/common';
-import {BaseApiResponseType, CreateUserResponse} from "../../lib";
+import {BaseApiResponseType, CreateUserResponse, hashSecret} from "../../lib";
 
 @Injectable()
 export class AuthService {
@@ -17,11 +17,14 @@ export class AuthService {
     });
 
     if (user) throw new ConflictException('User already exists');
+    
+    const hashPassword: string = await hashSecret(createData.password);
 
     const newUser = await this.prisma.user.create({
       data: {
         ...createData,
-        role: UserRole.USER
+        role: UserRole.USER,
+        password: hashPassword,
       }
     });
 
