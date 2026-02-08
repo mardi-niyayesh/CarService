@@ -1,10 +1,10 @@
 import z from "zod";
 import {date} from "../../../lib";
 import {createZodDto} from "nestjs-zod";
+import {ApiProperty} from "@nestjs/swagger";
 import {BaseUserSchema} from "./users.validators";
 import {User} from "../../prisma/generated/client";
-import {getBaseOkResponseSchema} from "../../../common";
-import {ApiProperty} from "@nestjs/swagger";
+import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "../../../common";
 
 export const CreateUser = BaseUserSchema.overwrite(data => ({
   ...data,
@@ -57,3 +57,14 @@ export class CreateUserConflictResponse {
   @ApiProperty({example: 409})
   status: number;
 }
+
+export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
+  {
+    fields: "email",
+    message: "Invalid input: expected string, received undefined"
+  },
+  {
+    fields: "password",
+    message: "Invalid input: expected string, received undefined"
+  }
+]) {}

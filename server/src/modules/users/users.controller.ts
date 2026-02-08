@@ -18,12 +18,9 @@ export class UsersController {
   @Post()
   @HttpCode(201)
   @ApiBody({type: UserDTO.CreateUserSchema})
-  @ApiCreatedResponse({
-    type: UserDTO.CreateUserOkResponse
-  })
-  @ApiConflictResponse({
-    type: UserDTO.CreateUserConflictResponse
-  })
+  @ApiCreatedResponse({type: UserDTO.CreateUserOkResponse})
+  @ApiBadRequestResponse({type: UserDTO.CreateUserBadRequestResponse})
+  @ApiConflictResponse({type: UserDTO.CreateUserConflictResponse})
   create(
     @Body(new ZodPipe(UserDTO.CreateUser)) data: UserDTO.CreateUserInput
   ) {
