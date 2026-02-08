@@ -8,6 +8,22 @@ export type CreateUserResponse = {
   };
 }
 
+interface BaseJwtPayloadParms {
+  payload: Record<string, unknown>;
+}
+
+interface TokenParamsRefresh extends BaseJwtPayloadParms {
+  tokenType: "refresh";
+  remember?: boolean;
+}
+
+interface TokenParamsAccess extends BaseJwtPayloadParms {
+  tokenType: "access";
+  remember?: never;
+}
+
+export type CreateTokenParams = TokenParamsRefresh | TokenParamsAccess;
+
 /** AccessToken payload on JWT */
 export interface AccessTokenPayload {
   sub: string;
