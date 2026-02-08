@@ -5,7 +5,8 @@ import {MiddlewareConsumer, Module, RequestMethod} from '@nestjs/common';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService]
+  providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {
   // noinspection JSUnusedGlobalSymbols

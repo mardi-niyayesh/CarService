@@ -60,10 +60,22 @@ export class CreateUserConflictResponse {
 export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
   {
     fields: "email",
-    message: "Invalid input: expected string, received undefined"
+    message: "Invalid email address"
   },
   {
     fields: "password",
-    message: "Invalid input: expected string, received undefined"
+    message: "Too small: expected string to have >=6 characters"
+  },
+  {
+    fields: "password",
+    message: "password must contain at least one letter and one number"
+  },
+  {
+    fields: "display_name",
+    message: "Too small: expected string to have >=3 characters"
+  },
+  {
+    fields: "age",
+    message: "Too big: expected number to be <=120"
   }
 ]) {}

@@ -9,7 +9,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /** create user in db */
-  @Post()
+  @Post("register")
   @HttpCode(201)
   @ApiBody({type: UserDto.CreateUserSchema})
   @ApiCreatedResponse({type: UserDto.CreateUserOkResponse})
