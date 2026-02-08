@@ -1,11 +1,12 @@
 import type {StringValue} from "ms";
 import {hashSecret} from "../../lib";
+import {randomUUID} from "node:crypto";
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {JwtService, JwtSignOptions} from "@nestjs/jwt";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
-import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, CreateTokenParams} from "../../types";
+import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, CreateTokenParams, RefreshTokenPayload} from "../../types";
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  generateToken<T extends AccessTokenPayload>(data: CreateTokenParams, payload: T): string {
+  generateToken(data: CreateTokenParams): string {
     const options: JwtSignOptions = {
       secret: data.tokenType === "access"
         ? process.env.JWT_ACCESS_SECRET
@@ -26,7 +27,7 @@ export class AuthService {
           : process.env.JWT_REFRESH_EXPIRES_12H as StringValue
     };
 
-    return this.jwtService.sign(payload, options);
+    return this.jwtService.sign(data.payload, options);
   }
 
   /** create user in db */
@@ -70,13 +71,45 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    // const userPayload: UserPayload = {
-    //   sub: user.id,
-    //   role: user.role,
-    //   remember: loginData.remember ?? false,
-    //   display_name: user.display_name ?? "",
-    // };
-    //
-    // const refreshToken: string = this.jwtService.sign<UserPayload>(userPayload);
+    const userRefreshPayload: RefreshTokenPayload = {
+      sub: user.id,
+      role: user.role,
+      type: "refresh",
+      jti: randomUUID(),
+      remember: loginData.remember ?? false,
+      display_name: user.display_name ?? "",
+    };
+
+    const refreshToken: string = this.generateToken({
+      tokenType: "refresh",
+      payload: userRefreshPayload,
+      remember: loginData.remember ?? false,
+    });
+
+    const accessTokenPayload: AccessTokenPayload = {
+      sub: user.id,
+      type: "access",
+      role: user.role,
+      display_name: user.display_name ?? ""
+    };
+
+    const accessToken: string = this.generateToken({
+      payload: accessTokenPayload,
+      tokenType: "access",
+    });
+
+    return {
+      user: {
+        id: user.id,
+        age: user.age,
+        role: user.role,
+        email: user.email,
+        updatedAt: user.updatedAt,
+        createdAt: user.createdAt,
+        display_name: user.display_name,
+      },
+      accessToken,
+      refreshToken,
+    };
   }
 }
