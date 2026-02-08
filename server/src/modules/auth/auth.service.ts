@@ -1,7 +1,7 @@
-import {ConflictException, Injectable} from '@nestjs/common';
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
+import {ConflictException, Injectable} from '@nestjs/common';
 import {BaseApiResponseType, CreateUserResponse} from "../../lib";
 
 @Injectable()
