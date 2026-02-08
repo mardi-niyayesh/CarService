@@ -13,12 +13,12 @@ export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse
 
     return next.handle().pipe(
       map(response => {
-        const status: number = res.statusCode;
+        const statusCode: number = res.statusCode;
 
         return {
-          success: status >= 200 && status <= 300,
-          status,
-          detail: this.getDefaultMessage(status),
+          success: statusCode >= 200 && statusCode <= 300,
+          statusCode,
+          detail: this.getDefaultMessage(statusCode),
           response,
           timestamp: new Date().toISOString(),
           path: request.url,

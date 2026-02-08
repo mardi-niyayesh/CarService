@@ -5,6 +5,7 @@ import {
   ApiCreatedResponse,
   ApiConflictResponse,
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
 } from "@nestjs/swagger";
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
@@ -31,6 +32,7 @@ export class UsersController {
   @ApiParam(UUID4Dto)
   @ApiOkResponse({type: UserDTO.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
+  @ApiNotFoundResponse({type: UserDTO.GetUserNotFoundResponse})
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {

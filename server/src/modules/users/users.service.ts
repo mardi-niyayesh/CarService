@@ -17,10 +17,7 @@ export class UsersService {
       }
     });
 
-    if (user) throw new ConflictException({
-      message: 'User already exists',
-      status: 409,
-    });
+    if (user) throw new ConflictException('User already exists');
 
     const newUser = await this.prisma.user.create({
       data: {

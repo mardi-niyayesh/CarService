@@ -49,8 +49,11 @@ export class CreateUserConflictResponse {
   @ApiProperty({example: "User already exists"})
   message: string;
 
+  @ApiProperty({example: "Conflict"})
+  error: string;
+
   @ApiProperty({example: 409})
-  status: number;
+  statusCode: number;
 }
 
 /** bad request example for create user */

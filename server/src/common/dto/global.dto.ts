@@ -4,7 +4,7 @@ import {BaseApiResponseType} from "../../lib";
 
 export class ApiResponse<T> {
   success: boolean;
-  status: number;
+  statusCode: number;
   detail: string;
   response: BaseApiResponseType<T>;
   timestamp: string;
@@ -17,7 +17,7 @@ export function getBaseOkResponseSchema<T>(props: { create: boolean, message: st
     success: boolean;
 
     @ApiProperty({example: props.create ? 201 : 200})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: "Resource Created"})
     detail: string;
@@ -51,7 +51,7 @@ export interface ZodFieldError {
 export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
   class BaseErrorResponse {
     @ApiProperty({example: 400})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({
       example: errors,
