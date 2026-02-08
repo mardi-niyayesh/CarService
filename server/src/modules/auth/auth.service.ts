@@ -73,11 +73,9 @@ export class AuthService {
 
     const userRefreshPayload: RefreshTokenPayload = {
       sub: user.id,
-      role: user.role,
       type: "refresh",
       jti: randomUUID(),
       remember: loginData.remember ?? false,
-      display_name: user.display_name ?? "",
     };
 
     const refreshToken: string = this.generateToken({

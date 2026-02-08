@@ -17,7 +17,7 @@ export interface AccessTokenPayload {
 }
 
 /** RefreshToken payload on JWT */
-export interface RefreshTokenPayload extends Omit<AccessTokenPayload, "type"> {
+export interface RefreshTokenPayload extends Pick<AccessTokenPayload, "sub"> {
   jti: string;
   remember: boolean;
   type: "refresh";
