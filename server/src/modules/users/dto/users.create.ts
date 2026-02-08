@@ -20,7 +20,7 @@ export type CreateUserResponse = Omit<User, "password"> & {
   password: undefined;
 };
 
-export class CreateUserOkResponse extends getBaseOkResponseSchema<{ user: CreateUserResponse }>({
+export const createUserResponse = {
   path: "users",
   message: "user created successfully",
   create: true,
@@ -35,5 +35,16 @@ export class CreateUserOkResponse extends getBaseOkResponseSchema<{ user: Create
       createdAt: date,
       updatedAt: date
     }
+  }
+};
+
+export class CreateUserOkResponse extends getBaseOkResponseSchema<{
+  user: CreateUserResponse
+}>({
+  path: createUserResponse.path,
+  create: createUserResponse.create,
+  message: createUserResponse.message,
+  data: createUserResponse.data as {
+    user: CreateUserResponse
   }
 }) {}

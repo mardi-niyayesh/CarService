@@ -1,8 +1,9 @@
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
-import {ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiParam} from "@nestjs/swagger";
+import {ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam} from "@nestjs/swagger";
 import {BadRequestUUIDParams, UUID4Dto, UUID4Schema, type UUID4Type, ZodPipe} from "../../common";
 import {Body, Controller, Get, HttpCode, Param, Post} from '@nestjs/common';
+import {GetUserOkResponse} from "./dto";
 
 @Controller('users')
 export class UsersController {
@@ -22,13 +23,11 @@ export class UsersController {
 
   @Get(":id")
   @ApiParam(UUID4Dto)
+  @ApiOkResponse({type: GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    console.log(params);
-    return {
-      ok: true,
-    };
+    return this.usersService.findOne(params.id);
   }
 }
