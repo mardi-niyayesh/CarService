@@ -4,7 +4,6 @@ import {Injectable, PipeTransform, BadRequestException} from '@nestjs/common';
 
 @Injectable()
 export class ZodPipe<T extends z.ZodTypeAny> implements PipeTransform {
-
   constructor(private readonly schema: T) {
     void this.transform;
   }

@@ -1,5 +1,7 @@
 import z from 'zod';
+import {createZodDto} from "nestjs-zod";
 
+/** base user schema */
 export const BaseUserSchema = z.object({
   email: z.email(),
   password: z.string().max(20).min(6).regex(
@@ -10,4 +12,6 @@ export const BaseUserSchema = z.object({
   age: z.number().min(0).max(120).optional(),
 });
 
+/** Create User Validations */
 export type CreateUserInput = z.infer<typeof BaseUserSchema>;
+export class CreateUserDto extends createZodDto(BaseUserSchema) {}
