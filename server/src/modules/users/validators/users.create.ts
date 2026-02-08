@@ -6,6 +6,7 @@ export const CreateUser = BaseUserSchema.overwrite(data => ({
   ...data,
   display_name: data.display_name?.trim()
 }));
+
 /** Create User Type */
 export type CreateUserInput = z.infer<typeof BaseUserSchema>;
 
