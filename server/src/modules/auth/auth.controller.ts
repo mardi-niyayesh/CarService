@@ -1,8 +1,15 @@
+import {
+  ApiTags,
+  ApiBody,
+  ApiOperation,
+  ApiCreatedResponse,
+  ApiConflictResponse,
+  ApiBadRequestResponse,
+} from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
 import {Body, Controller, HttpCode, Post} from '@nestjs/common';
-import {ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiHeader, ApiOperation, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Auth')
 @Controller('auth')
