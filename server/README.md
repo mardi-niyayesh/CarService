@@ -1,5 +1,8 @@
 # 🚗 **Car Service – Server‑Side API**
 
+[🇮🇷 Read in Persian](./README.FA.md)
+
+
 **Car Service Server‑Side** is a modular, scalable, and production‑ready API designed for managing a complete car rental
 system.  
 Built with **NestJS + TypeScript + Prisma + PostgreSQL + Zod + Swagger**, it focuses on clean architecture, long‑term
@@ -132,3 +135,7 @@ This prevents accidental or unauthorized execution of sensitive operations.
 - Advanced filtering and search for cars
 - Multi‑language support (i18n)
 - Webhooks for important system events
+
+---
+
+[🇮🇷 Read in Persian](./README.FA.md)
