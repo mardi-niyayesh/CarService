@@ -1,9 +1,8 @@
 import z from "zod";
-import {date} from "../../../lib";
 import {createZodDto} from "nestjs-zod";
 import {ApiProperty} from "@nestjs/swagger";
 import {BaseUserSchema} from "./users.validators";
-import {User} from "../../prisma/generated/client";
+import {date, type CreateUserResponse} from "../../../lib";
 import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "../../../common";
 
 /** create user schema */
@@ -17,11 +16,6 @@ export type CreateUserInput = z.infer<typeof BaseUserSchema>;
 
 /** Create User DTO for Swagger */
 export class CreateUserSchema extends createZodDto(BaseUserSchema) {}
-
-/** response user type */
-export type CreateUserResponse = Omit<User, "password"> & {
-  password: undefined;
-};
 
 /** object for ok response */
 export const createUserResponse = {
@@ -43,15 +37,11 @@ export const createUserResponse = {
 };
 
 /** ok example for create user */
-export class CreateUserOkResponse extends getBaseOkResponseSchema<{
-  user: CreateUserResponse
-}>({
+export class CreateUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
   path: createUserResponse.path,
   create: createUserResponse.create,
   message: createUserResponse.message,
-  data: createUserResponse.data as {
-    user: CreateUserResponse
-  }
+  data: createUserResponse.data as CreateUserResponse
 }) {}
 
 /** conflict example for create user */

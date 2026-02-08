@@ -1,8 +1,8 @@
 import * as UserDTO from "./dto";
-import {BaseApiResponseType} from "../../lib";
 import {User} from "../prisma/generated/client";
 import {UserRole} from "../prisma/generated/enums";
 import {PrismaService} from "../prisma/prisma.service";
+import {BaseApiResponseType, type CreateUserResponse} from "../../lib";
 import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
@@ -10,9 +10,7 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** create user in db */
-  async create(createData: UserDTO.CreateUserInput): Promise<BaseApiResponseType<{
-    user: UserDTO.CreateUserResponse
-  }>> {
+  async create(createData: UserDTO.CreateUserInput): Promise<BaseApiResponseType<CreateUserResponse>> {
     const user: User | null = await this.prisma.user.findFirst({
       where: {
         email: createData.email,
@@ -42,7 +40,7 @@ export class UsersService {
     };
   }
 
-  async findOne(id: string): Promise<BaseApiResponseType<{ user: UserDTO.CreateUserResponse }>> {
+  async findOne(id: string): Promise<BaseApiResponseType<CreateUserResponse>> {
     const user = await this.prisma.user.findFirst({
       where: {
         id
