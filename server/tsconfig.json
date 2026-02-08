@@ -14,10 +14,6 @@
     "sourceMap": true,
     "rootDir": "./",
     "outDir": "./dist",
-    "typeRoots": [
-      "./src/types",
-      "./node_modules/@types"
-    ],
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
