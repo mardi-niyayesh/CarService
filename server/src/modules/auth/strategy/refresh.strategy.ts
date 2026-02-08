@@ -1,23 +1,23 @@
 import type {Request} from "express";
 import {Strategy, ExtractJwt} from "passport-jwt";
 import {PassportStrategy} from "@nestjs/passport";
-import type {RefreshTokenPayload} from "../../../lib";
+import type {RefreshTokenPayload} from "../../../types";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 
 @Injectable()
-export class AccessStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
+export class RefreshStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          return request.cookies.refreshToken;
+          return request.cookies.refreshToken ?? null;
         },
         ExtractJwt.fromHeader("x-refresh-token"),
         ExtractJwt.fromUrlQueryParameter("refresh_token"),
       ]),
       ignoreExpiration: false,
       passReqToCallback: true,
-      secretOrKey: process.env.JWT_SECRET!,
+      secretOrKey: process.env.JWT_REFRESH_SECRET!,
     });
   }
 

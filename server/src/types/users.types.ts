@@ -1,5 +1,5 @@
-import {User} from "../../modules/prisma/generated/client";
-import {UserRole} from "../../modules/prisma/generated/enums";
+import {User} from "../modules/prisma/generated/client";
+import {UserRole} from "../modules/prisma/generated/enums";
 
 /** response user type */
 export type CreateUserResponse = {
