@@ -1,6 +1,7 @@
 import z from "zod";
 import {ApiProperty} from "@nestjs/swagger";
 import {BaseApiResponseType} from "../../lib";
+import {createZodDto} from "nestjs-zod";
 
 export class ApiResponse<T> {
   success: boolean;
@@ -48,3 +49,10 @@ export const UUID4Schema = z.object({
 });
 
 export type UUID4Type = z.infer<typeof UUID4Schema>;
+
+export const UUID4Dto = {
+  name: "id",
+  type: String,
+  description: "UUID",
+  example: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca"
+};
