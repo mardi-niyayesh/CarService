@@ -1,10 +1,11 @@
 import type {StringValue} from "ms";
+import {hashSecret} from "../../lib";
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {JwtService, JwtSignOptions} from "@nestjs/jwt";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
-import {BaseApiResponseType, CreateUserResponse, hashSecret, AccessTokenPayload, CreateTokenParams} from "../../lib";
+import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, CreateTokenParams} from "../../types";
 
 @Injectable()
 export class AuthService {

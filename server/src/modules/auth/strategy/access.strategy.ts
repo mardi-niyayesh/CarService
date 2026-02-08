@@ -1,6 +1,6 @@
 import {Strategy, ExtractJwt} from "passport-jwt";
 import {PassportStrategy} from "@nestjs/passport";
-import type {AccessTokenPayload} from "../../../lib";
+import type {AccessTokenPayload} from "../../../types";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 
 @Injectable()
