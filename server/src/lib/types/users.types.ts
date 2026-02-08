@@ -8,10 +8,14 @@ export type CreateUserResponse = {
   };
 }
 
-/** User payload on JWT */
-export interface UserPayload {
+/** AccessToken payload on JWT */
+export interface AccessTokenPayload {
   sub: string;
-  display_name: string;
-  remember: boolean;
   role: UserRole;
+  display_name?: string;
+}
+
+/** RefreshToken payload on JWT */
+export interface RefreshTokenPayload extends AccessTokenPayload {
+  remember: boolean;
 }
