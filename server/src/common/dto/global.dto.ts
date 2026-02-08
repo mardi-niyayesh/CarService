@@ -1,4 +1,4 @@
-import {BaseApiResponseType} from "../types";
+import {BaseApiResponseType} from "../../lib";
 
 export class ApiResponse<T> {
   success: boolean;

@@ -1,5 +1,5 @@
 import z from "zod";
-import {formatZodError} from "../index";
+import {formatZodError} from "../../lib";
 import {Injectable, PipeTransform, BadRequestException} from '@nestjs/common';
 
 @Injectable()

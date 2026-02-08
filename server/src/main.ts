@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
-import {TransformInterceptors} from "./lib";
 import {ValidationPipe} from "@nestjs/common";
+import {TransformInterceptors} from "./common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
 /** run application */
