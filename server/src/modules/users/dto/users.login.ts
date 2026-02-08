@@ -1,9 +1,17 @@
 import z from "zod";
+import {createZodDto} from "nestjs-zod";
 import {BaseUserSchema} from "./users.validators";
 
-export const LoginUserSchema = BaseUserSchema.pick({
+/** login users schema */
+export const LoginUser = BaseUserSchema.pick({
   email: true,
   password: true,
+}).extend({
+  remember: z.boolean().optional().default(false),
 });
 
-export type LoginUserInput = z.infer<typeof LoginUserSchema>;
+/** login users schema type */
+export type LoginUserInput = z.infer<typeof LoginUser>;
+
+/** login users schema example */
+export class LoginUserSchema extends createZodDto(LoginUser) {}

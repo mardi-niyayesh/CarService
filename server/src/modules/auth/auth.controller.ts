@@ -35,4 +35,23 @@ export class AuthController {
   ) {
     return this.authService.register(data);
   }
+
+  /**
+   * login user with email and password
+   */
+  @Post("login")
+  @ApiOperation({
+    summary: "Login user",
+    description: `Login user with email and password`,
+    operationId: "loginUser",
+  })
+  @ApiBody({type: UserDto.LoginUserSchema})
+  login(
+    @Body(new ZodPipe(UserDto.LoginUser)) data: UserDto.LoginUserInput,
+  ) {
+    console.log(data);
+    return {
+      ...data,
+    };
+  }
 }
