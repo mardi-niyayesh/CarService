@@ -1,15 +1,15 @@
+import * as UserDTO from "./dto";
 import {Injectable} from '@nestjs/common';
 import {BaseApiResponseType} from "../../lib";
 import {UserRole} from "../prisma/generated/enums";
 import {PrismaService} from "../prisma/prisma.service";
-import {CreateUserInput, CreateUserResponse} from "./dto";
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** create user in db */
-  async create(createData: CreateUserInput): Promise<BaseApiResponseType<{ user: CreateUserResponse }>> {
+  async create(createData: UserDTO.CreateUserInput): Promise<BaseApiResponseType<{ user: UserDTO.CreateUserResponse }>> {
     const newUser = await this.prisma.user.create({
       data: {
         ...createData,

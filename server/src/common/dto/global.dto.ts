@@ -1,5 +1,6 @@
-import {BaseApiResponseType} from "../../lib";
+import z from "zod";
 import {ApiProperty} from "@nestjs/swagger";
+import {BaseApiResponseType} from "../../lib";
 
 export class ApiResponse<T> {
   success: boolean;
@@ -41,3 +42,9 @@ export function getBaseOkResponseSchema<T>(props: { create: boolean, message: st
 
   return BaseOkResponse;
 }
+
+export const UUID4Schema = z.object({
+  id: z.uuidv4()
+});
+
+export type UUID4Type = z.infer<typeof UUID4Schema>;

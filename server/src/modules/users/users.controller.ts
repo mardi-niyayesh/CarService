@@ -1,8 +1,8 @@
 import * as UserDTO from "./dto";
-import {ZodPipe} from "../../common";
 import {UsersService} from "./users.service";
 import {ApiBody, ApiCreatedResponse} from "@nestjs/swagger";
-import {Body, Controller, HttpCode, Post} from '@nestjs/common';
+import {UUID4Schema, type UUID4Type, ZodPipe} from "../../common";
+import {Body, Controller, Get, HttpCode, Param, Post} from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -18,5 +18,16 @@ export class UsersController {
     @Body(new ZodPipe(UserDTO.CreateUser)) data: UserDTO.CreateUserInput
   ) {
     return this.usersService.create(data);
+  }
+
+  @Get()
+  @ApiBody({})
+  findOne(
+    @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
+  ) {
+    console.log(params);
+    return {
+      ok: true,
+    };
   }
 }

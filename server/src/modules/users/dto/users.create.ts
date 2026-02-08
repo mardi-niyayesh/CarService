@@ -1,4 +1,5 @@
 import z from "zod";
+import {date} from "../../../lib";
 import {createZodDto} from "nestjs-zod";
 import {BaseUserSchema} from "./users.validators";
 import {User} from "../../prisma/generated/client";
@@ -18,9 +19,6 @@ export class CreateUserSchema extends createZodDto(BaseUserSchema) {}
 export type CreateUserResponse = Omit<User, "password"> & {
   password: undefined;
 };
-
-/** date for responses */
-const date = new Date();
 
 export class CreateUserOkResponse extends getBaseOkResponseSchema<{ user: CreateUserResponse }>({
   path: "users",
