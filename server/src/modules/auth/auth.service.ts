@@ -100,13 +100,8 @@ export class AuthService {
 
     return {
       user: {
-        id: user.id,
-        age: user.age,
-        role: user.role,
-        email: user.email,
-        updatedAt: user.updatedAt,
-        createdAt: user.createdAt,
-        display_name: user.display_name,
+        ...user,
+        password: undefined,
       },
       accessToken,
       refreshToken,

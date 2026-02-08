@@ -4,12 +4,15 @@ import {
   ApiOperation,
   ApiCreatedResponse,
   ApiConflictResponse,
-  ApiBadRequestResponse, ApiNotFoundResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
+import type {Response} from "express";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
-import {Body, Controller, HttpCode, Post} from '@nestjs/common';
+import {BaseApiResponseType, CreateUserResponse} from "../../types";
+import {Body, Controller, HttpCode, Post, Res} from '@nestjs/common';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -48,9 +51,25 @@ export class AuthController {
   @ApiBody({type: UserDto.LoginUserSchema})
   @ApiBadRequestResponse({type: UserDto.LoginUserBadRequestResponse})
   @ApiNotFoundResponse({type: UserDto.GetUserNotFoundResponse})
-  login(
+  async login(
     @Body(new ZodPipe(UserDto.LoginUser)) data: UserDto.LoginUserInput,
-  ) {
-    return this.authService.login(data);
+    @Res({passthrough: true}) res: Response
+  ): Promise<BaseApiResponseType<CreateUserResponse & { accessToken: string }>> {
+    const loginResponse = await this.authService.login(data);
+
+    res.cookie("refreshToken", loginResponse.refreshToken, {
+      sameSite: "lax",
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+
+    return {
+      message: "user logged in successfully",
+      data: {
+        user: loginResponse.user,
+        accessToken: loginResponse.accessToken,
+      }
+    };
   }
 }
