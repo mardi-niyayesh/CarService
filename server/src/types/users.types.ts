@@ -14,3 +14,9 @@ export interface AccessTokenPayload {
   role: UserRole;
   display_name?: string;
 }
+
+/** RefreshToken payload on randomBytes */
+export interface RefreshTokenPayload {
+  id: string;
+  role: UserRole
+}

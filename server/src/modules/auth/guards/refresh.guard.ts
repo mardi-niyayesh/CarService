@@ -1,8 +1,7 @@
-import {Observable} from 'rxjs';
-import type {Request} from "express";
+import {AuthRequest} from "../../../types";
+import {hashSecretToken} from "../../../lib";
 import {PrismaService} from "../../prisma/prisma.service";
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
-import {compareSecretToken, hashSecretToken} from "../../../lib";
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -10,19 +9,39 @@ export class RefreshTokenGuard implements CanActivate {
 
   async canActivate(
     context: ExecutionContext,
-  ): Promise<boolean | Promise<boolean> | Observable<boolean>> {
-    const req = context.switchToHttp().getRequest<Request>();
+  ): Promise<boolean> {
+    const req = context.switchToHttp().getRequest<AuthRequest>();
 
     const cookies = req.cookies as { refreshToken?: string };
 
-    const raw: string | string[] | null =
+    const headerToken = req.headers["x-refresh-token"];
+
+    const raw: string | null =
       cookies?.refreshToken
-      || req.headers["x-refresh-token"]
+      || (Array.isArray(headerToken) ? headerToken[0] : headerToken)
       || null;
 
     if (!raw) throw new UnauthorizedException("Refresh token missing");
 
     const hashed: string = hashSecretToken(raw);
+
+    const tokenRecord = await this.prisma.refreshToken.findFirst({
+      where: {
+        token: hashed,
+        revokedAt: null,
+        expiresAt: {gt: new Date()}
+      },
+      include: {user: true}
+    });
+
+    if (!tokenRecord) throw new UnauthorizedException("Invalid or expired refresh token");
+
+    req.user = {
+      id: tokenRecord.user.id,
+      role: tokenRecord.user.role,
+    };
+
+    req.refreshTokenId = tokenRecord.id;
 
     return true;
   }
