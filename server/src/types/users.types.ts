@@ -20,3 +20,5 @@ export type RefreshTokenPayload = RefreshToken & {
 };
 
 export type SafeUser = Omit<User, "password">;
+
+export type LoginUserSchemaType = { user: SafeUser; accessToken: string; };

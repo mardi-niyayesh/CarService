@@ -5,7 +5,7 @@ import {
   ApiCreatedResponse,
   ApiConflictResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse, ApiCookieAuth, ApiOkResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
 import type {Response} from "express";
@@ -50,6 +50,7 @@ export class AuthController {
     operationId: "loginUser",
   })
   @ApiBody({type: UserDto.LoginUserSchema})
+  @ApiOkResponse({type: UserDto.LoginUserOkResponse})
   @ApiBadRequestResponse({type: UserDto.LoginUserBadRequestResponse})
   @ApiUnauthorizedResponse({type: UserDto.LoginUserInvalidAuthResponse})
   async login(
@@ -79,6 +80,7 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
+  @ApiCookieAuth("refreshToken")
   refresh(
     @Req() req: RefreshRequest
   ): BaseApiResponseType<{ accessToken: string; user: SafeUser }> {

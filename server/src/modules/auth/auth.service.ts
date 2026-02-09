@@ -14,6 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
+  /** generate new accessToken with payload */
   generateAccessToken(payload: AccessTokenPayload): string {
     return this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET!,
