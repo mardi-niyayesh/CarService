@@ -1,6 +1,7 @@
 import * as Modules from "./modules";
-import {Module} from '@nestjs/common';
+import {LoggerMiddleware} from "./common";
 import {ScheduleModule} from "@nestjs/schedule";
+import {MiddlewareConsumer, Module} from '@nestjs/common';
 
 @Module({
   imports: [
@@ -11,4 +12,9 @@ import {ScheduleModule} from "@nestjs/schedule";
     Modules.SchedulerModule,
   ]
 })
-export class AppModule {}
+export class AppModule {
+  // noinspection JSUnusedGlobalSymbols
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes("*");
+  }
+}

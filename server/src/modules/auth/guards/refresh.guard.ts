@@ -1,5 +1,5 @@
-import {RefreshRequest} from "../../../types";
 import {hashSecretToken} from "../../../lib";
+import {RefreshRequest} from "../../../types";
 import {PrismaService} from "../../prisma/prisma.service";
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 
