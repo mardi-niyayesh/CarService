@@ -11,7 +11,7 @@ export class ApiResponse<T> {
   path?: string;
 }
 
-export function getBaseOkResponseSchema<T>(props: { create: boolean, message: string, data: T, path: string }) {
+export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: string, data: T, path: string }) {
   class BaseOkResponse {
     @ApiProperty({example: true})
     success: boolean;

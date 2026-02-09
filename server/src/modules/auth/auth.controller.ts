@@ -81,6 +81,7 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
   @ApiCookieAuth("refreshToken")
+  @ApiOkResponse({type: UserDto.RefreshUsersOkResponse})
   refresh(
     @Req() req: RefreshRequest
   ): BaseApiResponseType<{ accessToken: string; user: SafeUser }> {
