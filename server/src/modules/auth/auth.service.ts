@@ -2,10 +2,10 @@ import type {StringValue} from "ms";
 import {JwtService} from "@nestjs/jwt";
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
-import {RefreshToken, User, UserRole} from "../prisma/generated/client";
-import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, SafeUser, RefreshTokenPayload} from "../../types";
+import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "../../lib";
+import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, RefreshTokenPayload} from "../../types";
 
 @Injectable()
 export class AuthService {
@@ -106,7 +106,13 @@ export class AuthService {
   }
 
   /** endpoint for refresh accessToken */
-  refresh(refreshPayload: RefreshTokenPayload) {
-    console.log(`refresh token: `, refreshPayload);
+  refresh(refreshPayload: RefreshTokenPayload): string {
+    const payload: AccessTokenPayload = {
+      sub: refreshPayload.user.id,
+      role: refreshPayload.user.role,
+      display_name: refreshPayload.user.display_name ?? ""
+    };
+
+    return this.generateAccessToken(payload);
   }
 }

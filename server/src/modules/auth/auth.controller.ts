@@ -11,7 +11,7 @@ import {ZodPipe} from "../../common";
 import type {Response} from "express";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
-import type {RefreshRequest, BaseApiResponseType, CreateUserResponse} from "../../types";
+import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "../../types";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {RefreshTokenGuard} from "./guards/refresh.guard";
 
@@ -81,10 +81,15 @@ export class AuthController {
   @Post("refresh")
   refresh(
     @Req() req: RefreshRequest
-  ) {
-    this.authService.refresh(req.refreshPayload);
+  ): BaseApiResponseType<{ accessToken: string; user: SafeUser }> {
+    const accessToken: string = this.authService.refresh(req.refreshPayload);
+
     return {
-      ok: false,
+      message: "accessToken successfully created.",
+      data: {
+        user: req.refreshPayload.user,
+        accessToken,
+      }
     };
   }
 }
