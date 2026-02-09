@@ -1,6 +1,7 @@
 import {hash, compare} from "bcrypt";
 import {createHash, randomBytes, timingSafeEqual} from "node:crypto";
 
+/** hashed password with bcrypt */
 export async function hashSecret(
   value: string,
   saltRounds: number = 12
@@ -8,6 +9,7 @@ export async function hashSecret(
   return await hash(value, saltRounds);
 }
 
+/** compare hashed password with bcrypt */
 export async function compareSecret(
   value: string,
   hashed: string
