@@ -31,6 +31,7 @@ model User {
 
 model RefreshToken {
   id        String    @id @default(uuid(4))
+  remember  Boolean   @default(false)
   revokedAt DateTime?
   expiresAt DateTime
   token     String    @unique @db.VarChar(255)
