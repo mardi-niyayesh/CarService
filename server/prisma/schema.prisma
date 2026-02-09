@@ -16,14 +16,28 @@ enum UserRole {
 }
 
 model User {
-  id           String   @id @default(uuid(4))
-  email        String   @unique @db.VarChar(255)
-  password     String   @db.VarChar(255)
-  role         UserRole @default(USER)
-  display_name String?  @db.VarChar(50)
-  age          Int?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String         @id @default(uuid(4))
+  email         String         @unique @db.VarChar(255)
+  password      String         @db.VarChar(255)
+  role          UserRole       @default(USER)
+  display_name  String?        @db.VarChar(50)
+  age           Int?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid(4))
+  revokedAt DateTime?
+  expiresAt DateTime
+  token     String    @unique @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
