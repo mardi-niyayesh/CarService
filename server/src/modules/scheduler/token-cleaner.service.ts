@@ -2,6 +2,7 @@ import {Cron} from "@nestjs/schedule";
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 
+/** revoked all tokens when expiresAt <= now */
 @Injectable()
 export class TokenCleanerService {
   constructor(private readonly prisma: PrismaService) {}

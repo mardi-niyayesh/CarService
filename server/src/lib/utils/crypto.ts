@@ -1,4 +1,5 @@
 import {hash, compare} from "bcrypt";
+import {createHash} from "node:crypto";
 
 export async function hashSecret(
   value: string,
@@ -12,4 +13,12 @@ export async function compareSecret(
   hashed: string
 ): Promise<boolean> {
   return await compare(value, hashed);
+}
+
+export function hashSecretToken(value: string): string {
+  return createHash('sha256').update(value).digest('hex');
+}
+
+export function compareSecretToken(rawToken: string, hashedToken: string): boolean {
+  return hashSecretToken(rawToken) === hashedToken;
 }
