@@ -1,4 +1,4 @@
-import {Cron} from "@nestjs/schedule";
+import {Cron, CronExpression} from "@nestjs/schedule";
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
 
@@ -7,7 +7,7 @@ import {PrismaService} from "../prisma/prisma.service";
 export class TokenCleanerService {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Cron("/*5 * * * *") // five minutes
+  @Cron(CronExpression.EVERY_5_MINUTES) // five minutes
   async cleanExpiresToken(): Promise<void> {
     await this.prisma.refreshToken.updateMany({
       where: {
