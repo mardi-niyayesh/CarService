@@ -6,6 +6,7 @@ import {Module} from '@nestjs/common';
     Modules.PrismaModule,
     Modules.AuthModule,
     Modules.UsersModule,
+    Modules.SchedulerModule,
   ]
 })
 export class AppModule {}
