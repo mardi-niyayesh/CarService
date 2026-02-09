@@ -91,6 +91,7 @@ export class AuthService {
         userId: user.id,
         revokedAt: null,
         token: hashedRefreshToken,
+        remember: loginData.remember,
       }
     });
 
