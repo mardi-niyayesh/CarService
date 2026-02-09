@@ -3,8 +3,6 @@ import {
   ApiOkResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
-  ApiBearerAuth,
-  ApiCookieAuth,
 } from "@nestjs/swagger";
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
@@ -20,8 +18,6 @@ export class UsersController {
   @ApiOkResponse({type: UserDTO.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiNotFoundResponse({type: UserDTO.GetUserNotFoundResponse})
-  @ApiBearerAuth("accessToken")
-  @ApiCookieAuth("refreshToken")
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
