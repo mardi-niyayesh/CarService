@@ -11,6 +11,6 @@ import {MiddlewareConsumer, Module} from '@nestjs/common';
 export class UsersModule {
   // noinspection JSUnusedGlobalSymbols
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes();
+    consumer.apply(LoggerMiddleware).forRoutes(UsersController);
   }
 }
