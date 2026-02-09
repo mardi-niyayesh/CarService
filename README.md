@@ -77,11 +77,11 @@ JWT_SECRET="your_secret_key"
 JWT_EXPIRES="1h"
 ```
 
-Sync Prisma:
+Generate Prisma Client (required once):
 
-```bash
-npm run prisma:sync
-```
+   ```bash
+   npm run prisma:generate
+   ```
 
 Run dev:
 

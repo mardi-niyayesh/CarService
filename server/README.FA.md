@@ -39,21 +39,21 @@
 
 ---
 
-## 🏁 Quick Start
+# 🇮🇷 **شروع سریع (Quick Start)**
 
-1. Clone the project:
+1. **کلون کردن پروژه**
 
    ```bash
    git clone https://github.com/your-repo/car-service-server.git
    ```
 
-2. Install dependencies:
+2. **نصب وابستگی‌ها**
 
    ```bash
    npm install
    ```
 
-3. Create `.env` file:
+3. **ساخت فایل `.env`**
 
    ```env
    PORT="3000"
@@ -66,13 +66,15 @@
    JWT_EXPIRES="1h"
    ```
 
-4. Sync Prisma schema:
+4. **تولید Prisma Client (ضروری بعد از نصب)**
 
    ```bash
-   npm run prisma:sync
+   npm run prisma:generate
    ```
 
-5. Run the project in development mode:
+   > Prisma Client داخل ریپو قرار نمی‌گیرد و باید روی سیستم شما ساخته شود.
+
+5. **اجرای پروژه در حالت توسعه**
 
    ```bash
    npm run start:dev
@@ -80,7 +82,7 @@
 
 ---
 
-## 🏗️ Build (Production)
+# 🏗️ **بیلد (Production)**
 
 برای کامپایل TypeScript به JavaScript:
 
@@ -88,11 +90,11 @@
 npm run build
 ```
 
-خروجی داخل پوشهٔ `dist/` قرار می‌گیرد.
+خروجی کامپایل‌شده داخل پوشهٔ `dist/` قرار می‌گیرد.
 
 ---
 
-## 🚀 Start (Production)
+## 🚀 **اجرای پروژه در Production**
 
 بعد از build:
 
@@ -100,7 +102,7 @@ npm run build
 npm start
 ```
 
-یا مستقیم:
+یا اجرای مستقیم فایل خروجی:
 
 ```bash
 node dist/main.js

@@ -68,10 +68,10 @@ maintainability, and fully standardized API responses.
    JWT_EXPIRES="1h"
    ```
 
-4. Sync Prisma schema:
+4. Generate Prisma Client (required once):
 
    ```bash
-   npm run prisma:sync
+   npm run prisma:generate
    ```
 
 5. Start development mode:
