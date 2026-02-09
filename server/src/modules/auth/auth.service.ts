@@ -3,9 +3,9 @@ import {JwtService} from "@nestjs/jwt";
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
+import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload} from "../../types";
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "../../lib";
-import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -60,7 +60,7 @@ export class AuthService {
       }
     });
 
-    if (!user) throw new NotFoundException("Invalid credentials");
+    if (!user) throw new UnauthorizedException("Invalid credentials");
 
     const isValidPassword: boolean = await compareSecret(loginData.password, user.password);
 

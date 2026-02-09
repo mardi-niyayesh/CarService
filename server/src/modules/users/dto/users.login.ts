@@ -2,6 +2,7 @@ import z from "zod";
 import {createZodDto} from "nestjs-zod";
 import {BaseUserSchema} from "./users.validators";
 import {getBaseErrorBodyResponseSchema} from "../../../common";
+import {ApiProperty} from "@nestjs/swagger";
 
 /** login users schema */
 export const LoginUser = BaseUserSchema.pick({
@@ -36,3 +37,14 @@ export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema(
     message: "Invalid input: expected boolean, received string"
   }
 ]) {}
+
+export class LoginUserInvalidAuthResponse {
+  @ApiProperty({example: "Invalid credentials"})
+  message: string;
+
+  @ApiProperty({example: "Unauthorized"})
+  error: string;
+
+  @ApiProperty({example: 401})
+  statusCode: number;
+}
