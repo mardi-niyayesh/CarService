@@ -2,18 +2,20 @@ import {
   ApiTags,
   ApiBody,
   ApiOperation,
+  ApiCookieAuth,
+  ApiOkResponse,
   ApiCreatedResponse,
   ApiConflictResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiCookieAuth, ApiOkResponse,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
 import type {Response} from "express";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
-import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "../../types";
-import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {RefreshTokenGuard} from "./guards/refresh.guard";
+import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
+import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "../../types";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -80,6 +82,7 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
+  @HttpCode(200)
   @ApiCookieAuth("refreshToken")
   @ApiOkResponse({type: UserDto.RefreshUsersOkResponse})
   refresh(
