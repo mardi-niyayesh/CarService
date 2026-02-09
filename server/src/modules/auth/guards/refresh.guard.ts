@@ -33,9 +33,8 @@ export class RefreshTokenGuard implements CanActivate {
       },
       include: {
         user: {
-          select: {
-            id: true,
-            role: true
+          omit: {
+            password: true
           }
         }
       }
@@ -44,7 +43,7 @@ export class RefreshTokenGuard implements CanActivate {
     if (!tokenRecord) throw new UnauthorizedException("Invalid or expired refresh token");
 
     req.user = tokenRecord.user;
-    req.refreshTokenId = tokenRecord.id;
+    req.refreshToken = tokenRecord;
 
     return true;
   }
