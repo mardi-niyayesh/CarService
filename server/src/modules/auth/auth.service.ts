@@ -1,12 +1,11 @@
 import type {StringValue} from "ms";
-import {hashSecret} from "../../lib";
-import {randomUUID} from "node:crypto";
+import {JwtService} from "@nestjs/jwt";
 import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
-import {JwtService, JwtSignOptions} from "@nestjs/jwt";
 import {User, UserRole} from "../prisma/generated/client";
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
-import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, CreateTokenParams, RefreshTokenPayload} from "../../types";
+import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload} from "../../types";
+import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "../../lib";
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -15,19 +14,11 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  generateToken(data: CreateTokenParams): string {
-    const options: JwtSignOptions = {
-      secret: data.tokenType === "access"
-        ? process.env.JWT_ACCESS_SECRET
-        : process.env.JWT_REFRESH_SECRET,
-      expiresIn: data.tokenType === "access"
-        ? process.env.JWT_ACCESS_EXPIRES_1H as StringValue
-        : data.remember
-          ? process.env.JWT_REFRESH_EXPIRES_7D as StringValue
-          : process.env.JWT_REFRESH_EXPIRES_12H as StringValue
-    };
-
-    return this.jwtService.sign(data.payload, options);
+  generateAccessToken(payload: AccessTokenPayload): string {
+    return this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET!,
+      expiresIn: process.env.JWT_EXPIRES as StringValue,
+    });
   }
 
   /** create user in db */
@@ -69,31 +60,38 @@ export class AuthService {
       }
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("Invalid credentials");
 
-    const userRefreshPayload: RefreshTokenPayload = {
-      sub: user.id,
-      type: "refresh",
-      jti: randomUUID(),
-      remember: loginData.remember ?? false,
-    };
+    const isValidPassword: boolean = await compareSecret(loginData.password, user.password);
 
-    const refreshToken: string = this.generateToken({
-      tokenType: "refresh",
-      payload: userRefreshPayload,
-      remember: loginData.remember ?? false,
-    });
+    if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
 
     const accessTokenPayload: AccessTokenPayload = {
       sub: user.id,
-      type: "access",
       role: user.role,
       display_name: user.display_name ?? ""
     };
 
-    const accessToken: string = this.generateToken({
-      payload: accessTokenPayload,
-      tokenType: "access",
+    const accessToken: string = this.generateAccessToken(accessTokenPayload);
+    const refreshToken: string = generateRefreshToken();
+
+    const expiresAt: Date = new Date(
+      Date.now() + (
+        loginData.remember
+          ? 7 * 24 * 60 * 60 * 1000 // 7 days
+          : 12 * 60 * 60 * 1000     // 12 hours
+      )
+    );
+
+    const hashedRefreshToken: string = hashSecretToken(refreshToken);
+
+    await this.prisma.refreshToken.create({
+      data: {
+        expiresAt,
+        userId: user.id,
+        revokedAt: null,
+        token: hashedRefreshToken,
+      }
     });
 
     return {

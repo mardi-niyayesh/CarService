@@ -12,29 +12,5 @@ export type CreateUserResponse = {
 export interface AccessTokenPayload {
   sub: string;
   role: UserRole;
-  type: "access";
   display_name?: string;
 }
-
-/** RefreshToken payload on JWT */
-export interface RefreshTokenPayload extends Pick<AccessTokenPayload, "sub"> {
-  jti: string;
-  remember: boolean;
-  type: "refresh";
-}
-
-interface BaseJwtPayloadParms {
-  payload: AccessTokenPayload | RefreshTokenPayload;
-}
-
-interface TokenParamsRefresh extends BaseJwtPayloadParms {
-  tokenType: "refresh";
-  remember?: boolean;
-}
-
-interface TokenParamsAccess extends BaseJwtPayloadParms {
-  tokenType: "access";
-  remember?: never;
-}
-
-export type CreateTokenParams = TokenParamsRefresh | TokenParamsAccess;
