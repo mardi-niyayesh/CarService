@@ -16,7 +16,4 @@ export interface AccessTokenPayload {
 }
 
 /** RefreshToken payload on randomBytes */
-export interface RefreshTokenPayload {
-  id: string;
-  role: UserRole
-}
+export type RefreshTokenPayload = Omit<User, "password">;
