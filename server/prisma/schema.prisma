@@ -34,7 +34,7 @@ model RefreshToken {
   remember  Boolean   @default(false)
   revokedAt DateTime?
   expiresAt DateTime
-  token     String    @unique @db.VarChar(255)
+  token     String    @unique @db.VarChar(64)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   userId    String
