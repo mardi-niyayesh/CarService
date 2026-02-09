@@ -11,8 +11,9 @@ import {ZodPipe} from "../../common";
 import type {Response} from "express";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
-import {BaseApiResponseType, CreateUserResponse} from "../../types";
-import {Body, Controller, HttpCode, Post, Res} from '@nestjs/common';
+import type {RefreshRequest, BaseApiResponseType, CreateUserResponse} from "../../types";
+import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {RefreshTokenGuard} from "./guards/refresh.guard";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -73,6 +74,17 @@ export class AuthController {
         user: loginResponse.user,
         accessToken: loginResponse.accessToken,
       }
+    };
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Post("refresh")
+  refresh(
+    @Req() req: RefreshRequest
+  ) {
+    this.authService.refresh(req.refreshPayload);
+    return {
+      ok: false,
     };
   }
 }

@@ -1,4 +1,4 @@
-import {AuthRequest} from "../../../types";
+import {RefreshRequest} from "../../../types";
 import {hashSecretToken} from "../../../lib";
 import {PrismaService} from "../../prisma/prisma.service";
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
@@ -10,7 +10,7 @@ export class RefreshTokenGuard implements CanActivate {
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
-    const req = context.switchToHttp().getRequest<AuthRequest>();
+    const req = context.switchToHttp().getRequest<RefreshRequest>();
 
     const cookies = req.cookies as { refreshToken?: string };
 
@@ -42,8 +42,7 @@ export class RefreshTokenGuard implements CanActivate {
 
     if (!tokenRecord) throw new UnauthorizedException("Invalid or expired refresh token");
 
-    req.user = tokenRecord.user;
-    req.refreshToken = tokenRecord;
+    req.refreshPayload = tokenRecord;
 
     return true;
   }

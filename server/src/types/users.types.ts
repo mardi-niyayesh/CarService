@@ -1,5 +1,5 @@
-import {User} from "../modules/prisma/generated/client";
 import {UserRole} from "../modules/prisma/generated/enums";
+import {RefreshToken, User} from "../modules/prisma/generated/client";
 
 /** response user type */
 export type CreateUserResponse = {
@@ -15,5 +15,8 @@ export interface AccessTokenPayload {
   display_name?: string;
 }
 
-/** RefreshToken payload on randomBytes */
-export type RefreshTokenPayload = Omit<User, "password">;
+export type RefreshTokenPayload = RefreshToken & {
+  user: SafeUser;
+};
+
+export type SafeUser = Omit<User, "password">;
