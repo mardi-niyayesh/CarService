@@ -5,7 +5,7 @@ import {
   ApiCreatedResponse,
   ApiConflictResponse,
   ApiBadRequestResponse,
-  ApiNotFoundResponse, ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "../../common";
 import type {Response} from "express";
@@ -13,7 +13,6 @@ import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
 import {BaseApiResponseType, CreateUserResponse} from "../../types";
 import {Body, Controller, HttpCode, Post, Res} from '@nestjs/common';
-import {LoginUserInvalidAuthResponse} from "../users/dto";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -52,7 +51,6 @@ export class AuthController {
   @ApiBody({type: UserDto.LoginUserSchema})
   @ApiBadRequestResponse({type: UserDto.LoginUserBadRequestResponse})
   @ApiUnauthorizedResponse({type: UserDto.LoginUserInvalidAuthResponse})
-  @ApiNotFoundResponse({type: UserDto.GetUserNotFoundResponse})
   async login(
     @Body(new ZodPipe(UserDto.LoginUser)) data: UserDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
