@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import cookieParser from "cookie-parser";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
+import cookieParser from "cookie-parser";
 import {ValidationPipe} from "@nestjs/common";
 import {TransformInterceptors} from "./common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
@@ -49,5 +49,5 @@ async function bootstrap(): Promise<void> {
 
 /** bootstrap and run application */
 bootstrap()
-  .then(() => console.log("nest successfully started."))
+  .then(() => console.log(`nest successfully started on http://localhost:${process.env.PORT ?? 3000}/api`))
   .catch(e => console.error(e));
