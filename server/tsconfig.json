@@ -34,9 +34,6 @@
       ],
       "@lib/*": [
         "src/lib/*"
-      ],
-      "@types/*": [
-        "src/types/*"
       ]
     }
   }
