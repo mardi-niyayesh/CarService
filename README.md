@@ -22,7 +22,7 @@ mycar/
 │   └── server/
 │
 └── frontend/       # Client application (React + Vite)
-    └── my-react-app/
+    └── client/
 ```
 
 ---
@@ -65,14 +65,14 @@ A modular, scalable API for managing the entire car rental system.
 
 ```bash
 git clone https://github.com/mardi-niyayesh/CarService.git
-cd MyCar
+cd CarService
 ```
 
 **or with ssh**
 
 ```bash
 git clone git@github.com:mardi-niyayesh/CarService.git
-cd MyCar
+cd CarService
 ```
 
 ## 🏁 Backend Quick Start

@@ -47,14 +47,14 @@ maintainability, and fully standardized API responses.
 
    ```bash
    git clone https://github.com/mardi-niyayesh/CarService.git
-   cd MyCar/server
+   cd CarService/server
    ```
 
    **or with ssh**
 
    ```bash
    git clone git@github.com:mardi-niyayesh/CarService.git
-   cd MyCar/server
+   cd CarService/server
    ```
 
 2. Install dependencies:

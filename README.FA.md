@@ -21,7 +21,7 @@ mycar/
 │   └── server/
 │
 └── frontend/       # Client application (React + Vite)
-    └── my-react-app/
+    └── client/
 ```
 
 ---
@@ -64,14 +64,14 @@ mycar/
 
 ```bash
 git clone https://github.com/mardi-niyayesh/CarService.git
-cd MyCar
+cd CarService
 ```
 
 **با ssh**
 
 ```bash
 git clone git@github.com:mardi-niyayesh/CarService.git
-cd MyCar
+cd CarService
 ```
 
 

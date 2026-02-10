@@ -45,14 +45,14 @@
 
    ```bash
    git clone https://github.com/mardi-niyayesh/CarService.git
-   cd MyCar/server
+   cd CarService/server
    ```
 
 **با ssh**
 
    ```bash
    git clone git@github.com:mardi-niyayesh/CarService.git
-   cd MyCar/server
+   cd CarService/server
    ```
 
 
