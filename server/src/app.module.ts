@@ -1,5 +1,5 @@
 import * as Modules from "./modules";
-import {LoggerMiddleware} from "./common";
+import {ReateLimitMiddleware} from "./common";
 import {ScheduleModule} from "@nestjs/schedule";
 import {MiddlewareConsumer, Module} from '@nestjs/common';
 
@@ -15,6 +15,6 @@ import {MiddlewareConsumer, Module} from '@nestjs/common';
 export class AppModule {
   // noinspection JSUnusedGlobalSymbols
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes("*");
+    consumer.apply(ReateLimitMiddleware).forRoutes("*");
   }
 }

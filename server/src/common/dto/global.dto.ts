@@ -59,7 +59,7 @@ export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
     })
     errors: ZodFieldError[];
 
-    @ApiProperty({example: "Invalid request payload."})
+    @ApiProperty({example: "Invalid request."})
     message: string;
   }
 
