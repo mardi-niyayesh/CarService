@@ -50,13 +50,12 @@ maintainability, and fully standardized API responses.
    cd MyCar/server
    ```
 
-**or with ssh**
+   **or with ssh**
 
    ```bash
    git clone git@github.com:mardi-niyayesh/CarService.git
    cd MyCar/server
    ```
-
 
 2. Install dependencies:
 
