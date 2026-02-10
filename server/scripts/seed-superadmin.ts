@@ -12,17 +12,17 @@ import {UserRole} from "@/modules/prisma/generated/enums";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
 async function ask<T extends keyof typeof CreateUser.shape>(
-  question: string,
+  q: string,
   field: T,
-): Promise<unknown> {
+): Promise<string> {
   while (true) {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
 
-    const answer = await new Promise(resolve => {
-      rl.question(question, answer => {
+    const answer: string = await new Promise(resolve => {
+      rl.question(q, answer => {
         rl.close();
         resolve(answer.trim());
       });
@@ -58,8 +58,8 @@ async function bootstrap(): Promise<never> {
 
   console.log(`creating super admin...`);
 
-  const email = await ask("enter email: ", "email") as string;
-  const password = await ask("enter password: ", "password") as string;
+  const email: string = await ask("enter email: ", "email");
+  const password: string = await ask("enter password: ", "password");
 
   const hashedPassword: string = await hashSecret(password);
 
