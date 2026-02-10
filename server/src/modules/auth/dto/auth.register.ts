@@ -80,3 +80,14 @@ export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema
     message: "Too big: expected number to be <=120"
   }
 ]) {}
+
+export class TooManyRequestResponse {
+  @ApiProperty({example: "Too many requests. Try again 5 minutes."})
+  message: string;
+
+  @ApiProperty({example: "Too Many Requests"})
+  error: string;
+
+  @ApiProperty({example: 429})
+  statusCode: number;
+}

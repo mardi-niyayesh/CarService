@@ -8,6 +8,7 @@ import {
   ApiConflictResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiTooManyRequestsResponse,
 } from "@nestjs/swagger";
 import {ZodPipe} from "@/common";
 import type {Response} from "express";
@@ -36,6 +37,7 @@ export class AuthController {
   @ApiCreatedResponse({type: AuthDto.CreateUserOkResponse})
   @ApiBadRequestResponse({type: AuthDto.CreateUserBadRequestResponse})
   @ApiConflictResponse({type: AuthDto.CreateUserConflictResponse})
+  @ApiTooManyRequestsResponse({type: AuthDto.TooManyRequestResponse})
   register(
     @Body(new ZodPipe(AuthDto.CreateUser)) data: AuthDto.CreateUserInput
   ) {
