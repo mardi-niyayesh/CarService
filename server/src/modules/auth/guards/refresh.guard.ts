@@ -1,6 +1,7 @@
-import {hashSecretToken} from "@/lib";
 import {RefreshRequest} from "@/types";
+import {compareSecretToken, hashSecretToken} from "@/lib";
 import {PrismaService} from "@/modules/prisma/prisma.service";
+import {RefreshToken} from "@/modules/prisma/generated/client";
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
@@ -28,8 +29,6 @@ export class RefreshTokenGuard implements CanActivate {
     const tokenRecord = await this.prisma.refreshToken.findUnique({
       where: {
         token: hashed,
-        revokedAt: null,
-        expiresAt: {gt: new Date()}
       },
       include: {
         user: {
@@ -39,6 +38,34 @@ export class RefreshTokenGuard implements CanActivate {
         }
       }
     });
+
+    if (tokenRecord) {
+      const allTokens = await this.prisma.refreshToken.findMany({
+        where: {
+          userId: tokenRecord.user.id
+        }
+      });
+
+      let findTokenR: RefreshToken | null = null;
+
+      for (const t of allTokens) {
+        const valid: boolean = compareSecretToken(raw, t.token);
+        if (valid) findTokenR = t;
+      }
+
+      if (findTokenR && findTokenR.revokedAt) {
+        await this.prisma.refreshToken.updateMany({
+          where: {
+            userId: tokenRecord.user.id
+          },
+          data: {
+            revokedAt: new Date(),
+          }
+        });
+
+        throw new UnauthorizedException("Refresh token reuse detected");
+      }
+    }
 
     if (!tokenRecord) throw new UnauthorizedException("Invalid or expired refresh token");
 
