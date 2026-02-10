@@ -11,7 +11,7 @@ export class RefreshUsersOkResponse extends getBaseOkResponseSchema<LoginUserSch
 }) {}
 
 export class RefreshUsersUnAuthResponse {
-  @ApiProperty({example: "Refresh token reuse detected"})
+  @ApiProperty({example: "Refresh token missing"})
   message: string;
 
   @ApiProperty({example: "Unauthorized"})
