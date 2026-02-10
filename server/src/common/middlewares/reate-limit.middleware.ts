@@ -3,7 +3,7 @@ import type {Request, Response, NextFunction} from 'express';
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUEST = 10;
-const BLOCK_TIMEOUT_MS = 5 * WINDOW_MS;
+const BLOCK_TIMEOUT_MS = 5 * WINDOW_MS; // 5 minute
 const requestMap = new Map<string, {
   isBlocked: boolean;
   blockUntil: number | null;
@@ -16,6 +16,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
     const ip = req.headers['x-forwarded-for'] as string || req.ip as string;
     const now = Date.now();
 
+    // if ap list is undefined, set an empty record
     if (!requestMap.has(ip)) {
       requestMap.set(ip, {
         isBlocked: false,
@@ -26,6 +27,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
 
     const record = requestMap.get(ip)!;
 
+    // if ip is blocked
     if (record.isBlocked) {
       if (now < record.blockUntil!) {
         return res.status(429).json({
@@ -33,6 +35,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
         });
       }
 
+      // else clear logs
       record.isBlocked = false;
       record.blockUntil = null;
       record.timestamps = [];
@@ -40,6 +43,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
 
     const filtered = record.timestamps.filter(t => now - t < WINDOW_MS);
 
+    // if ip reached limits, blocked.
     if (filtered.length >= MAX_REQUEST) {
       record.isBlocked = true;
       record.blockUntil = Date.now() + BLOCK_TIMEOUT_MS;
@@ -58,7 +62,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
   }
 }
 
-/** clear requestMap every 6 minutes */
+/** clear requestMap every 6 minute */
 setInterval(() => {
   const now = Date.now();
 
