@@ -11,7 +11,7 @@ import {
 } from "@nestjs/swagger";
 import {ZodPipe} from "@/common";
 import type {Response} from "express";
-import * as UserDto from "../users/dto";
+import * as AuthDto from "./dto/index";
 import {AuthService} from "./auth.service";
 import {RefreshTokenGuard} from "./guards/refresh.guard";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
@@ -32,12 +32,12 @@ export class AuthController {
     description: `Register user in database, users table`,
     operationId: "registerUser",
   })
-  @ApiBody({type: UserDto.CreateUserSchema})
-  @ApiCreatedResponse({type: UserDto.CreateUserOkResponse})
-  @ApiBadRequestResponse({type: UserDto.CreateUserBadRequestResponse})
-  @ApiConflictResponse({type: UserDto.CreateUserConflictResponse})
+  @ApiBody({type: AuthDto.CreateUserSchema})
+  @ApiCreatedResponse({type: AuthDto.CreateUserOkResponse})
+  @ApiBadRequestResponse({type: AuthDto.CreateUserBadRequestResponse})
+  @ApiConflictResponse({type: AuthDto.CreateUserConflictResponse})
   register(
-    @Body(new ZodPipe(UserDto.CreateUser)) data: UserDto.CreateUserInput
+    @Body(new ZodPipe(AuthDto.CreateUser)) data: AuthDto.CreateUserInput
   ) {
     return this.authService.register(data);
   }
@@ -51,12 +51,12 @@ export class AuthController {
     description: `Login user with email and password`,
     operationId: "loginUser",
   })
-  @ApiBody({type: UserDto.LoginUserSchema})
-  @ApiOkResponse({type: UserDto.LoginUserOkResponse})
-  @ApiBadRequestResponse({type: UserDto.LoginUserBadRequestResponse})
-  @ApiUnauthorizedResponse({type: UserDto.LoginUserInvalidAuthResponse})
+  @ApiBody({type: AuthDto.LoginUserSchema})
+  @ApiOkResponse({type: AuthDto.LoginUserOkResponse})
+  @ApiBadRequestResponse({type: AuthDto.LoginUserBadRequestResponse})
+  @ApiUnauthorizedResponse({type: AuthDto.LoginUserInvalidAuthResponse})
   async login(
-    @Body(new ZodPipe(UserDto.LoginUser)) data: UserDto.LoginUserInput,
+    @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
   ): Promise<BaseApiResponseType<CreateUserResponse & { accessToken: string }>> {
     const loginResponse = await this.authService.login(data);
@@ -84,7 +84,8 @@ export class AuthController {
   @Post("refresh")
   @HttpCode(200)
   @ApiCookieAuth("refreshToken")
-  @ApiOkResponse({type: UserDto.RefreshUsersOkResponse})
+  @ApiOkResponse({type: AuthDto.RefreshUsersOkResponse})
+  @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
   refresh(
     @Req() req: RefreshRequest
   ): BaseApiResponseType<{ accessToken: string; user: SafeUser }> {

@@ -1,6 +1,6 @@
+import * as AuthDto from "./dto/";
 import type {StringValue} from "ms";
 import {JwtService} from "@nestjs/jwt";
-import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   /** create user in db */
-  async register(createData: UserDto.CreateUserInput): Promise<BaseApiResponseType<CreateUserResponse>> {
+  async register(createData: AuthDto.CreateUserInput): Promise<BaseApiResponseType<CreateUserResponse>> {
     const user: User | null = await this.prisma.user.findFirst({
       where: {
         email: createData.email,
@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   /** login users */
-  async login(loginData: UserDto.LoginUserInput) {
+  async login(loginData: AuthDto.LoginUserInput) {
     const user: User | null = await this.prisma.user.findFirst({
       where: {
         email: loginData.email,
