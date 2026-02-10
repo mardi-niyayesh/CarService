@@ -8,6 +8,12 @@ export type CreateUserResponse = {
   };
 }
 
+export const RolePriority = {
+  [UserRole.SUPER_ADMIN]: 3,
+  [UserRole.ADMIN]: 2,
+  [UserRole.USER]: 1,
+} as const;
+
 /** AccessToken payload on JWT */
 export interface AccessTokenPayload {
   sub: string;
