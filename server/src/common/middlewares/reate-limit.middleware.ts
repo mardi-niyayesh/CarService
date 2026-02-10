@@ -57,3 +57,26 @@ export class ReateLimitMiddleware implements NestMiddleware {
     return next();
   }
 }
+
+/** clear requestMap every 6 minutes */
+setInterval(() => {
+  const now = Date.now();
+
+  for (const [ip, info] of requestMap.entries()) {
+    // if ip is blocked, don`t clear
+    if (info.isBlocked) continue;
+
+    // get all ip list where timestamp letter than WINDOW_MS
+    const filtered = info.timestamps.filter(ts => now - ts < WINDOW_MS);
+
+    if (filtered.length === 0) {
+      requestMap.delete(ip);
+    } else {
+      requestMap.set(ip, {
+        isBlocked: false,
+        blockUntil: null,
+        timestamps: filtered,
+      });
+    }
+  }
+}, 60_000);
