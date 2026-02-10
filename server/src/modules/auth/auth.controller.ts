@@ -10,11 +10,11 @@ import {
   ApiUnauthorizedResponse,
   ApiTooManyRequestsResponse,
 } from "@nestjs/swagger";
-import {ZodPipe} from "@/common";
 import type {Response} from "express";
 import * as AuthDto from "./dto/index";
 import {AuthService} from "./auth.service";
 import {RefreshTokenGuard} from "./guards/refresh.guard";
+import {ZodPipe, TooManyRequestResponse} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";
 
@@ -37,7 +37,7 @@ export class AuthController {
   @ApiCreatedResponse({type: AuthDto.CreateUserOkResponse})
   @ApiBadRequestResponse({type: AuthDto.CreateUserBadRequestResponse})
   @ApiConflictResponse({type: AuthDto.CreateUserConflictResponse})
-  @ApiTooManyRequestsResponse({type: AuthDto.TooManyRequestResponse})
+  @ApiTooManyRequestsResponse({type: TooManyRequestResponse})
   register(
     @Body(new ZodPipe(AuthDto.CreateUser)) data: AuthDto.CreateUserInput
   ) {
