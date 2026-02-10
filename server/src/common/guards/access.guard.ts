@@ -11,7 +11,10 @@ export class AccessTokenGuard extends AuthGuard("jwt-access") implements CanActi
   }
 
   canActivate(context: ExecutionContext) {
-    const isPublic: boolean = this.reflector.get(PUBLIC_METADATA, context.getHandler());
+    const isPublic: boolean = this.reflector.getAllAndOverride(PUBLIC_METADATA, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (isPublic) return true;
 

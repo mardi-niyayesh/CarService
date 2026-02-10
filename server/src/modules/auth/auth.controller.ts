@@ -14,12 +14,13 @@ import {
 import type {Response} from "express";
 import * as AuthDto from "./dto/index";
 import {AuthService} from "./auth.service";
-import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse} from "@/common";
+import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";
 
 @ApiTags('Auth')
 @Controller('auth')
+@Public()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
