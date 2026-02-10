@@ -3,7 +3,7 @@ import {APP_GUARD} from "@nestjs/core";
 import {ReateLimitMiddleware} from "./common";
 import {ScheduleModule} from "@nestjs/schedule";
 import {MiddlewareConsumer, Module} from '@nestjs/common';
-import {AccessTokenGuard} from "@/modules/auth/guards/access.guard";
+import {AccessTokenGuard} from "@/common/guards/access.guard";
 
 @Module({
   imports: [

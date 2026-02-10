@@ -1,4 +1,16 @@
 import {
+  Role,
+  ZodPipe,
+  UUID4Dto,
+  RoleGuard,
+  UUID4Schema,
+  type UUID4Type,
+  AccessTokenGuard,
+  UnauthorizedResponse,
+  BadRequestUUIDParams,
+} from "@/common";
+
+import {
   ApiParam,
   ApiBearerAuth,
   ApiOkResponse,
@@ -6,13 +18,11 @@ import {
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {RoleGuard} from "@/modules/auth/guards/role.guard";
 import {Controller, Get, Param, UseGuards} from '@nestjs/common';
-import {AccessTokenGuard} from "@/modules/auth/guards/access.guard";
-import {BadRequestUUIDParams, UUID4Dto, UUID4Schema, type UUID4Type, ZodPipe, Role, UnauthorizedResponse} from "@/common";
 
 @Controller('users')
 export class UsersController {
