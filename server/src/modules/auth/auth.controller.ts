@@ -13,7 +13,7 @@ import {
 import type {Response} from "express";
 import * as AuthDto from "./dto/index";
 import {AuthService} from "./auth.service";
-import {RefreshTokenGuard} from "./guards/refresh.guard";
+import {RefreshTokenGuard} from "@/modules/auth/guards/refresh.guard";
 import {ZodPipe, TooManyRequestResponse} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";

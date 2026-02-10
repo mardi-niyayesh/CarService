@@ -2,8 +2,11 @@ import {ApiProperty} from "@nestjs/swagger";
 
 /** example response when user not authorized */
 export class UnauthorizedResponse {
-  @ApiProperty({example: "Unauthorized"})
+  @ApiProperty({example: "Access token missing or expired."})
   message: string;
+
+  @ApiProperty({example: "Unauthorized"})
+  error: string;
 
   @ApiProperty({example: 401})
   statusCode: number;
