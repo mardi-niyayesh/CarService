@@ -1,9 +1,12 @@
+import {TooManyRequestsException} from "../exceptions";
 import {Injectable, NestMiddleware} from '@nestjs/common';
 import type {Request, Response, NextFunction} from 'express';
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUEST = 10;
 const BLOCK_TIMEOUT_MS = 5 * WINDOW_MS; // 5 minute
+
+/** ip lists */
 const requestMap = new Map<string, {
   isBlocked: boolean;
   blockUntil: number | null;
@@ -12,7 +15,7 @@ const requestMap = new Map<string, {
 
 @Injectable()
 export class ReateLimitMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction) {
+  use(req: Request, _: Response, next: NextFunction) {
     const ip = req.headers['x-forwarded-for'] as string || req.ip as string;
     const now = Date.now();
 
@@ -30,9 +33,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
     // if ip is blocked
     if (record.isBlocked) {
       if (now < record.blockUntil!) {
-        return res.status(429).json({
-          message: 'Too many requests. Try again later',
-        });
+        throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes.`);
       }
 
       // else clear logs
@@ -49,15 +50,12 @@ export class ReateLimitMiddleware implements NestMiddleware {
       record.blockUntil = Date.now() + BLOCK_TIMEOUT_MS;
       record.timestamps = [];
 
-      return res.status(429).json({
-        message: 'Too many requests. Try again later',
-      });
+      throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes.`);
     }
 
     filtered.push(now);
 
     record.timestamps = filtered;
-
     return next();
   }
 }
