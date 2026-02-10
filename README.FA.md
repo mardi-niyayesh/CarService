@@ -60,10 +60,25 @@ mycar/
 
 ---
 
+## کلون کردن رپو
+
+```bash
+git clone https://github.com/mardi-niyayesh/CarService.git
+cd MyCar
+```
+
+**با ssh**
+
+```bash
+git clone git@github.com:mardi-niyayesh/CarService.git
+cd MyCar
+```
+
+
 ## 🏁 راه‌اندازی سریع بک‌اند
 
 ```bash
-cd backend/server
+cd server
 npm install
 ```
 
@@ -125,7 +140,7 @@ npm run start:dev
 ## 🏁 راه‌اندازی سریع فرانت‌اند
 
 ```bash
-cd frontend/my-react-app
+cd client
 npm install
 npm run dev
 ```
@@ -149,14 +164,14 @@ npm run preview
 ### اجرای بک‌اند:
 
 ```bash
-cd backend/server
+cd server
 npm run start:dev
 ```
 
 ### اجرای فرانت‌اند:
 
 ```bash
-cd frontend/my-react-app
+cd client
 npm run dev
 ```
 

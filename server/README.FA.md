@@ -43,9 +43,18 @@
 
 1. **کلون کردن پروژه**
 
-   ```bash
-   git clone https://github.com/your-repo/car-service-server.git
-   ```
+  ```bash
+  git clone https://github.com/mardi-niyayesh/CarService.git
+  cd MyCar/server
+  ```
+
+**با ssh**
+
+  ```bash
+  git clone git@github.com:mardi-niyayesh/CarService.git
+  cd MyCar/server
+  ```
+
 
 2. **نصب وابستگی‌ها**
 
@@ -137,3 +146,4 @@ node dist/main.js
 ---
 
 [🇬🇧 Read in English](./README.md)
+	

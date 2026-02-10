@@ -61,12 +61,27 @@ A modular, scalable API for managing the entire car rental system.
 
 ---
 
+## Clone repo
+
+```bash
+git clone https://github.com/mardi-niyayesh/CarService.git
+cd MyCar
+```
+
+**or with ssh**
+
+```bash
+git clone git@github.com:mardi-niyayesh/CarService.git
+cd MyCar
+```
+
 ## 🏁 Backend Quick Start
 
 ```bash
-cd backend/server
+cd server
 npm install
 ```
+
 
 Create `.env`:
 
@@ -124,7 +139,7 @@ A modern, fast, responsive frontend built with **React + Vite + TypeScript + Tai
 ## 🏁 Frontend Quick Start
 
 ```bash
-cd frontend/my-react-app
+cd client
 npm install
 npm run dev
 ```
@@ -148,14 +163,14 @@ npm run preview
 Backend:
 
 ```bash
-cd backend/server
+cd server
 npm run start:dev
 ```
 
 Frontend:
 
 ```bash
-cd frontend/my-react-app
+cd client
 npm run dev
 ```
 
