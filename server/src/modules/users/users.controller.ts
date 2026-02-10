@@ -5,7 +5,6 @@ import {
   RoleGuard,
   UUID4Schema,
   type UUID4Type,
-  AccessTokenGuard,
   UnauthorizedResponse,
   BadRequestUUIDParams,
 } from "@/common";
@@ -25,13 +24,13 @@ import {UserRole} from "@/modules/prisma/generated/enums";
 import {Controller, Get, Param, UseGuards} from '@nestjs/common';
 
 @Controller('users')
+@ApiBearerAuth("accessToken")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Role(UserRole.ADMIN)
-  @UseGuards(AccessTokenGuard, RoleGuard)
+  @UseGuards(RoleGuard)
   @Get(":id")
-  @ApiBearerAuth("accessToken")
   @ApiParam(UUID4Dto)
   @ApiOkResponse({type: UserDTO.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})

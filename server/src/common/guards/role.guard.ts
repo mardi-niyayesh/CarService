@@ -1,4 +1,5 @@
 import {Reflector} from "@nestjs/core";
+import {ROLE_METADATA} from "@/common";
 import {AccessRequest, RolePriority} from "@/types";
 import {UserRole} from "@/modules/prisma/generated/enums";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from "@nestjs/common";
@@ -10,7 +11,7 @@ export class RoleGuard implements CanActivate {
   canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest<AccessRequest>();
 
-    const requiredRole: UserRole = this.reflector.get<UserRole>("role", context.getHandler());
+    const requiredRole: UserRole = this.reflector.get<UserRole>(ROLE_METADATA, context.getHandler());
 
     const userPriority = RolePriority[req.user.role];
     const requiredPriority = RolePriority[requiredRole];

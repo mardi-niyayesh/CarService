@@ -50,5 +50,5 @@ async function bootstrap(): Promise<void> {
 
 /** bootstrap and run application */
 bootstrap()
-  .then(() => console.log(`nest successfully started on http://localhost:${process.env.PORT ?? 3000}/api`))
+  .then(() => console.log(`nest successfully started on http://localhost:${process.env.PORT ?? 3000}/api/docs`))
   .catch(e => console.error(e));

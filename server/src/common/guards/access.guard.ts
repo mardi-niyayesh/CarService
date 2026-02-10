@@ -2,15 +2,16 @@ import {Reflector} from "@nestjs/core";
 import type {UserAccess} from "@/types";
 import {PUBLIC_METADATA} from "@/common";
 import {AuthGuard} from "@nestjs/passport";
-import {CanActivate, ExecutionContext, UnauthorizedException} from "@nestjs/common";
+import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
 
+@Injectable()
 export class AccessTokenGuard extends AuthGuard("jwt-access") implements CanActivate {
   constructor(private readonly reflector: Reflector) {
     super();
   }
 
   canActivate(context: ExecutionContext) {
-    const isPublic: boolean = this.reflector.get<boolean>(PUBLIC_METADATA, context.getHandler());
+    const isPublic: boolean = this.reflector.get(PUBLIC_METADATA, context.getHandler());
 
     if (isPublic) return true;
 
