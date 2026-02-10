@@ -1,26 +1,28 @@
 import {AuthGuard} from "@nestjs/passport";
-import {RolePriority, UserAccess} from "@/types";
+import {AccessRequest, RolePriority, UserAccess} from "@/types";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {ExecutionContext, ForbiddenException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {Reflector} from "@nestjs/core";
+import {CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {Role} from "@/modules/auth/decorators";
 
 @Injectable()
-export class RoleGuard extends AuthGuard("jwt-access") {
-  // noinspection JSUnusedGlobalSymbols
-  handleRequest<T extends UserAccess>(err: Error, user: T, _info: unknown, _context: ExecutionContext, _status?: unknown) {
-    if (err || !user) throw new UnauthorizedException({
-      message: "Access token missing or expired",
-      error: "Unauthorized",
-      statusCode: 401,
-    });
+export class RoleGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
 
-    console.log("in Role Guard: ", user);
+  canActivate(context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest<AccessRequest>();
 
-    if (RolePriority[user.role] < RolePriority[UserRole.ADMIN]) throw new ForbiddenException({
-      message: "Role not",
+    const requiredRole: UserRole = this.reflector.get<UserRole>("role", context.getHandler());
+
+    const userPriority = RolePriority[req.user.role];
+    const requiredPriority = RolePriority[requiredRole];
+
+    if (userPriority <= requiredPriority) throw new ForbiddenException({
+      message: "Your role not access to this action.",
       error: "Forbidden",
       statusCode: 403,
     });
 
-    return user;
+    return true;
   }
 }
