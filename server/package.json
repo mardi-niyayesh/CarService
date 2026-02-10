@@ -18,7 +18,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
-    "prisma:sync": "npx ts-node scripts/prisma-sync.ts"
+    "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
+    "seed:superadmin": "ts-node scripts/seed-superadmin.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
