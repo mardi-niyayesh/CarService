@@ -25,15 +25,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "@modules/*": [
-        "src/modules/*"
-      ],
-      "@lib/*": [
-        "src/lib/*"
       ]
     }
   }

@@ -1,7 +1,7 @@
 import {ApiResponse} from "../dto";
 import {Observable, map} from 'rxjs';
+import {BaseApiResponseType} from "@/types";
 import type {Response, Request} from "express";
-import {BaseApiResponseType} from "../../types";
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
 
 @Injectable()
