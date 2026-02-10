@@ -82,7 +82,7 @@ export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema
 ]) {}
 
 export class TooManyRequestResponse {
-  @ApiProperty({example: "Too many requests. Try again 5 minutes."})
+  @ApiProperty({example: "Too many requests. Try again 5 minutes later."})
   message: string;
 
   @ApiProperty({example: "Too Many Requests"})

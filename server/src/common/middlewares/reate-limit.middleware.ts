@@ -33,7 +33,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
     // if ip is blocked
     if (record.isBlocked) {
       if (now < record.blockUntil!) {
-        throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes.`);
+        throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes later.`);
       }
 
       // else clear logs
@@ -50,7 +50,7 @@ export class ReateLimitMiddleware implements NestMiddleware {
       record.blockUntil = Date.now() + BLOCK_TIMEOUT_MS;
       record.timestamps = [];
 
-      throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes.`);
+      throw new TooManyRequestsException(`Too many requests. Try again ${BLOCK_TIMEOUT_MS / 60000} minutes later.`);
     }
 
     filtered.push(now);
