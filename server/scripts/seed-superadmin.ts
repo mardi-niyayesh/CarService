@@ -1,13 +1,17 @@
-import "ts-node/register";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
 import {hashSecret} from "@/lib";
-import {AppModule} from "@/app.module";
+import "tsconfig-paths/register";
 import {NestFactory} from "@nestjs/core";
 import * as readline from "node:readline";
 import {CreateUser} from "@/modules/auth/dto";
+import {CliModule} from "@/modules/cli/cli.module";
 import {UserRole} from "@/modules/prisma/generated/enums";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
-function ask<T extends keyof typeof CreateUser.shape>(
+async function ask<T extends keyof typeof CreateUser.shape>(
   question: string,
   field: T,
 ): Promise<unknown> {
@@ -17,14 +21,12 @@ function ask<T extends keyof typeof CreateUser.shape>(
       output: process.stdout,
     });
 
-    const answer = new Promise(resolve => {
+    const answer = await new Promise(resolve => {
       rl.question(question, answer => {
         rl.close();
         resolve(answer.trim());
       });
     });
-
-    // const input = await answer;
 
     const validate = CreateUser.shape[field].safeParse(answer);
 
@@ -38,11 +40,11 @@ function ask<T extends keyof typeof CreateUser.shape>(
 }
 
 async function bootstrap(): Promise<never> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createApplicationContext(CliModule);
 
-  const prismaService = app.get(PrismaService);
+  const prisma = app.get(PrismaService);
 
-  const exist = await prismaService.user.findFirst({
+  const exist = await prisma.user.findFirst({
     where: {
       role: UserRole.SUPER_ADMIN,
     }
@@ -61,7 +63,7 @@ async function bootstrap(): Promise<never> {
 
   const hashedPassword: string = await hashSecret(password);
 
-  const superAdmin = await prismaService.user.create({
+  const superAdmin = await prisma.user.create({
     data: {
       email,
       password: hashedPassword,

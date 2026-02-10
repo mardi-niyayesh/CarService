@@ -11,6 +11,7 @@ import {ReateLimitMiddleware, AccessTokenGuard} from "./common";
     Modules.AuthModule,
     Modules.UsersModule,
     Modules.SchedulerModule,
+    Modules.CliModule,
   ],
   providers: [
     {

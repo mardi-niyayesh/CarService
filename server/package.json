@@ -19,7 +19,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
     "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
-    "seed:superadmin": "ts-node scripts/seed-superadmin.ts"
+    "seed:superadmin": "npm run build && node dist/scripts/seed-superadmin.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
