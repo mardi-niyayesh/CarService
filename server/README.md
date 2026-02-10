@@ -45,17 +45,17 @@ maintainability, and fully standardized API responses.
 
 1. Clone the repository:
 
-  ```bash
-  git clone https://github.com/mardi-niyayesh/CarService.git
-  cd MyCar
-  ```
+   ```bash
+   git clone https://github.com/mardi-niyayesh/CarService.git
+   cd MyCar/server
+   ```
 
 **or with ssh**
 
-  ```bash
-  git clone git@github.com:mardi-niyayesh/CarService.git
-  cd MyCar
-  ```
+   ```bash
+   git clone git@github.com:mardi-niyayesh/CarService.git
+   cd MyCar/server
+   ```
 
 
 2. Install dependencies:
