@@ -18,6 +18,15 @@ import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/comm
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";
 
+/**
+ * Authentication endpoints for user registration, login, and token refresh.
+ *
+ * This controller handles:
+ * - Creating new user accounts
+ * - Authenticating users with email/password
+ * - Issuing access tokens
+ * - Refreshing access tokens using secure httpOnly cookies
+ */
 @ApiTags('Auth')
 @Controller('auth')
 @Public()
@@ -30,9 +39,10 @@ export class AuthController {
   @Post("register")
   @HttpCode(201)
   @ApiOperation({
-    summary: "Register user",
-    description: `Register user in database, users table`,
-    operationId: "registerUser",
+    summary: 'Register a new user',
+    description: 'Creates a new user record in the database and returns the created user.',
+    operationId: 'auth_register',
+    tags: ["Auth"],
   })
   @ApiBody({type: AuthDto.CreateUserSchema})
   @ApiCreatedResponse({type: AuthDto.CreateUserOkResponse})
@@ -50,9 +60,10 @@ export class AuthController {
    */
   @Post("login")
   @ApiOperation({
-    summary: "Login user",
-    description: `Login user with email and password`,
-    operationId: "loginUser",
+    summary: 'Authenticate user',
+    description: 'Validates user credentials and returns an access token. Also sets a secure httpOnly refresh token cookie.',
+    operationId: 'auth_login',
+    tags: ["Auth"],
   })
   @ApiBody({type: AuthDto.LoginUserSchema})
   @ApiOkResponse({type: AuthDto.LoginUserOkResponse})
@@ -86,6 +97,12 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
   @HttpCode(200)
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Uses the refresh token (from httpOnly cookie) to generate a new access token.',
+    operationId: 'auth_refresh',
+    tags: ["Auth"],
+  })
   @ApiCookieAuth("refreshToken")
   @ApiOkResponse({type: AuthDto.RefreshUsersOkResponse})
   @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
