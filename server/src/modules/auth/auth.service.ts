@@ -1,4 +1,4 @@
-import * as AuthDto from "./dto/";
+import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
 import {JwtService} from "@nestjs/jwt";
 import {PrismaService} from "../prisma/prisma.service";
