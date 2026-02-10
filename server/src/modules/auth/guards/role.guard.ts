@@ -1,9 +1,7 @@
-import {AuthGuard} from "@nestjs/passport";
-import {AccessRequest, RolePriority, UserAccess} from "@/types";
-import {UserRole} from "@/modules/prisma/generated/enums";
 import {Reflector} from "@nestjs/core";
-import {CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException} from "@nestjs/common";
-import {Role} from "@/modules/auth/decorators";
+import {AccessRequest, RolePriority} from "@/types";
+import {UserRole} from "@/modules/prisma/generated/enums";
+import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from "@nestjs/common";
 
 @Injectable()
 export class RoleGuard implements CanActivate {
