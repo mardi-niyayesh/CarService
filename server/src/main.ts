@@ -10,6 +10,9 @@ import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
+  // base url
+  app.setGlobalPrefix('api');
+
   /** global configs */
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptors());

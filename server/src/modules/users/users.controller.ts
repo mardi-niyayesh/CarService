@@ -9,12 +9,12 @@ import {
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
 import {UnauthorizedResponse} from "@/common";
+import {Role} from "@/modules/auth/decorators";
+import {UserRole} from "@/modules/prisma/generated/enums";
 import {RoleGuard} from "@/modules/auth/guards/role.guard";
 import {Controller, Get, Param, UseGuards} from '@nestjs/common';
 import {AccessTokenGuard} from "@/modules/auth/guards/access.guard";
 import {BadRequestUUIDParams, UUID4Dto, UUID4Schema, type UUID4Type, ZodPipe} from "@/common";
-import {Role} from "@/modules/auth/decorators";
-import {UserRole} from "@/modules/prisma/generated/enums";
 
 @Controller('users')
 export class UsersController {
