@@ -1,7 +1,9 @@
 import * as Modules from "./modules";
+import {APP_GUARD} from "@nestjs/core";
 import {ReateLimitMiddleware} from "./common";
 import {ScheduleModule} from "@nestjs/schedule";
 import {MiddlewareConsumer, Module} from '@nestjs/common';
+import {AccessTokenGuard} from "@/modules/auth/guards/access.guard";
 
 @Module({
   imports: [
@@ -10,6 +12,12 @@ import {MiddlewareConsumer, Module} from '@nestjs/common';
     Modules.AuthModule,
     Modules.UsersModule,
     Modules.SchedulerModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard
+    }
   ]
 })
 export class AppModule {

@@ -36,6 +36,7 @@ async function bootstrap(): Promise<void> {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfigV1);
+
   SwaggerModule.setup("api/docs", app, document, {
     swaggerOptions: {
       withCredentials: true,
