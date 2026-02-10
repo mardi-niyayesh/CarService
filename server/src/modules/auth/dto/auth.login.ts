@@ -3,7 +3,7 @@ import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
 import {ApiProperty} from "@nestjs/swagger";
 import {LoginUserSchemaType} from "@/types";
-import {BaseUserSchema} from "./users.validators";
+import {BaseUserSchema} from "@/modules/users/dto/users.validators";
 import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema} from "@/common";
 
 /** login users schema */
