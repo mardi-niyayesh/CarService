@@ -1,6 +1,6 @@
-import {hashSecretToken} from "../../../lib";
-import {RefreshRequest} from "../../../types";
-import {PrismaService} from "../../prisma/prisma.service";
+import {hashSecretToken} from "@/lib";
+import {RefreshRequest} from "@/types";
+import {PrismaService} from "@/modules/prisma/prisma.service";
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class RefreshTokenGuard implements CanActivate {
 
     const hashed: string = hashSecretToken(raw);
 
-    const tokenRecord = await this.prisma.refreshToken.findFirst({
+    const tokenRecord = await this.prisma.refreshToken.findUnique({
       where: {
         token: hashed,
         revokedAt: null,

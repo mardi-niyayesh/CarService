@@ -1,6 +1,6 @@
 import {PrismaService} from "../prisma/prisma.service";
 import {Injectable, NotFoundException} from '@nestjs/common';
-import type {BaseApiResponseType, CreateUserResponse} from "../../types";
+import type {BaseApiResponseType, CreateUserResponse} from "@/types";
 
 @Injectable()
 export class UsersService {

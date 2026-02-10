@@ -1,10 +1,10 @@
 import z from "zod";
-import {date} from "../../../lib";
+import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
 import {ApiProperty} from "@nestjs/swagger";
+import type {CreateUserResponse} from "@/types";
 import {BaseUserSchema} from "./users.validators";
-import type {CreateUserResponse} from "../../../types";
-import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "../../../common";
+import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "@/common";
 
 /** create user schema */
 export const CreateUser = BaseUserSchema.overwrite(data => ({

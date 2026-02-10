@@ -7,7 +7,7 @@ import {
 import * as UserDTO from "./dto";
 import {UsersService} from "./users.service";
 import {Controller, Get, Param} from '@nestjs/common';
-import {BadRequestUUIDParams, UUID4Dto, UUID4Schema, type UUID4Type, ZodPipe} from "../../common";
+import {BadRequestUUIDParams, UUID4Dto, UUID4Schema, type UUID4Type, ZodPipe} from "@/common";
 
 @Controller('users')
 export class UsersController {

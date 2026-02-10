@@ -1,10 +1,10 @@
 import z from "zod";
-import {date} from "../../../lib";
+import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
 import {ApiProperty} from "@nestjs/swagger";
-import {LoginUserSchemaType} from "../../../types";
+import {LoginUserSchemaType} from "@/types";
 import {BaseUserSchema} from "./users.validators";
-import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema} from "../../../common";
+import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema} from "@/common";
 
 /** login users schema */
 export const LoginUser = BaseUserSchema.pick({

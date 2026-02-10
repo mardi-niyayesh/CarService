@@ -4,8 +4,8 @@ import * as UserDto from "../users/dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
-import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "../../lib";
-import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, RefreshTokenPayload} from "../../types";
+import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
+import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, RefreshTokenPayload} from "@/types";
 
 @Injectable()
 export class AuthService {

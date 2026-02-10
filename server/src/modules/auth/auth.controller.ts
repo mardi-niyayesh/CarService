@@ -9,13 +9,13 @@ import {
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import {ZodPipe} from "../../common";
+import {ZodPipe} from "@/common";
 import type {Response} from "express";
 import * as UserDto from "../users/dto";
 import {AuthService} from "./auth.service";
 import {RefreshTokenGuard} from "./guards/refresh.guard";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
-import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "../../types";
+import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";
 
 @ApiTags('Auth')
 @Controller('auth')

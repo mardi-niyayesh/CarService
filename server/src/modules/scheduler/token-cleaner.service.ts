@@ -1,5 +1,5 @@
-import {Cron, CronExpression} from "@nestjs/schedule";
 import {Injectable} from '@nestjs/common';
+import {Cron, CronExpression} from "@nestjs/schedule";
 import {PrismaService} from "../prisma/prisma.service";
 
 /** revoked all tokens when expiresAt <= now */
