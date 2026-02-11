@@ -17,8 +17,9 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiNotFoundResponse,
+  ApiForbiddenResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import * as UserDTO from "./dto";
@@ -56,6 +57,7 @@ export class UsersController {
   @Role(UserRole.SUPER_ADMIN)
   @UseGuards(RoleGuard)
   @Post(":id/role")
+  @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
   changeRole(
     @Req() req: AccessRequest
