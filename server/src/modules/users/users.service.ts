@@ -75,7 +75,7 @@ export class UsersService {
     });
 
     return {
-      message: `User role updated successfully tp ${newRole}`,
+      message: `User role updated successfully to ${newRole}`,
       data: {
         user: {
           ...newUserData,

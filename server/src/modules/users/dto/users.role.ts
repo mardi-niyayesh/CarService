@@ -1,7 +1,9 @@
 import z from 'zod';
 import {createZodDto} from "nestjs-zod";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
+import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
+import {type CreateUserResponse, LoginUserSchemaType} from "@/types";
+import {createUserResponse, loginResponseSchema} from "@/modules/auth/dto";
 
 /** Change Role schema body */
 export const ChangeRole = z.object({
@@ -12,6 +14,13 @@ export type ChangeRoleInput = z.infer<typeof ChangeRole>;
 
 /** change role swagger schema */
 export class ChangeRoleSchema extends createZodDto(ChangeRole) {}
+
+/** ok request response */
+export class ChangeRoleUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
+  path: "users/id/role",
+  message: "User role updated successfully to USER",
+  data: createUserResponse.data as CreateUserResponse
+}) {}
 
 /** bad request response */
 export class BadRequestChangeRoleResponse extends getBaseErrorBodyResponseSchema([

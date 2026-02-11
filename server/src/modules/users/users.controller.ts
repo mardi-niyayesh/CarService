@@ -68,6 +68,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto)
   @ApiBody({type: UserDto.ChangeRoleSchema})
+  @ApiOkResponse({type: UserDto.ChangeRoleUserOkResponse})
   @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
