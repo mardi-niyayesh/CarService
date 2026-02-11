@@ -1,7 +1,9 @@
+import * as UserDto from "./dto";
 import {PrismaService} from "../prisma/prisma.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import type {BaseApiResponseType, CreateUserResponse} from "@/types";
+import {isAllowedAction} from "@/lib";
 
 @Injectable()
 export class UsersService {
@@ -38,15 +40,43 @@ export class UsersService {
   async userRole(
     id: string,
     actionRole: UserRole,
-  ) {
+    data: UserDto.ChangeRoleInput,
+  ): Promise<BaseApiResponseType<CreateUserResponse>> {
     const user = await this.findOne(id);
 
-    console.log(user);
-    console.log(actionRole);
+    const userRole = user.data.user.role;
+    const newRole = data.role;
+
+    const isAllowed: boolean = isAllowedAction({
+      actionRole,
+      targetRole: userRole,
+      roleComparison: "higher"
+    });
+
+    if (!isAllowed) throw new ForbiddenException({
+      message: "Your role not access to this action.",
+      error: "Forbidden",
+      statusCode: 403
+    });
+
+    if (newRole === userRole) throw new ConflictException({
+      message: `The user already has the role ${newRole}`,
+      error: "Conflict",
+      statusCode: 409
+    });
 
     return {
-      user,
       message: 'User role found',
+      data: {
+        user: user.data.user
+      },
     };
   }
+}
+
+{
+  void `
+    actionRole:  SUPER_ADMIN
+    newRole:  USER
+  `;
 }

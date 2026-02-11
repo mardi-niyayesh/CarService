@@ -12,6 +12,7 @@ import {
 } from "@/common";
 
 import {
+  ApiBody,
   ApiTags,
   ApiParam,
   ApiOperation,
@@ -20,14 +21,14 @@ import {
   ApiNotFoundResponse,
   ApiForbiddenResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiBody,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
+import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
-import type {AccessRequest} from "@/types";
+import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards} from '@nestjs/common';
 
 @ApiTags("User")
 @Controller('users')
@@ -57,6 +58,7 @@ export class UsersController {
 
   @Role(UserRole.SUPER_ADMIN)
   @UseGuards(RoleGuard)
+  @HttpCode(HttpStatus.OK)
   @Post(":id/role")
   @ApiOperation({
     summary: 'change user role',
@@ -75,7 +77,6 @@ export class UsersController {
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
     @Body(new ZodPipe(UserDto.ChangeRole)) data: UserDto.ChangeRoleInput
   ) {
-    console.log(data);
-    return this.usersService.userRole(params.id, req.user.role);
+    return this.usersService.userRole(params.id, req.user.role, data);
   }
 }
