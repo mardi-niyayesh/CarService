@@ -11,8 +11,8 @@ import {
   ApiTooManyRequestsResponse,
 } from "@nestjs/swagger";
 
+import * as AuthDto from "./dto";
 import type {Response} from "express";
-import * as AuthDto from "./dto/index";
 import {AuthService} from "./auth.service";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
