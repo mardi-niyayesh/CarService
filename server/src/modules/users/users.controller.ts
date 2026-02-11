@@ -66,7 +66,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto)
   @ApiBody({type: UserDto.ChangeRoleSchema})
-  @ApiBadRequestResponse({type: BadRequestUUIDParams})
+  @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
   @ApiNotFoundResponse({type: getUserNotFoundResponse("User")})
