@@ -9,7 +9,6 @@ export const throttlerConfig: ThrottlerModuleOptions = {
     ttl: isProduction ? ONE_MINUTE : 1000,
     limit: isProduction ? 10 : 15,
     blockDuration: isProduction ? ONE_MINUTE * 5 : ONE_MINUTE * 10,
-
   }],
   errorMessage: (): string => `Too many requests. Try again ${BLOCK_DURATION / ONE_MINUTE} minutes later.`,
 };
