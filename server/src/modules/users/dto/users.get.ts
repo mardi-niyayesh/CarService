@@ -1,5 +1,5 @@
 import {CreateUserResponse} from "@/types";
-import {getBaseOkResponseSchema} from "@/common";
+import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 import {createUserResponse} from "@/modules/auth/dto/auth.register";
 
 /** ok example for get one user by id */
@@ -9,3 +9,8 @@ export class GetUserOkResponse extends getBaseOkResponseSchema<CreateUserRespons
   message: "User found successfully",
   data: createUserResponse.data as CreateUserResponse
 }) {}
+
+export class NotFoundGetUserResponse extends getNormalErrorResponse(
+  "User not found",
+  404
+) {}

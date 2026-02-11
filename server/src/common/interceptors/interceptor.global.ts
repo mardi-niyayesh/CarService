@@ -27,7 +27,7 @@ export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse
     );
   }
 
-  private getDefaultMessage(status: number): string {
+  getDefaultMessage(status: number): string {
     const defaultMessages: Record<number, string> = {
       200: 'Request Successful',
       201: 'Resource Created',

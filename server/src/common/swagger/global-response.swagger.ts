@@ -1,4 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {TransformInterceptors} from "@/common";
 
 /** example response when user not authorized */
 export class UnauthorizedResponse {
@@ -94,16 +95,18 @@ export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
   {fields: "id", message: "Invalid UUID"}
 ]) {}
 
-/** not found example for create user */
-export function getNotFoundResponse(key: string) {
+/** normal example error  */
+export function getNormalErrorResponse(message: string, statusCode: number) {
+  const error: string = new TransformInterceptors().getDefaultMessage(statusCode);
+
   class UserNotFoundResponse {
-    @ApiProperty({example: `${key || ""} not found`})
+    @ApiProperty({example: message})
     message: string;
 
-    @ApiProperty({example: "Not Found"})
+    @ApiProperty({example: error})
     error: string;
 
-    @ApiProperty({example: 404})
+    @ApiProperty({example: statusCode})
     statusCode: number;
   }
 

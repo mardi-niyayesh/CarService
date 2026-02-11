@@ -6,9 +6,8 @@ import {
   UUID4Schema,
   type UUID4Type,
   ForbiddenResponse,
-  BadRequestUUIDParams,
   UnauthorizedResponse,
-  getNotFoundResponse,
+  BadRequestUUIDParams,
 } from "@/common";
 
 import {
@@ -18,6 +17,7 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiConflictResponse,
   ApiNotFoundResponse,
   ApiForbiddenResponse,
   ApiBadRequestResponse,
@@ -49,7 +49,7 @@ export class UsersController {
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  @ApiNotFoundResponse({type: getNotFoundResponse("User")})
+  @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
@@ -71,7 +71,8 @@ export class UsersController {
   @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
-  @ApiNotFoundResponse({type: getNotFoundResponse("User")})
+  @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
+  @ApiConflictResponse({type: UserDto.ConflictChangeRoleResponse})
   changeRole(
     @Req() req: AccessRequest,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,

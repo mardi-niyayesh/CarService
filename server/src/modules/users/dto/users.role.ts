@@ -1,6 +1,6 @@
 import z from 'zod';
 import {createZodDto} from "nestjs-zod";
-import {getBaseErrorBodyResponseSchema} from "@/common";
+import {getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
 import {UserRole} from "@/modules/prisma/generated/enums";
 import {ApiProperty} from "@nestjs/swagger";
 
@@ -22,13 +22,7 @@ export class BadRequestChangeRoleResponse extends getBaseErrorBodyResponseSchema
   }
 ]) {}
 
-export class ConflictChangeRoleResponse {
-  @ApiProperty({example: 'The user already has the role USER'})
-  message: string;
-
-  @ApiProperty({example: "Conflict"})
-  error: string;
-
-  @ApiProperty({example: 409})
-  statusCode: number;
-}
+export class ConflictChangeRoleResponse extends getNormalErrorResponse(
+  "The user already has the role USER",
+  409
+) {}
