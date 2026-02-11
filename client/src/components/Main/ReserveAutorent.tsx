@@ -8,6 +8,7 @@ const feacherData = [
     secondname: "خود را انتخاب کنید.",
     descripton: "خودروی مورد نظر خود را، متناسب با درخواست خود انتخاب کنید.",
     position: "right",
+    id :1
   },
   {
     logo: " ../../../assets/2.png",
@@ -15,6 +16,7 @@ const feacherData = [
     secondname: "تحویل را تعیین کنید.",
     descripton: "تاریخ موردنظر خود را از تقویم، انتخاب و رزرو کنید",
     position: "left",
+    id :2
   },
 
   {
@@ -24,6 +26,7 @@ const feacherData = [
     descripton:
       "می توانید از طریق کیف پول آنلاین یا کارت های عضو شبکه شتاب هزینه اجاره را پرداخت کنید.",
     position: "left",
+    id :3
   },
   {
     logo: "../../../assets/3.png",
@@ -31,6 +34,7 @@ const feacherData = [
     secondname: "خود را انتخاب کنید.",
     descripton: "خودروی مورد نظر خود را، متناسب با درخواست خود انتخاب کنید.",
     position: "right",
+    id :4
   },
 ];
 
@@ -58,6 +62,7 @@ const ReserveAutorent = () => {
                 firstname={feacher.firstname}
                 secondname={feacher.secondname}
                 descripton={feacher.descripton}
+                key={feacher.id}
               />
             );
           })}
@@ -79,6 +84,7 @@ const ReserveAutorent = () => {
                 firstname={feacher.firstname}
                 secondname={feacher.secondname}
                 descripton={feacher.descripton}
+                key={feacher.id}
               />
             );
           })}
