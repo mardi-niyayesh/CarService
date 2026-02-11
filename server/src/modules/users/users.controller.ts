@@ -5,6 +5,7 @@ import {
   RoleGuard,
   UUID4Schema,
   type UUID4Type,
+  ForbiddenResponse,
   UnauthorizedResponse,
   BadRequestUUIDParams,
 } from "@/common";
@@ -55,7 +56,7 @@ export class UsersController {
   @Role(UserRole.SUPER_ADMIN)
   @UseGuards(RoleGuard)
   @Post(":id/role")
-  @ApiForbiddenResponse({})
+  @ApiForbiddenResponse({type: ForbiddenResponse})
   changeRole(
     @Req() req: AccessRequest
   ) {
