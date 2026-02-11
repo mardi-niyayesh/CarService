@@ -1,9 +1,9 @@
 import z from 'zod';
 import {createZodDto} from "nestjs-zod";
+import {type CreateUserResponse} from "@/types";
+import {createUserResponse} from "@/modules/auth/dto";
 import {UserRole} from "@/modules/prisma/generated/enums";
 import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
-import {type CreateUserResponse, LoginUserSchemaType} from "@/types";
-import {createUserResponse, loginResponseSchema} from "@/modules/auth/dto";
 
 /** Change Role schema body */
 export const ChangeRole = z.object({
