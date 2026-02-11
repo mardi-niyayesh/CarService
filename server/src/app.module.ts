@@ -1,19 +1,15 @@
 import * as Modules from "./modules";
+import {throttlerConfig} from "@/lib";
+import {Module} from '@nestjs/common';
 import {APP_GUARD} from "@nestjs/core";
+import {AccessTokenGuard} from "./common";
 import {ScheduleModule} from "@nestjs/schedule";
-import {MiddlewareConsumer, Module} from '@nestjs/common';
-import {ReateLimitMiddleware, AccessTokenGuard} from "./common";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot(throttlerConfig),
     ScheduleModule.forRoot(),
-    ThrottlerModule.forRoot({
-      throttlers: [{
-        ttl: 60_000,
-        limit: 10
-      }]
-    }),
     Modules.PrismaModule,
     Modules.AuthModule,
     Modules.UsersModule,
@@ -31,9 +27,4 @@ import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
     }
   ]
 })
-export class AppModule {
-  // noinspection JSUnusedGlobalSymbols
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ReateLimitMiddleware).forRoutes("*");
-  }
-}
+export class AppModule {}
