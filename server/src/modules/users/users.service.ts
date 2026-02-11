@@ -65,18 +65,23 @@ export class UsersService {
       statusCode: 409
     });
 
-    return {
-      message: 'User role found',
+    const newUserData = await this.prisma.user.update({
+      where: {
+        id,
+      },
       data: {
-        user: user.data.user
+        role: newRole,
+      }
+    });
+
+    return {
+      message: `User role updated successfully tp ${newRole}`,
+      data: {
+        user: {
+          ...newUserData,
+          password: undefined
+        }
       },
     };
   }
-}
-
-{
-  void `
-    actionRole:  SUPER_ADMIN
-    newRole:  USER
-  `;
 }
