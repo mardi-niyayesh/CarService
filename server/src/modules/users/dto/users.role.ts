@@ -21,6 +21,7 @@ export class BadRequestChangeRoleResponse extends getBaseErrorBodyResponseSchema
   }
 ]) {}
 
+/** conflict response */
 export class ConflictChangeRoleResponse extends getNormalErrorResponse(
   "The user already has the role USER",
   409

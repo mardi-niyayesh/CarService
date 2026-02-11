@@ -3,7 +3,7 @@ import {ApiProperty} from "@nestjs/swagger";
 
 /** normal example error  */
 export function getNormalErrorResponse(message: string, statusCode: number) {
-  const error = getDefaultMessage(statusCode);
+  const error: string = getDefaultMessage(statusCode);
 
   class UserNotFoundResponse {
     @ApiProperty({example: message})

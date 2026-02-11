@@ -1,6 +1,7 @@
 import z from "zod";
 import {BaseApiResponseType} from "@/types";
 
+/** schema response when request is ok */
 export class ApiResponse<T> {
   success: boolean;
   statusCode: number;
@@ -10,6 +11,7 @@ export class ApiResponse<T> {
   path?: string;
 }
 
+/** validate for uuid4 in params */
 export const UUID4Schema = z.object({
   id: z.uuidv4()
 });
