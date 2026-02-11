@@ -2,8 +2,8 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-import {hashSecret} from "@/lib";
 import "tsconfig-paths/register";
+import {hashSecret} from "@/lib";
 import {NestFactory} from "@nestjs/core";
 import * as readline from "node:readline";
 import {CreateUser} from "@/modules/auth/dto";
