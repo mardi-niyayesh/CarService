@@ -34,3 +34,19 @@ export class ForbiddenResponse {
   @ApiProperty({example: 403})
   statusCode: number;
 }
+
+/** not found example for create user */
+export function getUserNotFoundResponse(key: string = "") {
+  class UserNotFoundResponse {
+    @ApiProperty({example: `${key || ""} not found`})
+    message: string;
+
+    @ApiProperty({example: "Not Found"})
+    error: string;
+
+    @ApiProperty({example: 404})
+    statusCode: number;
+  }
+
+  return UserNotFoundResponse;
+}
