@@ -2,6 +2,7 @@ type descriptionWhyAutoRenttype={
   logo:string;
   name:string;
   description:string;
+  id?: number;
 }
 const DescriptionWhyAutoRent = (props:descriptionWhyAutoRenttype) => {
   return (
