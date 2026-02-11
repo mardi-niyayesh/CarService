@@ -20,7 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiForbiddenResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse, ApiBody,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
@@ -38,13 +38,13 @@ export class UsersController {
   @Role(UserRole.ADMIN)
   @UseGuards(RoleGuard)
   @Get(":id")
-  @ApiParam(UUID4Dto)
   @ApiOperation({
     summary: 'get user info',
     description: 'get user info with id. **Access restricted to users with role: (SUPER_ADMIN or ADMIN) only.**',
     operationId: 'get_user',
     tags: ["User"],
   })
+  @ApiParam(UUID4Dto)
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
@@ -58,13 +58,14 @@ export class UsersController {
   @Role(UserRole.SUPER_ADMIN)
   @UseGuards(RoleGuard)
   @Post(":id/role")
-  @ApiParam(UUID4Dto)
   @ApiOperation({
     summary: 'change user role',
     description: 'change user role with id. **Access restricted to users with role: (SUPER_ADMIN) only.**',
     operationId: 'change_user_role',
     tags: ["User"],
   })
+  @ApiParam(UUID4Dto)
+  @ApiBody({type: UserDto.ChangeRoleSchema})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
