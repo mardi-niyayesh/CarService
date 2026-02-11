@@ -2,7 +2,6 @@ import {
   Role,
   ZodPipe,
   UUID4Dto,
-  RoleGuard,
   UUID4Schema,
   type UUID4Type,
   ForbiddenResponse,
@@ -28,7 +27,7 @@ import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req} from '@nestjs/common';
 
 @ApiTags("User")
 @Controller('users')
@@ -38,7 +37,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Role(UserRole.ADMIN)
-  @UseGuards(RoleGuard)
   @Get(":id")
   @ApiOperation({
     summary: 'get user info',
@@ -58,7 +56,6 @@ export class UsersController {
   }
 
   @Role(UserRole.SUPER_ADMIN)
-  @UseGuards(RoleGuard)
   @HttpCode(HttpStatus.OK)
   @Post(":id/role")
   @ApiOperation({
@@ -72,7 +69,10 @@ export class UsersController {
   @ApiOkResponse({type: UserDto.ChangeRoleUserOkResponse})
   @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  @ApiForbiddenResponse({type: ForbiddenResponse})
+  @ApiForbiddenResponse({
+    type: ForbiddenResponse,
+    description: "when user is not access to this route."
+  })
   @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
   @ApiConflictResponse({type: UserDto.ConflictChangeRoleResponse})
   changeRole(

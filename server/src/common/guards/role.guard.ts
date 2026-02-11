@@ -1,8 +1,9 @@
+import {AccessRequest} from "@/types";
 import {Reflector} from "@nestjs/core";
-import {AccessRequest, RolePriority} from "@/types";
 import {IS_PUBLIC_KEY, ROLE_METADATA} from "@/common";
 import {UserRole} from "@/modules/prisma/generated/enums";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable, InternalServerErrorException} from "@nestjs/common";
+import {isAllowedAction} from "@/lib";
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -29,10 +30,13 @@ export class RoleGuard implements CanActivate {
       statusCode: 500,
     });
 
-    const userPriority = RolePriority[req.user.role];
-    const requiredPriority = RolePriority[requiredRole];
+    const isAllowed: boolean = isAllowedAction({
+      actionRole: req.user.role,
+      targetRole: requiredRole,
+      roleComparison: "equal"
+    });
 
-    if (!(userPriority >= requiredPriority)) throw new ForbiddenException({
+    if (!isAllowed) throw new ForbiddenException({
       message: "Your role not access to this action.",
       error: "Forbidden",
       statusCode: 403,
