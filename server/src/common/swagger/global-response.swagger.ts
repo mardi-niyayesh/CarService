@@ -36,7 +36,7 @@ export class ForbiddenResponse {
 }
 
 /** not found example for create user */
-export function getUserNotFoundResponse(key: string = "") {
+export function getUserNotFoundResponse(key: string) {
   class UserNotFoundResponse {
     @ApiProperty({example: `${key || ""} not found`})
     message: string;

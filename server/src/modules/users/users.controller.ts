@@ -6,8 +6,9 @@ import {
   UUID4Schema,
   type UUID4Type,
   ForbiddenResponse,
+  BadRequestUUIDParams,
   UnauthorizedResponse,
-  BadRequestUUIDParams, getUserNotFoundResponse,
+  getUserNotFoundResponse,
 } from "@/common";
 
 import {
@@ -57,13 +58,23 @@ export class UsersController {
   @Role(UserRole.SUPER_ADMIN)
   @UseGuards(RoleGuard)
   @Post(":id/role")
+  @ApiParam(UUID4Dto)
+  @ApiOperation({
+    summary: 'change user role',
+    description: 'change user role with id. **Access restricted to users with role: (SUPER_ADMIN) only.**',
+    operationId: 'change_user_role',
+    tags: ["User"],
+  })
+  @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
   @ApiNotFoundResponse({type: getUserNotFoundResponse("User")})
   changeRole(
-    @Req() req: AccessRequest
+    @Req() req: AccessRequest,
+    @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
     console.log(req.user);
+    console.log(params.id);
     return {
       role: req.user.role,
     };

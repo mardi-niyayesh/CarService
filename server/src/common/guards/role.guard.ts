@@ -16,7 +16,7 @@ export class RoleGuard implements CanActivate {
     const userPriority = RolePriority[req.user.role];
     const requiredPriority = RolePriority[requiredRole];
 
-    if (userPriority <= requiredPriority) throw new ForbiddenException({
+    if (!(userPriority >= requiredPriority)) throw new ForbiddenException({
       message: "Your role not access to this action.",
       error: "Forbidden",
       statusCode: 403,
