@@ -23,7 +23,11 @@ export class RoleGuard implements CanActivate {
       context.getClass()
     ]);
 
-    if (!requiredRole) throw new InternalServerErrorException();
+    if (!requiredRole) throw new InternalServerErrorException({
+      message: 'Missing Role, Role is Required',
+      error: "Internal Server Error",
+      statusCode: 500,
+    });
 
     const userPriority = RolePriority[req.user.role];
     const requiredPriority = RolePriority[requiredRole];

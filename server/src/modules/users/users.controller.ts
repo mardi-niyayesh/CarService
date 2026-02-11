@@ -33,6 +33,7 @@ import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards
 @ApiTags("User")
 @Controller('users')
 @ApiBearerAuth("accessToken")
+@Role(UserRole.USER)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
