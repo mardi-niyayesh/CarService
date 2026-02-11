@@ -1,10 +1,9 @@
 import z from "zod";
 import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
-import {ApiProperty} from "@nestjs/swagger";
 import type {CreateUserResponse} from "@/types";
 import {BaseUserSchema} from "@/modules/users/dto/users.validators";
-import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema} from "@/common";
+import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** create user schema */
 export const CreateUser = BaseUserSchema.overwrite(data => ({
@@ -46,16 +45,10 @@ export class CreateUserOkResponse extends getBaseOkResponseSchema<CreateUserResp
 }) {}
 
 /** conflict example for create user */
-export class CreateUserConflictResponse {
-  @ApiProperty({example: "User already exists"})
-  message: string;
-
-  @ApiProperty({example: "Conflict"})
-  error: string;
-
-  @ApiProperty({example: 409})
-  statusCode: number;
-}
+export class CreateUserConflictResponse extends getNormalErrorResponse(
+  "User already exists",
+  409
+) {}
 
 /** bad request example for create user */
 export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([

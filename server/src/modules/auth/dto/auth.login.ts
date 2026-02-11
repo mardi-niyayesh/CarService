@@ -1,10 +1,9 @@
 import z from "zod";
 import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
-import {ApiProperty} from "@nestjs/swagger";
 import {LoginUserSchemaType} from "@/types";
 import {BaseUserSchema} from "@/modules/users/dto/users.validators";
-import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema} from "@/common";
+import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** login users schema */
 export const LoginUser = BaseUserSchema.pick({
@@ -60,13 +59,7 @@ export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema(
   }
 ]) {}
 
-export class LoginUserInvalidAuthResponse {
-  @ApiProperty({example: "Invalid credentials"})
-  message: string;
-
-  @ApiProperty({example: "Unauthorized"})
-  error: string;
-
-  @ApiProperty({example: 401})
-  statusCode: number;
-}
+export class LoginUserInvalidAuthResponse extends getNormalErrorResponse(
+  "Invalid credentials",
+  401
+) {}

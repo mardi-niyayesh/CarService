@@ -1,7 +1,6 @@
 import {LoginUserSchemaType} from "@/types";
-import {ApiProperty} from "@nestjs/swagger";
-import {getBaseOkResponseSchema} from "@/common";
 import {loginResponseSchema} from "./auth.login";
+import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 export class RefreshUsersOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
   path: "users/refresh",
@@ -10,13 +9,7 @@ export class RefreshUsersOkResponse extends getBaseOkResponseSchema<LoginUserSch
   create: false,
 }) {}
 
-export class RefreshUsersUnAuthResponse {
-  @ApiProperty({example: "Refresh token missing"})
-  message: string;
-
-  @ApiProperty({example: "Unauthorized"})
-  error: string;
-
-  @ApiProperty({example: 401})
-  statusCode: number;
-}
+export class RefreshUsersUnAuthResponse extends getNormalErrorResponse(
+  "Refresh token missing",
+  401
+) {}
