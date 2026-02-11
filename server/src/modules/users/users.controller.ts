@@ -23,10 +23,10 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
-import * as UserDTO from "./dto";
+import * as UserDto from "./dto";
 import {UsersService} from "./users.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
 import type {AccessRequest} from "@/types";
 
 @ApiTags("User")
@@ -45,7 +45,7 @@ export class UsersController {
     operationId: 'get_user',
     tags: ["User"],
   })
-  @ApiOkResponse({type: UserDTO.GetUserOkResponse})
+  @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiNotFoundResponse({type: getUserNotFoundResponse("User")})
@@ -72,11 +72,9 @@ export class UsersController {
   changeRole(
     @Req() req: AccessRequest,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
+    @Body(new ZodPipe(UserDto.ChangeRole)) data: UserDto.ChangeRoleInput
   ) {
-    console.log(req.user);
-    console.log(params.id);
-    return {
-      role: req.user.role,
-    };
+    console.log(data);
+    return this.usersService.userRole(params.id, req.user.role);
   }
 }
