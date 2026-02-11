@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import helmet from "helmet";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import cookieParser from "cookie-parser";
@@ -14,9 +15,10 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   /** global configs */
+  app.use(helmet());
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptors());
-  app.use(cookieParser());
 
   /** Swagger Version 1 */
   const swaggerConfigV1 = new DocumentBuilder()
