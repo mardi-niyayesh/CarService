@@ -1,9 +1,9 @@
 import * as UserDto from "./dto";
+import {isAllowedAction} from "@/lib";
 import {PrismaService} from "../prisma/prisma.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import type {BaseApiResponseType, CreateUserResponse} from "@/types";
-import {isAllowedAction} from "@/lib";
+import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {

@@ -1,9 +1,9 @@
+import {getDefaultMessage} from "@/lib";
 import {ApiProperty} from "@nestjs/swagger";
-import {TransformInterceptors} from "@/common";
 
 /** normal example error  */
 export function getNormalErrorResponse(message: string, statusCode: number) {
-  const error: string = new TransformInterceptors().getDefaultMessage(statusCode);
+  const error = getDefaultMessage(statusCode);
 
   class UserNotFoundResponse {
     @ApiProperty({example: message})

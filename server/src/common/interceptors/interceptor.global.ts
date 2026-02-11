@@ -1,5 +1,6 @@
 import {ApiResponse} from "../dto";
 import {Observable, map} from 'rxjs';
+import {getDefaultMessage} from "@/lib";
 import {BaseApiResponseType} from "@/types";
 import type {Response, Request} from "express";
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
@@ -18,28 +19,12 @@ export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse
         return {
           success: statusCode >= 200 && statusCode <= 300,
           statusCode,
-          detail: this.getDefaultMessage(statusCode),
+          detail: getDefaultMessage(statusCode),
           response,
           timestamp: new Date().toISOString(),
           path: request.url,
         };
       })
     );
-  }
-
-  getDefaultMessage(status: number): string {
-    const defaultMessages: Record<number, string> = {
-      200: 'Request Successful',
-      201: 'Resource Created',
-      204: 'Resource Deleted',
-      400: 'Bad Request',
-      401: 'Unauthorized',
-      403: 'Forbidden',
-      404: 'Not Found',
-      409: 'Conflict',
-      429: "Too Many Requests",
-      500: 'Internal Server Error',
-    };
-    return defaultMessages[status] || 'Unknown';
   }
 }
