@@ -26,10 +26,13 @@ export class UnauthorizedResponse extends getNormalErrorResponse(
 ) {}
 
 /** example response when too many requests from one ip in 1 minutes */
-export class TooManyRequestResponse extends getNormalErrorResponse(
-  "Too many requests. Try again 5 minutes later.",
-  429
-) {}
+export class TooManyRequestResponse {
+  @ApiProperty({example: "Too many requests. Try again 5 minutes later."})
+  message: string;
+
+  @ApiProperty({example: 429})
+  statusCode: number;
+}
 
 /** get schema for swagger when not allowed */
 export class ForbiddenResponse extends getNormalErrorResponse(
