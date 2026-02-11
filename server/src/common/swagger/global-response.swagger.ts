@@ -1,41 +1,43 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {TransformInterceptors} from "@/common";
 
-/** example response when user not authorized */
-export class UnauthorizedResponse {
-  @ApiProperty({example: "Access token missing or expired."})
-  message: string;
+/** normal example error  */
+export function getNormalErrorResponse(message: string, statusCode: number) {
+  const error: string = new TransformInterceptors().getDefaultMessage(statusCode);
 
-  @ApiProperty({example: "Unauthorized"})
-  error: string;
+  class UserNotFoundResponse {
+    @ApiProperty({example: message})
+    message: string;
 
-  @ApiProperty({example: 401})
-  statusCode: number;
+    @ApiProperty({example: error})
+    error: string;
+
+    @ApiProperty({example: statusCode})
+    statusCode: number;
+  }
+
+  return UserNotFoundResponse;
 }
+
+/** example response when user not authorized */
+export class UnauthorizedResponse extends getNormalErrorResponse(
+  "Access token missing or expired.",
+  401
+) {}
 
 /** example response when too many requests from one ip in 1 minutes */
-export class TooManyRequestResponse {
-  @ApiProperty({example: "Too many requests. Try again 5 minutes later."})
-  message: string;
+export class TooManyRequestResponse extends getNormalErrorResponse(
+  "Too many requests. Try again 5 minutes later.",
+  429
+) {}
 
-  @ApiProperty({example: "Too Many Requests"})
-  error: string;
+/** get schema for swagger when not allowed */
+export class ForbiddenResponse extends getNormalErrorResponse(
+  "Your role not access to this action.",
+  403
+) {}
 
-  @ApiProperty({example: 429})
-  statusCode: number;
-}
-
-export class ForbiddenResponse {
-  @ApiProperty({example: "Your role not access to this action."})
-  message: string;
-
-  @ApiProperty({example: "Forbidden"})
-  error: string;
-
-  @ApiProperty({example: 403})
-  statusCode: number;
-}
-
+/** get schema when request is ok */
 export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: string, data: T, path: string }) {
   class BaseOkResponse {
     @ApiProperty({example: true})
@@ -68,11 +70,13 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: s
   return BaseOkResponse;
 }
 
+/** params type for get schema for swagger when zod validate not success */
 export interface ZodFieldError {
   fields: string;
   message: string;
 }
 
+/** get schema for swagger when zod validate not success */
 export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
   class BaseErrorResponse {
     @ApiProperty({example: 400})
@@ -94,21 +98,3 @@ export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
 export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
   {fields: "id", message: "Invalid UUID"}
 ]) {}
-
-/** normal example error  */
-export function getNormalErrorResponse(message: string, statusCode: number) {
-  const error: string = new TransformInterceptors().getDefaultMessage(statusCode);
-
-  class UserNotFoundResponse {
-    @ApiProperty({example: message})
-    message: string;
-
-    @ApiProperty({example: error})
-    error: string;
-
-    @ApiProperty({example: statusCode})
-    statusCode: number;
-  }
-
-  return UserNotFoundResponse;
-}

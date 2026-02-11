@@ -37,6 +37,7 @@ export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse
       403: 'Forbidden',
       404: 'Not Found',
       409: 'Conflict',
+      429: "Too Many Requests",
       500: 'Internal Server Error',
     };
     return defaultMessages[status] || 'Unknown';

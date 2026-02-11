@@ -1,8 +1,7 @@
 import z from 'zod';
 import {createZodDto} from "nestjs-zod";
-import {getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import {ApiProperty} from "@nestjs/swagger";
+import {getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** Change Role schema body */
 export const ChangeRole = z.object({
