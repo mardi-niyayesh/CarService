@@ -2,6 +2,7 @@ import z from 'zod';
 import {createZodDto} from "nestjs-zod";
 import {getBaseErrorBodyResponseSchema} from "@/common";
 import {UserRole} from "@/modules/prisma/generated/enums";
+import {ApiProperty} from "@nestjs/swagger";
 
 /** Change Role schema body */
 export const ChangeRole = z.object({
@@ -20,3 +21,14 @@ export class BadRequestChangeRoleResponse extends getBaseErrorBodyResponseSchema
     message: "Invalid option: expected one of \"USER\"|\"ADMIN\""
   }
 ]) {}
+
+export class ConflictChangeRoleResponse {
+  @ApiProperty({example: 'The user already has the role USER'})
+  message: string;
+
+  @ApiProperty({example: "Conflict"})
+  error: string;
+
+  @ApiProperty({example: 409})
+  statusCode: number;
+}

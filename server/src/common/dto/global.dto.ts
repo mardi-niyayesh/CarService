@@ -1,5 +1,4 @@
 import z from "zod";
-import {ApiProperty} from "@nestjs/swagger";
 import {BaseApiResponseType} from "@/types";
 
 export class ApiResponse<T> {
@@ -9,61 +8,6 @@ export class ApiResponse<T> {
   response: BaseApiResponseType<T>;
   timestamp: string;
   path?: string;
-}
-
-export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: string, data: T, path: string }) {
-  class BaseOkResponse {
-    @ApiProperty({example: true})
-    success: boolean;
-
-    @ApiProperty({example: props.create ? 201 : 200})
-    statusCode: number;
-
-    @ApiProperty({example: "Resource Created"})
-    detail: string;
-
-    @ApiProperty({
-      example: {
-        message: props.message,
-        data: props.data,
-      }
-    })
-    response: {
-      message: string;
-      data: T;
-    };
-
-    @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
-    timestamp: string;
-
-    @ApiProperty({example: props.path})
-    path: string;
-  }
-
-  return BaseOkResponse;
-}
-
-export interface ZodFieldError {
-  fields: string;
-  message: string;
-}
-
-export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
-  class BaseErrorResponse {
-    @ApiProperty({example: 400})
-    statusCode: number;
-
-    @ApiProperty({
-      example: errors,
-      isArray: true,
-    })
-    errors: ZodFieldError[];
-
-    @ApiProperty({example: "Invalid request."})
-    message: string;
-  }
-
-  return BaseErrorResponse;
 }
 
 export const UUID4Schema = z.object({
@@ -78,7 +22,3 @@ export const UUID4Dto = {
   description: "UUID",
   example: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca"
 };
-
-export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
-  {fields: "id", message: "Invalid UUID"}
-]) {}

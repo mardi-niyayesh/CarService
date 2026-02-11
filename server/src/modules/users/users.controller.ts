@@ -8,7 +8,7 @@ import {
   ForbiddenResponse,
   BadRequestUUIDParams,
   UnauthorizedResponse,
-  getUserNotFoundResponse,
+  getNotFoundResponse,
 } from "@/common";
 
 import {
@@ -49,7 +49,7 @@ export class UsersController {
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  @ApiNotFoundResponse({type: getUserNotFoundResponse("User")})
+  @ApiNotFoundResponse({type: getNotFoundResponse("User")})
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
@@ -71,7 +71,7 @@ export class UsersController {
   @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   @ApiForbiddenResponse({type: ForbiddenResponse})
-  @ApiNotFoundResponse({type: getUserNotFoundResponse("User")})
+  @ApiNotFoundResponse({type: getNotFoundResponse("User")})
   changeRole(
     @Req() req: AccessRequest,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
