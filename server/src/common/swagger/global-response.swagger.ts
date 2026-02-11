@@ -23,3 +23,14 @@ export class TooManyRequestResponse {
   @ApiProperty({example: 429})
   statusCode: number;
 }
+
+export class ForbiddenResponse {
+  @ApiProperty({example: "Your role not access to this action."})
+  message: string;
+
+  @ApiProperty({example: "Forbidden"})
+  error: string;
+
+  @ApiProperty({example: 403})
+  statusCode: number;
+}
