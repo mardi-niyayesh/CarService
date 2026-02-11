@@ -8,10 +8,14 @@ import {CanActivate, ExecutionContext, ForbiddenException, Injectable} from "@ne
 export class RoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<AccessRequest>();
 
     const requiredRole: UserRole = this.reflector.get<UserRole>(ROLE_METADATA, context.getHandler());
+
+    if (requiredRole === undefined) return true;
+
+    console.log(requiredRole);
 
     const userPriority = RolePriority[req.user.role];
     const requiredPriority = RolePriority[requiredRole];
