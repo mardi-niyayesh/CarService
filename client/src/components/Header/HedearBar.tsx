@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Search from "../../../assets/search-outline.png";
 import logoCircle from "../../../assets/default.png";
 import { useState } from "react";
@@ -44,7 +45,6 @@ const HeaderBar = () => {
               </div>
             </div>
           </div>
-
           <div className="hidden lg:flex items-center justify-around gap-6">
             <ul className="flex items-center justify-around gap-6 text-[#353535] font-medium text-[16px]">
               <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
@@ -56,11 +56,25 @@ const HeaderBar = () => {
               <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
                 بلاگ
               </li>
-              <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
-                درباره ما
+
+              <li className="hover:text-[#194BF0] transition-colors">
+                <Link
+                  to="/about"
+                  className="block w-full h-full"
+                  onClick={closeMenu}
+                >
+                  درباره ما
+                </Link>
               </li>
-              <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
-                تماس با ما
+
+              <li className="hover:text-[#194BF0] transition-colors">
+                <Link
+                  to="/contact"
+                  className="block w-full h-full"
+                  onClick={closeMenu}
+                >
+                  تماس با ما
+                </Link>
               </li>
             </ul>
             <img
@@ -142,21 +156,25 @@ const HeaderBar = () => {
                     بلاگ
                   </button>
                 </li>
+
                 <li>
-                  <button
+                  <Link
+                    to="/about"
                     onClick={closeMenu}
-                    className="w-full text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
+                    className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
                   >
                     درباره ما
-                  </button>
+                  </Link>
                 </li>
+
                 <li>
-                  <button
+                  <Link
+                    to="/contact"
                     onClick={closeMenu}
-                    className="w-full text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
+                    className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
                   >
                     تماس با ما
-                  </button>
+                  </Link>
                 </li>
               </ul>
 
