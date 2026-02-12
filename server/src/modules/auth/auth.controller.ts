@@ -34,7 +34,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
-   * Create a new User in users table
+   * Creating new user accounts
    */
   @Post("register")
   @HttpCode(201)
@@ -56,7 +56,7 @@ export class AuthController {
   }
 
   /**
-   * login user with email and password
+   * Authenticating users with email/password and Issuing access tokens
    */
   @Post("login")
   @ApiOperation({
@@ -94,6 +94,7 @@ export class AuthController {
     };
   }
 
+  /** Refreshing access tokens using secure httpOnly cookies */
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
   @HttpCode(200)
