@@ -17,7 +17,7 @@ describe("UsersService", (): void => {
     service = new UsersService(prisma);
   });
 
-  it('should find user and don`t send password ', async (): Promise<void> => {
+  it('should find user and don`t send password: ', async (): Promise<void> => {
     const fakeUser = {
       id: "2a55bda6-e1fc-4047-9725-aeec8fcc9ec4",
       age: 20,
@@ -37,7 +37,7 @@ describe("UsersService", (): void => {
     expect(result.message).toBe("User found successfully");
   });
 
-  it('if user not exist should to exception', () => {
+  it('if user not exist should to exception: ', (): void => {
     prisma.user.findFirst.mockResolvedValue(null);
 
     void expect(service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")).rejects.toThrow(NotFoundException);
