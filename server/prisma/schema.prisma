@@ -9,6 +9,8 @@ datasource db {
 }
 
 // <=== User & Auth Schema ===>
+
+// User Roles
 enum UserRole {
   USER
   ADMIN
@@ -17,15 +19,17 @@ enum UserRole {
 
 // User Model
 model User {
-  id            String         @id @default(uuid(4))
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  email         String         @unique @db.VarChar(255)
-  password      String         @db.VarChar(255)
-  role          UserRole       @default(USER)
-  display_name  String?        @db.VarChar(50)
-  age           Int?
-  refreshTokens RefreshToken[]
+  id           String   @id @default(uuid(4))
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  email        String   @unique @db.VarChar(255)
+  password     String   @db.VarChar(255)
+  role         UserRole @default(USER)
+  display_name String?  @db.VarChar(50)
+  age          Int?
+
+  refreshTokens   RefreshToken[]
+  userPermissions UserPermission[]
 
   @@map("users")
 }
@@ -40,7 +44,33 @@ model RefreshToken {
   expiresAt DateTime
   token     String    @unique @db.VarChar(64)
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
+}
+
+model Permission {
+  id          String   @id @default(uuid(4))
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+
+  userPermissions UserPermission[]
+
+  @@map("permissions")
+}
+
+model UserPermission {
+  id           String   @id @default(uuid(4))
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  permissionId String
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@map("user_permissions")
 }
