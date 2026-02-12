@@ -3,7 +3,6 @@ import helmet from "helmet";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import cookieParser from "cookie-parser";
-import {ValidationPipe} from "@nestjs/common";
 import {TransformInterceptors} from "./common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
@@ -17,7 +16,6 @@ async function bootstrap(): Promise<void> {
   /** global configs */
   app.use(helmet());
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptors());
 
   /** Swagger Version 1 */
