@@ -1,34 +1,33 @@
 import {Test} from "@nestjs/testing";
-import type {SafeUser} from "@/types";
 import {UsersService} from "./users.service";
 import {NotFoundException} from "@nestjs/common";
 import {PrismaService} from "../prisma/prisma.service";
 import {User} from "@/modules/prisma/generated/client";
 import {UserRole} from "@/modules/prisma/generated/enums";
+import {it, expect, describe, afterEach, beforeEach} from "vitest";
 import {type DeepMockProxy, mockDeep, mockReset} from "vitest-mock-extended";
-import {it, vi, expect, describe, afterEach, beforeEach} from "vitest";
 
 type PrismaMock = DeepMockProxy<PrismaService>;
 
 describe("UsersService", (): void => {
   let service: UsersService;
-  let prisma: PrismaMock;
+  let prismaMock: PrismaMock;
 
   beforeEach(async (): Promise<void> => {
-    prisma = mockDeep<PrismaMock>();
+    prismaMock = mockDeep<PrismaService>();
 
     const module = await Test.createTestingModule({
       providers: [
         UsersService,
-        {provide: PrismaService, useValue: prisma},
+        PrismaService
       ],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prismaMock)
+      .compile();
 
-    service = module.get(UsersService);
-  });
-
-  afterEach((): void => {
-    mockReset(prisma);
+    service = module.get<UsersService>(UsersService);
+    console.log("Injected prisma in service: ", service['prisma']);
   });
 
   it('should find user and don`t send password ', async (): Promise<void> => {
@@ -42,7 +41,7 @@ describe("UsersService", (): void => {
       updatedAt: new Date(),
     };
 
-    prisma.user.findFirst.mockResolvedValue(fakeUser as User);
+    prismaMock.user.findFirst.mockResolvedValue(fakeUser as User);
 
     const result = await service.findOne(fakeUser.id);
 
@@ -52,10 +51,13 @@ describe("UsersService", (): void => {
   });
 
   it('if user not exist should to exception', async (): Promise<void> => {
-    prisma.user.findFirst.mockResolvedValue(null);
+    prismaMock.user.findFirst.mockResolvedValue(null);
 
-    const result = await service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3");
+    await expect(service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")).rejects.toThrow(NotFoundException);
+  });
 
-    await expect(result).rejects.toThrow(NotFoundException);
+  /** reset all */
+  afterEach((): void => {
+    mockReset(prismaMock);
   });
 });
