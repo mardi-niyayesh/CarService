@@ -37,10 +37,10 @@ describe("UsersService", (): void => {
     expect(result.message).toBe("User found successfully");
   });
 
-  it('if user not exist should to exception', async (): Promise<void> => {
+  it('if user not exist should to exception', () => {
     prisma.user.findFirst.mockResolvedValue(null);
 
-    await expect(service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")).rejects.toThrow(NotFoundException);
+    void expect(service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")).rejects.toThrow(NotFoundException);
   });
 
   /** reset all */
