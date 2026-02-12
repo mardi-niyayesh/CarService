@@ -3,6 +3,7 @@ type ComponentType = {
   firstname: string;
   secondname: string;
   descripton: string;
+  id?:number
 };
 const ComponentReservAutorent = (props: ComponentType) => {
   return (
