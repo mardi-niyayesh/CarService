@@ -3,6 +3,7 @@ import WhyAutoRent from "./WhyAutoRent";
 import Slider from "./Slider";
 import ReserveAutorent from "./ReserveAutorent";
 import FeacherBoxcommentUser from "../comment/FeacherBoxcommentUser";
+import ComponentQuestion from "./ComponentQuestion/ComponentQuestion";
 
 const MainSite = () => {
   return (
@@ -11,6 +12,7 @@ const MainSite = () => {
       <WhyAutoRent />
       <Slider />
       <ReserveAutorent />
+      <ComponentQuestion />
       <FeacherBoxcommentUser />
     </>
   );
