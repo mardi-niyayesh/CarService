@@ -72,5 +72,6 @@ model UserPermission {
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  @@map("user_permissions")
+  @@unique([permissionId, userId])
+  @@map("users_permission")
 }
