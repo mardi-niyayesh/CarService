@@ -49,7 +49,7 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: s
     @ApiProperty({example: props.create ? 201 : 200})
     statusCode: number;
 
-    @ApiProperty({example: "Resource Created"})
+    @ApiProperty({example: props.create ? "Resource Created" : "Resource Successfully"})
     detail: string;
 
     @ApiProperty({
