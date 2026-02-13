@@ -6,9 +6,10 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
-  ApiTooManyRequestsResponse, ApiForbiddenResponse,
+  ApiTooManyRequestsResponse,
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
@@ -17,7 +18,6 @@ import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseData, CreateUserResponse, SafeUser} from "@/types";
-import {RefreshForbiddenResponse} from "./dto";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
