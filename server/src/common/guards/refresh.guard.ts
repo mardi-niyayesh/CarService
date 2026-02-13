@@ -25,7 +25,7 @@ export class RefreshTokenGuard implements CanActivate {
 
     if (!tokenRecord) throw new UnauthorizedException('Invalid or expired refresh token');
 
-    if (tokenRecord.revokedAt && tokenRecord.userId) {
+    if (tokenRecord.revokedAt) {
       await this.prisma.refreshToken.updateMany({
         where: {userId: tokenRecord.user.id},
         data: {revokedAt: new Date()}
