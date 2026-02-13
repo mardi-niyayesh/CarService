@@ -76,7 +76,7 @@ export class AuthService {
     const accessToken: string = this.generateAccessToken(accessTokenPayload);
     const refreshToken: string = generateRefreshToken();
 
-    const expiresAt: Date = new Date(
+    const expires_at: Date = new Date(
       Date.now() + (
         loginData.remember
           ? 7 * 24 * 60 * 60 * 1000 // 7 days
@@ -88,9 +88,9 @@ export class AuthService {
 
     await this.prisma.refreshToken.create({
       data: {
-        expiresAt,
-        userId: user.id,
-        revokedAt: null,
+        expires_at,
+        user_id: user.id,
+        revoked_at: null,
         token: hashedRefreshToken,
         remember: loginData.remember,
       }
@@ -124,7 +124,7 @@ export class AuthService {
         id: refreshPayload.id
       },
       data: {
-        revokedAt: new Date()
+        revoked_at: new Date()
       }
     });
 

@@ -26,8 +26,8 @@ export const loginResponseSchema: LoginUserSchemaType = {
     role: "USER",
     display_name: "john",
     age: 20,
-    createdAt: date,
-    updatedAt: date,
+    created_at: date,
+    updated_at: date,
   },
   accessToken: "accessToken",
 };

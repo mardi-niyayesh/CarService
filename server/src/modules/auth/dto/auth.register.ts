@@ -30,8 +30,8 @@ export const createUserResponse = {
       display_name: "John",
       age: 24,
       password: undefined,
-      createdAt: date,
-      updatedAt: date
+      created_at: date,
+      updated_at: date
     }
   }
 };
