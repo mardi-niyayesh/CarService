@@ -4,9 +4,11 @@ import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 export class RefreshUsersOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
   path: "users/refresh",
-  message: "accessToken successfully created.",
-  data: loginResponseSchema,
   create: false,
+  response: {
+    message: "accessToken successfully created.",
+    data: loginResponseSchema,
+  }
 }) {}
 
 export class RefreshUsersUnAuthResponse extends getNormalErrorResponse(

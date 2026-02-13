@@ -40,8 +40,10 @@ export const createUserResponse = {
 export class CreateUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
   path: createUserResponse.path,
   create: createUserResponse.create,
-  message: createUserResponse.message,
-  data: createUserResponse.data as CreateUserResponse
+  response: {
+    message: createUserResponse.message,
+    data: createUserResponse.data as CreateUserResponse
+  }
 }) {}
 
 /** conflict example for create user */

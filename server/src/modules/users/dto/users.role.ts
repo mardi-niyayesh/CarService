@@ -18,8 +18,10 @@ export class ChangeRoleSchema extends createZodDto(ChangeRole) {}
 /** ok request response */
 export class ChangeRoleUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
   path: "users/id/role",
-  message: "User role updated successfully to USER",
-  data: createUserResponse.data as CreateUserResponse
+  response: {
+    message: "User role updated successfully to USER",
+    data: createUserResponse.data as CreateUserResponse
+  }
 }) {}
 
 /** bad request response */
