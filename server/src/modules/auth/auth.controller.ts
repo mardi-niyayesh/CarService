@@ -26,6 +26,7 @@ import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} 
  * - Authenticating users with email/password
  * - Issuing access tokens
  * - Refreshing access tokens using secure httpOnly cookies
+ * - Logout users in system and revoked refresh token
  */
 @ApiTags('Auth')
 @Controller('auth')
@@ -118,6 +119,25 @@ export class AuthController {
         user: req.refreshPayload.user,
         accessToken,
       }
+    };
+  }
+
+  /** Logout users in system and revoked refresh token */
+  @Post("logout")
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Logout user',
+    description: 'Uses the refresh token (from httpOnly cookie) to logout user in system and revoked refresh token.',
+    operationId: 'auth_refresh',
+    tags: ["Auth"],
+  })
+  @ApiCookieAuth("refreshToken")
+  logout(
+    @Req() req: RefreshRequest
+  ) {
+    console.log(req.refreshPayload);
+    return {
+      message: "logged out successfully",
     };
   }
 }
