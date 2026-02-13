@@ -26,12 +26,3 @@ export function generateRefreshToken(): string {
 export function hashSecretToken(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
-
-/** compare hashed token with raw token on timingEqual */
-export function compareSecretToken(rawToken: string, hashedToken: string): boolean {
-  const rawHash: string = hashSecretToken(rawToken);
-  return timingSafeEqual(
-    Buffer.from(rawHash),
-    Buffer.from(hashedToken)
-  );
-}
