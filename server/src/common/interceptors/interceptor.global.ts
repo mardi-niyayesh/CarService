@@ -1,13 +1,17 @@
-import {ApiResponse} from "../dto";
 import {Observable, map} from 'rxjs';
 import {getDefaultMessage} from "@/lib";
-import {BaseApiResponseType} from "@/types";
+import {InterceptorResponse} from "../dto";
 import type {Response, Request} from "express";
+import {BaseApiResponse, BaseApiResponseData} from "@/types";
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
 
 @Injectable()
-export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponseType<T>, ApiResponse<T>> {
-  intercept(context: ExecutionContext, next: CallHandler<BaseApiResponseType<T>>): Observable<ApiResponse<T>> | Promise<Observable<ApiResponse<T>>> {
+export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse | BaseApiResponseData<T>, InterceptorResponse<T>> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<BaseApiResponse | BaseApiResponseData<T>>
+  ): Observable<InterceptorResponse<T>> | Promise<Observable<InterceptorResponse<T>>> {
+
     const ctx = context.switchToHttp();
     const res = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();

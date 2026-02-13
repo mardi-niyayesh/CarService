@@ -1,12 +1,12 @@
 import z from "zod";
-import {BaseApiResponseType} from "@/types";
+import {BaseApiResponseData, BaseApiResponse} from "@/types";
 
 /** schema response when request is ok */
-export class ApiResponse<T> {
+export class InterceptorResponse<T> {
   success: boolean;
   statusCode: number;
   detail: string;
-  response: BaseApiResponseType<T>;
+  response: BaseApiResponseData<T> | BaseApiResponse;
   timestamp: string;
   path?: string;
 }
