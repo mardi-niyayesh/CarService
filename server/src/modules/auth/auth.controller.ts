@@ -12,11 +12,11 @@ import {
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
-import type {Response} from "express";
+import type {CookieOptions, Response} from "express";
 import {AuthService} from "./auth.service";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
-import type {RefreshRequest, BaseApiResponseType, CreateUserResponse, SafeUser} from "@/types";
+import type {RefreshRequest, BaseApiResponseData, CreateUserResponse, SafeUser} from "@/types";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -73,18 +73,14 @@ export class AuthController {
   async login(
     @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
-  ): Promise<BaseApiResponseType<CreateUserResponse & { accessToken: string }>> {
+  ): Promise<BaseApiResponseData<CreateUserResponse & { accessToken: string }>> {
     const loginResponse = await this.authService.login(data);
 
-    res.cookie("refreshToken", loginResponse.refreshToken, {
-      sameSite: "lax",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: "/",
-      maxAge: data.remember
-        ? 7 * 24 * 60 * 60 * 1000
-        : 12 * 60 * 60 * 1000
-    });
+    const remember: number = data.remember
+      ? 7 * 24 * 60 * 60 * 1000
+      : 12 * 60 * 60 * 1000;
+
+    res.cookie("refreshToken", loginResponse.refreshToken, this.getCookieOptions(remember));
 
     return {
       message: "user logged in successfully",
@@ -110,7 +106,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
   refresh(
     @Req() req: RefreshRequest
-  ): BaseApiResponseType<{ accessToken: string; user: SafeUser }> {
+  ): BaseApiResponseData<{ accessToken: string; user: SafeUser }> {
     const accessToken: string = this.authService.refresh(req.refreshPayload);
 
     return {
@@ -123,21 +119,31 @@ export class AuthController {
   }
 
   /** Logout users in system and revoked refresh token */
+  @UseGuards(RefreshTokenGuard)
   @Post("logout")
   @HttpCode(200)
   @ApiOperation({
     summary: 'Logout user',
     description: 'Uses the refresh token (from httpOnly cookie) to logout user in system and revoked refresh token.',
-    operationId: 'auth_refresh',
+    operationId: 'auth_logout',
     tags: ["Auth"],
   })
   @ApiCookieAuth("refreshToken")
   logout(
-    @Req() req: RefreshRequest
+    @Req() req: RefreshRequest,
+    @Res({passthrough: true}) res: Response
   ) {
-    console.log(req.refreshPayload);
+    res.clearCookie("refreshToken", this.getCookieOptions());
+    return this.authService.logout(req.refreshPayload);
+  }
+
+  getCookieOptions(maxAge?: number): CookieOptions {
     return {
-      message: "logged out successfully",
+      sameSite: "lax",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: "/",
+      maxAge
     };
   }
 }
