@@ -129,6 +129,7 @@ export class AuthController {
     tags: ["Auth"],
   })
   @ApiCookieAuth("refreshToken")
+  @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
   logout(
     @Req() req: RefreshRequest,
     @Res({passthrough: true}) res: Response
