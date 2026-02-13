@@ -8,15 +8,16 @@ import {
   ApiConflictResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
-  ApiTooManyRequestsResponse,
+  ApiTooManyRequestsResponse, ApiForbiddenResponse,
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
-import type {CookieOptions, Response} from "express";
 import {AuthService} from "./auth.service";
+import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
 import type {RefreshRequest, BaseApiResponseData, CreateUserResponse, SafeUser} from "@/types";
+import {RefreshForbiddenResponse} from "./dto";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -129,7 +130,9 @@ export class AuthController {
     tags: ["Auth"],
   })
   @ApiCookieAuth("refreshToken")
+  @ApiOkResponse({type: AuthDto.LogoutOkResponse})
   @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
+  @ApiForbiddenResponse({type: AuthDto.RefreshForbiddenResponse})
   logout(
     @Req() req: RefreshRequest,
     @Res({passthrough: true}) res: Response
@@ -138,6 +141,7 @@ export class AuthController {
     return this.authService.logout(req.refreshPayload);
   }
 
+  /** get same refreshToken options */
   getCookieOptions(maxAge?: number): CookieOptions {
     return {
       sameSite: "lax",
