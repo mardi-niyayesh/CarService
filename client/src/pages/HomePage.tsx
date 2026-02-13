@@ -1,8 +1,13 @@
+import BanerHeader from "../components/Header/BanerHeader";
+import HeroBaner from "../components/Header/HeroBaner";
 import MainSite from "../components/Main/MainSite";
+
 const HomePage = () => {
   return (
     <>
-     <MainSite/>
+      <BanerHeader />
+      <HeroBaner />
+      <MainSite />
     </>
   );
 };
