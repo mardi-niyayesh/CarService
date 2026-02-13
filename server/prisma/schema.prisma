@@ -20,58 +20,58 @@ enum UserRole {
 // User Model
 model User {
   id           String   @id @default(uuid(4))
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
   email        String   @unique @db.VarChar(255)
   password     String   @db.VarChar(255)
   role         UserRole @default(USER)
   display_name String?  @db.VarChar(50)
   age          Int?
 
-  refreshTokens   RefreshToken[]
-  userPermissions UserPermission[]
+  refreshTokens RefreshToken[]
+  // userPermissions UserPermission[]
 
   @@map("users")
 }
 
 // RefreshToken Model
 model RefreshToken {
-  id        String    @id @default(uuid(4))
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  remember  Boolean   @default(false)
-  revokedAt DateTime?
-  expiresAt DateTime
-  token     String    @unique @db.VarChar(64)
-  userId    String
+  id         String    @id @default(uuid(4))
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  remember   Boolean   @default(false)
+  revoked_at DateTime?
+  expires_at DateTime
+  token      String    @unique @db.VarChar(64)
+  user_id    String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }
 
-model Permission {
-  id          String   @id @default(uuid(4))
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @db.VarChar(100)
-  description String?  @db.Text
-
-  userPermissions UserPermission[]
-
-  @@map("permissions")
-}
-
-model UserPermission {
-  id           String   @id @default(uuid(4))
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       String
-  permissionId String
-
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  @@unique([permissionId, userId])
-  @@map("users_permission")
-}
+// model Permission {
+//   id          String   @id @default(uuid(4))
+//   created_at  DateTime @default(now())
+//   updated_at  DateTime @updatedAt
+//   name        String   @db.VarChar(100)
+//   description String?  @db.Text
+//
+//   userPermissions UserPermission[]
+//
+//   @@map("permissions")
+// }
+//
+// model UserPermission {
+//   id           String   @id @default(uuid(4))
+//   created_at   DateTime @default(now())
+//   updated_at   DateTime @updatedAt
+//   userId       String
+//   permissionId String
+//
+//   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+//
+//   @@unique([permissionId, userId])
+//   @@map("users_permission")
+// }
