@@ -1,5 +1,5 @@
 import {hash, compare} from "bcrypt";
-import {createHash, randomBytes, timingSafeEqual} from "node:crypto";
+import {createHash, randomBytes} from "node:crypto";
 
 /** hashed password with bcrypt */
 export async function hashSecret(
