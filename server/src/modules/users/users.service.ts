@@ -2,7 +2,7 @@ import * as UserDto from "./dto";
 import {isAllowedAction} from "@/lib";
 import {PrismaService} from "../prisma/prisma.service";
 import {UserRole} from "@/modules/prisma/generated/enums";
-import type {BaseApiResponseType, CreateUserResponse} from "@/types";
+import type {ApiResponse, CreateUserResponse} from "@/types";
 import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class UsersService {
   /** get user info
    * - only users with role (SUPER_ADMIN or ADMIN) can accessibility to this route
    */
-  async findOne(id: string): Promise<BaseApiResponseType<CreateUserResponse>> {
+  async findOne(id: string): Promise<ApiResponse<CreateUserResponse>> {
     const user = await this.prisma.user.findFirst({
       where: {
         id
@@ -41,7 +41,7 @@ export class UsersService {
     id: string,
     actionRole: UserRole,
     data: UserDto.ChangeRoleInput,
-  ): Promise<BaseApiResponseType<CreateUserResponse>> {
+  ): Promise<ApiResponse<CreateUserResponse>> {
     const user = await this.findOne(id);
 
     const userRole = user.data.user.role;
