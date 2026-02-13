@@ -5,7 +5,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
-import {BaseApiResponseType, CreateUserResponse, AccessTokenPayload, RefreshTokenPayload} from "@/types";
+import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse} from "@/types";
 
 @Injectable()
 export class AuthService {
@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   /** create user in db */
-  async register(createData: AuthDto.CreateUserInput): Promise<BaseApiResponseType<CreateUserResponse>> {
+  async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<CreateUserResponse>> {
     const user: User | null = await this.prisma.user.findFirst({
       where: {
         email: createData.email,
@@ -115,5 +115,21 @@ export class AuthService {
     };
 
     return this.generateAccessToken(payload);
+  }
+
+  /** revoked refresh token and logout */
+  async logout(refreshPayload: RefreshTokenPayload): Promise<ApiResponse<void>> {
+    await this.prisma.refreshToken.update({
+      where: {
+        id: refreshPayload.id
+      },
+      data: {
+        revokedAt: new Date()
+      }
+    });
+
+    return {
+      message: "user logout successfully"
+    };
   }
 }
