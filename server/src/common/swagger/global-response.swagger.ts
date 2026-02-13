@@ -1,5 +1,6 @@
 import {getDefaultMessage} from "@/lib";
 import {ApiProperty} from "@nestjs/swagger";
+import {ApiResponse, BaseApiResponseData} from "@/types";
 
 /** normal example error  */
 export function getNormalErrorResponse(message: string, statusCode: number) {
@@ -41,7 +42,17 @@ export class ForbiddenResponse extends getNormalErrorResponse(
 ) {}
 
 /** get schema when request is ok */
-export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: string, data: T, path: string }) {
+export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: ApiResponse<T>, path: string }) {
+  const responseData = props.response as BaseApiResponseData<T>;
+
+  const response = {
+    message: props.response.message,
+  };
+  
+  if ("data" in responseData) {
+    (response as typeof responseData).data = responseData.data;
+  }
+
   class BaseOkResponse {
     @ApiProperty({example: true})
     success: boolean;
@@ -53,14 +64,11 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, message: s
     detail: string;
 
     @ApiProperty({
-      example: {
-        message: props.message,
-        data: props.data,
-      }
+      example: response
     })
     response: {
       message: string;
-      data: T;
+      data?: T;
     };
 
     @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
