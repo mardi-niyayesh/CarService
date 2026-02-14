@@ -50,28 +50,32 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-// model Permission {
-//   id          String   @id @default(uuid(4))
-//   created_at  DateTime @default(now())
-//   updated_at  DateTime @updatedAt
-//   name        String   @db.VarChar(100)
-//   description String?  @db.Text
-//
-//   userPermissions UserPermission[]
-//
-//   @@map("permissions")
-// }
-//
-// model UserPermission {
-//   id           String   @id @default(uuid(4))
-//   created_at   DateTime @default(now())
-//   updated_at   DateTime @updatedAt
-//   userId       String
-//   permissionId String
-//
-//   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-//
-//   @@unique([permissionId, userId])
-//   @@map("users_permission")
-// }
+model Permission {
+  id          String   @id @default(uuid(4))
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+
+  @@map("permissions")
+}
+
+model UserPermission {
+  id            String   @id @default(uuid(4))
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user_id       String
+  permission_id String
+
+  @@map("users_permission")
+}
+
+model Role {
+  id          String   @id @default(uuid(4))
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+
+  @@map("roles")
+}
