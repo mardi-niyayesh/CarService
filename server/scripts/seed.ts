@@ -24,4 +24,9 @@ await (async (): Promise<void> => {
       }
     ]
   });
+
+  console.log("✅ Seed completed: Default roles [SELF, OWNER] have been created successfully.");
+
+  await app.close();
+  process.exit(0);
 })();
