@@ -10,13 +10,6 @@ datasource db {
 
 // <=== User & Auth Schema ===>
 
-// User Roles
-enum UserRole {
-  USER
-  ADMIN
-  SUPER_ADMIN
-}
-
 // User Model
 model User {
   id           String   @id @default(uuid(4))
@@ -24,9 +17,11 @@ model User {
   updated_at   DateTime @updatedAt
   email        String   @unique @db.VarChar(255)
   password     String   @db.VarChar(255)
-  role         UserRole @default(USER)
   display_name String?  @db.VarChar(50)
   age          Int?
+
+  role_id String
+  role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
   refreshTokens RefreshToken[]
 
@@ -51,6 +46,7 @@ model RefreshToken {
 
 // <=== Permissions & Roles Schema ===>
 
+// Permisisons Model
 model Permission {
   id          String   @id @default(uuid(4))
   created_at  DateTime @default(now())
@@ -63,6 +59,7 @@ model Permission {
   @@map("permissions")
 }
 
+// Role Model
 model Role {
   id          String   @id @default(uuid(4))
   created_at  DateTime @default(now())
@@ -71,10 +68,12 @@ model Role {
   description String?  @db.Text
 
   rolePermissions RolePermission[]
+  users           User[]
 
   @@map("roles")
 }
 
+// relation for Permissions and Roles
 model RolePermission {
   id            String   @id @default(uuid(4))
   created_at    DateTime @default(now())
