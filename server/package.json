@@ -19,6 +19,7 @@
     "test:e2e": "vitest --config ./test/vitest-e2e.config.ts",
     "prisma:generate": "prisma generate",
     "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
+    "prisma:setup": "prisma migrate deploy && prisma generate",
     "seed:superadmin": "npm run build && node dist/scripts/seed-superadmin.js"
   },
   "dependencies": {
