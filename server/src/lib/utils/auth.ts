@@ -1,7 +1,8 @@
 interface IsAllowedActionParams {
+  role?: string;
+  requireAll?: boolean;
   actionPermissions: string[];
   requiredPermissions: string[];
-  requireAll?: boolean;
 }
 
 export function isAllowedAction(
@@ -9,8 +10,11 @@ export function isAllowedAction(
     actionPermissions,
     requiredPermissions,
     requireAll = false,
+    role = "",
   }: IsAllowedActionParams
 ): boolean {
+  if (role === "OWNER") return true;
+
   if (requireAll) return requiredPermissions.every(p => actionPermissions.includes(p));
 
   return requiredPermissions.some(p => actionPermissions.includes(p));
