@@ -4,6 +4,7 @@ dotenv.config();
 
 import "tsconfig-paths/register";
 import {hashSecret} from "@/lib";
+import {BaseRoles} from "@/types";
 import {NestFactory} from "@nestjs/core";
 import * as readline from "node:readline";
 import {CreateUser} from "@/modules/auth/dto";
@@ -43,38 +44,50 @@ async function bootstrap() {
 
   const prisma = app.get(PrismaService);
 
+  const ownerRole = await prisma.role.findFirst({
+    where: {
+      name: BaseRoles.owner
+    }
+  });
+
+  if (!ownerRole) {
+    console.log("⚠ Owner role not exists in database");
+    await app.close();
+    process.exit(1);
+  }
+
   const exist = await prisma.user.findFirst({
     where: {
-
+      role_id: ownerRole.id
     }
   });
 
   if (exist) {
-    console.log("Super admin already exists");
+    console.log("Owner already exists");
     await app.close();
     return process.exit(0);
   }
 
-  console.log(`creating super admin...`);
+  console.log(`creating owner...`);
 
   const email: string = await ask("enter email: ", "email");
   const password: string = await ask("enter password: ", "password");
 
   const hashedPassword: string = await hashSecret(password);
 
-  // const superAdmin = await prisma.user.create({
-  //   data: {
-  //     email,
-  //     password: hashedPassword,
-  //     // role: "owner",
-  //     display_name: "owner",
-  //   }
-  // });
+  const owner = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      display_name: "owner",
+      role_id: ownerRole.id
+    }
+  });
 
-  // console.log(`✅ Super admin created:\nemail: ${superAdmin.email}\nid: ${superAdmin.id}\nrole: ${superAdmin.role}`);
-  // process.exit(0);
+  console.log(`✅ owner created:\nemail: ${owner.email}\nid: ${owner.id}\nrole: ${ownerRole.name}`);
+  process.exit(0);
 }
 
 bootstrap()
-  .then(() => console.log("running superadmin script"))
+  .then(() => console.log("running owner script"))
   .catch(e => console.error(e));
