@@ -26,7 +26,7 @@ export const createUserResponse = {
     user: {
       id: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca",
       email: "john@example.com",
-      role: "USER",
+      role_id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698f",
       display_name: "John",
       age: 24,
       password: undefined,

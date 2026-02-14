@@ -2,12 +2,11 @@ import z from 'zod';
 import {createZodDto} from "nestjs-zod";
 import {type CreateUserResponse} from "@/types";
 import {createUserResponse} from "@/modules/auth/dto";
-import {UserRole} from "@/modules/prisma/generated/enums";
 import {getBaseErrorBodyResponseSchema, getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** Change Role schema body */
 export const ChangeRole = z.object({
-  role: z.enum([UserRole.USER, UserRole.ADMIN] as const),
+  role: z.string(),
 });
 
 export type ChangeRoleInput = z.infer<typeof ChangeRole>;

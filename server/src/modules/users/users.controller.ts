@@ -1,5 +1,4 @@
 import {
-  Role,
   ZodPipe,
   UUID4Dto,
   UUID4Schema,
@@ -26,17 +25,14 @@ import {
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {UserRole} from "@/modules/prisma/generated/enums";
 import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req} from '@nestjs/common';
 
 @ApiTags("User")
 @Controller('users')
 @ApiBearerAuth("accessToken")
-@Role(UserRole.USER)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Role(UserRole.ADMIN)
   @Get(":id")
   @ApiOperation({
     summary: 'get user info',
@@ -55,7 +51,6 @@ export class UsersController {
     return this.usersService.findOne(params.id);
   }
 
-  @Role(UserRole.SUPER_ADMIN)
   @HttpCode(HttpStatus.OK)
   @Post(":id/role")
   @ApiOperation({
