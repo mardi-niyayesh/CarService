@@ -122,8 +122,9 @@ export class AuthService {
   refresh(refreshPayload: RefreshTokenPayload): string {
     const payload: AccessTokenPayload = {
       sub: refreshPayload.user.id,
-      permissions: [],
-      display_name: refreshPayload.user.display_name ?? ""
+      jti: randomUUID() + Date.now(),
+      permissions: refreshPayload.permissions,
+      display_name: refreshPayload.user.display_name ?? "",
     };
 
     return this.generateAccessToken(payload);

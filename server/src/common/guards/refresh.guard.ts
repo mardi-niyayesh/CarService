@@ -1,5 +1,5 @@
 import {hashSecretToken} from '@/lib';
-import {RefreshRequest} from '@/types';
+import {RefreshRequest, RefreshTokenPayload} from '@/types';
 import {PrismaService} from '@/modules/prisma/prisma.service';
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 
@@ -62,7 +62,7 @@ export class RefreshTokenGuard implements CanActivate {
         age: tokenRecord.user.age,
       },
       permissions: tokenRecord.user.role.rolePermissions.map(p => p.permission.name)
-    };
+    } as RefreshTokenPayload;
 
     return true;
   }
