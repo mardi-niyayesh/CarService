@@ -23,7 +23,7 @@ export const loginResponseSchema: LoginUserSchemaType = {
   user: {
     id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698a",
     email: "john@example.com",
-    role: "USER",
+    role_id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698f",
     display_name: "john",
     age: 20,
     created_at: date,
