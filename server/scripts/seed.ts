@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+import {BaseRoles} from "@/types";
 import {CliModule} from "@/modules";
 import "tsconfig-paths/register.js";
 import {NestFactory} from "@nestjs/core";
@@ -15,11 +16,11 @@ await (async (): Promise<void> => {
   await prisma.role.createMany({
     data: [
       {
-        name: "SELF",
+        name: BaseRoles.self,
         description: "Basic role for users to view and update their own personal information"
       },
       {
-        name: "OWNER",
+        name: BaseRoles.owner,
         description: "System owner with full access to all resources"
       }
     ]

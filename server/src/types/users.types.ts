@@ -7,6 +7,11 @@ export type CreateUserResponse = {
   };
 }
 
+export enum BaseRoles {
+  owner = "owner",
+  self = "self",
+}
+
 /** AccessToken payload on JWT */
 export interface AccessTokenPayload {
   sub: string;
