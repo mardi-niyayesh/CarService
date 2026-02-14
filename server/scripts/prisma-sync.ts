@@ -1,13 +1,14 @@
 import {execSync} from 'node:child_process';
 import * as readline from 'node:readline/promises';
 
-(async () => {
+(async (): Promise<void> => {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
     });
 
     let migrationName: string = process.argv[2];
+
     if (!migrationName) {
         const answer: string = await rl.question('enter migration name (default = init): ');
         migrationName = answer.trim() || 'init';

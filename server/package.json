@@ -56,7 +56,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cron": "^2.0.1",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.19.11",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "@vitest/coverage-v8": "^4.0.18",
