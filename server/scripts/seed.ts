@@ -4,11 +4,11 @@ dotenv.config();
 
 import "tsconfig-paths/register";
 import {BaseRoles} from "@/types";
-import {CliModule} from "@/modules";
 import {NestFactory} from "@nestjs/core";
+import {CliModule} from "@/modules/cli/cli.module";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
-await (async (): Promise<void> => {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.createApplicationContext(CliModule);
 
   const prisma = app.get(PrismaService);
@@ -47,8 +47,12 @@ await (async (): Promise<void> => {
     }
   });
 
-  console.log("✅ Seed completed: Default roles [SELF, OWNER] have been created successfully.");
+  console.log("✅ Seed completed: Default roles [self, owner] have been created successfully.");
 
   await app.close();
   process.exit(0);
-})();
+}
+
+bootstrap()
+  .then(() => console.log("running roles script"))
+  .catch(e => console.error(e));
