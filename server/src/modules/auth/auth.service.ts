@@ -1,8 +1,8 @@
 import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
 import {JwtService} from "@nestjs/jwt";
+import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
-import {User, UserRole} from "../prisma/generated/client";
 import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
 import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse} from "@/types";
@@ -37,7 +37,6 @@ export class AuthService {
     const newUser = await this.prisma.user.create({
       data: {
         ...createData,
-        role: UserRole.USER,
         password: hashPassword,
       }
     });
@@ -55,9 +54,18 @@ export class AuthService {
 
   /** login users */
   async login(loginData: AuthDto.LoginUserInput) {
-    const user: User | null = await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         email: loginData.email,
+      },
+      include: {
+        role: {
+          include: {
+            rolePermissions: {
+              include: {permission: true}
+            }
+          }
+        }
       }
     });
 
@@ -69,8 +77,7 @@ export class AuthService {
 
     const accessTokenPayload: AccessTokenPayload = {
       sub: user.id,
-      role: user.role,
-      display_name: user.display_name ?? ""
+      display_name: user.display_name ?? "",
     };
 
     const accessToken: string = this.generateAccessToken(accessTokenPayload);
