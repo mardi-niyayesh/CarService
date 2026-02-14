@@ -1,3 +1,5 @@
+import {BaseRoles} from "@/types";
+
 interface IsAllowedActionParams {
   role?: string;
   requireAll?: boolean;
@@ -13,7 +15,7 @@ export function isAllowedAction(
     role = "",
   }: IsAllowedActionParams
 ): boolean {
-  if (role === "OWNER") return true;
+  if (role === BaseRoles.owner) return true;
 
   if (requireAll) return requiredPermissions.every(p => actionPermissions.includes(p));
 
