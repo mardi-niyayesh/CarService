@@ -8,7 +8,6 @@ import {NestFactory} from "@nestjs/core";
 import * as readline from "node:readline";
 import {CreateUser} from "@/modules/auth/dto";
 import {CliModule} from "@/modules/cli/cli.module";
-import {UserRole} from "@/modules/prisma/generated/enums";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
 async function ask<T extends keyof typeof CreateUser.shape>(
@@ -39,14 +38,14 @@ async function ask<T extends keyof typeof CreateUser.shape>(
   }
 }
 
-async function bootstrap(): Promise<never> {
+async function bootstrap() {
   const app = await NestFactory.createApplicationContext(CliModule);
 
   const prisma = app.get(PrismaService);
 
   const exist = await prisma.user.findFirst({
     where: {
-      role: UserRole.SUPER_ADMIN,
+
     }
   });
 
@@ -63,17 +62,17 @@ async function bootstrap(): Promise<never> {
 
   const hashedPassword: string = await hashSecret(password);
 
-  const superAdmin = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      role: UserRole.SUPER_ADMIN,
-      display_name: UserRole.SUPER_ADMIN,
-    }
-  });
+  // const superAdmin = await prisma.user.create({
+  //   data: {
+  //     email,
+  //     password: hashedPassword,
+  //     // role: "owner",
+  //     display_name: "owner",
+  //   }
+  // });
 
-  console.log(`✅ Super admin created:\nemail: ${superAdmin.email}\nid: ${superAdmin.id}\nrole: ${superAdmin.role}`);
-  process.exit(0);
+  // console.log(`✅ Super admin created:\nemail: ${superAdmin.email}\nid: ${superAdmin.id}\nrole: ${superAdmin.role}`);
+  // process.exit(0);
 }
 
 bootstrap()
