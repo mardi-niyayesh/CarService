@@ -22,6 +22,10 @@ const HeaderBar = () => {
         return "درباره ما";
       case "/contact":
         return "تماس با ما";
+      case "/roles":
+        return " قوانین و مقررات";
+      case "/questionPage":
+        return " سوالات متدوال ";
       default:
         return "اتورنت";
     }
@@ -154,15 +158,14 @@ const HeaderBar = () => {
 
             <div className="p-6 overflow-y-auto h-[calc(100%-80px)]">
               <ul className="space-y-4">
-                  <li>
+                <li>
                   <Link
                     to="/"
                     onClick={closeMenu}
                     className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
                   >
-                  خانه
+                    خانه
                   </Link>
-                 
                 </li>
                 <li>
                   <button
@@ -188,7 +191,6 @@ const HeaderBar = () => {
                     بلاگ
                   </button>
                 </li>
-                
 
                 <li>
                   <Link
