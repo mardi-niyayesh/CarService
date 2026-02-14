@@ -1,4 +1,4 @@
-import {RefreshToken, User} from "@/modules/prisma/generated/client";
+import {RefreshToken, User, Role, Permission, RolePermission} from "@/modules/prisma/generated/client";
 
 /** response user type */
 export type CreateUserResponse = {
@@ -17,9 +17,11 @@ export interface AccessTokenPayload {
   jti?: string;
 }
 
-export type RefreshTokenPayload = RefreshToken & {
+export interface RefreshTokenPayload {
+  refreshRecord: RefreshToken;
   user: SafeUser;
-};
+  permissions: string[];
+}
 
 export type SafeUser = Omit<User, "password">;
 
