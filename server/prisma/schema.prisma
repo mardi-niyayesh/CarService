@@ -29,7 +29,6 @@ model User {
   age          Int?
 
   refreshTokens RefreshToken[]
-  // userPermissions UserPermission[]
 
   @@map("users")
 }
@@ -50,32 +49,41 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
+// <=== Permissions & Roles Schema ===>
+
 model Permission {
   id          String   @id @default(uuid(4))
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  name        String   @db.VarChar(100)
+  name        String   @unique @db.VarChar(100)
   description String?  @db.Text
 
+  rolePermissions RolePermission[]
+
   @@map("permissions")
-}
-
-model UserPermission {
-  id            String   @id @default(uuid(4))
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-  user_id       String
-  permission_id String
-
-  @@map("users_permission")
 }
 
 model Role {
   id          String   @id @default(uuid(4))
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  name        String   @db.VarChar(100)
+  name        String   @unique @db.VarChar(100)
   description String?  @db.Text
 
+  rolePermissions RolePermission[]
+
   @@map("roles")
+}
+
+model RolePermission {
+  id            String   @id @default(uuid(4))
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  role_id       String
+  permission_id String
+
+  permission Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@map("role_permission")
 }
