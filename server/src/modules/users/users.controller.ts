@@ -75,6 +75,9 @@ export class UsersController {
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
     @Body(new ZodPipe(UserDto.ChangeRole)) data: UserDto.ChangeRoleInput
   ) {
-    return this.usersService.userRole(params.id, req.user.role, data);
+    void params;
+    void data;
+    void req;
+    // return this.usersService.userRole(params.id, req.user.role, data);
   }
 }
