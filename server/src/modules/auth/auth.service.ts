@@ -122,7 +122,7 @@ export class AuthService {
   refresh(refreshPayload: RefreshTokenPayload): string {
     const payload: AccessTokenPayload = {
       sub: refreshPayload.user.id,
-      role: refreshPayload.user.role,
+      permissions: [],
       display_name: refreshPayload.user.display_name ?? ""
     };
 
@@ -133,7 +133,7 @@ export class AuthService {
   async logout(refreshPayload: RefreshTokenPayload): Promise<ApiResponse<void>> {
     await this.prisma.refreshToken.update({
       where: {
-        id: refreshPayload.id
+        id: refreshPayload.refreshRecord.id
       },
       data: {
         revoked_at: new Date()
