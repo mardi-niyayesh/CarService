@@ -20,8 +20,8 @@ model User {
   display_name String?  @db.VarChar(50)
   age          Int?
 
-  role_id String?
-  role    Role?   @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id String
+  role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
   refreshTokens RefreshToken[]
 
@@ -84,5 +84,6 @@ model RolePermission {
   permission Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade)
   role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade)
 
+  @@unique([role_id, permission_id])
   @@map("role_permission")
 }
