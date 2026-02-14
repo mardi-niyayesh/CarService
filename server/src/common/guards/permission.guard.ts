@@ -1,12 +1,16 @@
+import {isAllowedAction} from "@/lib";
 import {AccessRequest} from "@/types";
 import {Reflector} from "@nestjs/core";
-import {IS_PUBLIC_KEY, ROLE_METADATA} from "@/common";
-import {UserRole} from "@/modules/prisma/generated/enums";
+import {IS_PUBLIC_KEY, ROLES_METADATA} from "@/common";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable, InternalServerErrorException} from "@nestjs/common";
-import {isAllowedAction} from "@/lib";
+
+interface ReflectRoles {
+  requireAll?: boolean;
+  roles: string[];
+}
 
 @Injectable()
-export class RoleGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -19,21 +23,23 @@ export class RoleGuard implements CanActivate {
 
     if (isPublic) return true;
 
-    const requiredRole: UserRole = this.reflector.getAllAndOverride<UserRole>(ROLE_METADATA, [
+    const {requireAll, roles} = this.reflector.getAllAndOverride<ReflectRoles>(ROLES_METADATA, [
       context.getHandler(),
-      context.getClass()
-    ]);
+      context.getClass(),
+    ]) || {requireAll: false, roles: []};
 
-    if (!requiredRole) throw new InternalServerErrorException({
+    if (!roles) throw new InternalServerErrorException({
       message: 'Missing Role, Role is Required',
       error: "Internal Server Error",
       statusCode: 500,
     });
 
+    const actionPermissions = req.user.permissions;
+
     const isAllowed: boolean = isAllowedAction({
-      actionRole: req.user.role,
-      targetRole: requiredRole,
-      roleComparison: "equal"
+      requireAll,
+      requiredPermissions: roles,
+      actionPermissions
     });
 
     if (!isAllowed) throw new ForbiddenException({
