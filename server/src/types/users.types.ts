@@ -1,4 +1,3 @@
-import {UserRole} from "@/modules/prisma/generated/enums";
 import {RefreshToken, User} from "@/modules/prisma/generated/client";
 
 /** response user type */
@@ -8,16 +7,10 @@ export type CreateUserResponse = {
   };
 }
 
-export const RolePriority = {
-  [UserRole.SUPER_ADMIN]: 3,
-  [UserRole.ADMIN]: 2,
-  [UserRole.USER]: 1,
-} as const;
-
 /** AccessToken payload on JWT */
 export interface AccessTokenPayload {
   sub: string;
-  role: UserRole;
+  roles: string[];
   display_name?: string;
 }
 
