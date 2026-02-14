@@ -10,8 +10,12 @@ export type CreateUserResponse = {
 /** AccessToken payload on JWT */
 export interface AccessTokenPayload {
   sub: string;
-  roles: string[];
+  roles: string;
+  permissions: string[];
   display_name?: string;
+  iat?: number;
+  exp?: number;
+  jti?: string;
 }
 
 export type RefreshTokenPayload = RefreshToken & {
