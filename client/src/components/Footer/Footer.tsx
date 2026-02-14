@@ -2,6 +2,7 @@ import call from "../../../assets/call-calling.png";
 import email from "../../../assets/sms.png";
 import map from "../../../assets/map.png";
 import logocar from "../../../assets/logoo.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -75,16 +76,16 @@ const Footer = () => {
           </h3>
           <ul className="text-[#9A9A9A] text-sm md:text-[14px] space-y-3 md:space-y-4">
             <li className="hover:text-white cursor-pointer transition-colors">
-              سوالات متداول
+              <Link to="/questionPage"> سوالات متداول </Link>
             </li>
             <li className="hover:text-white cursor-pointer transition-colors">
-              تماس با ما
+              <Link to="/contact">تماس با ما </Link>
             </li>
             <li className="hover:text-white cursor-pointer transition-colors">
-              درباره ما
+              <Link to="/about"> درباره ما </Link>
             </li>
             <li className="hover:text-white cursor-pointer transition-colors">
-              قوانین و مقررات
+              <Link to="/roles"> قوانین و مقررات </Link>
             </li>
           </ul>
         </div>

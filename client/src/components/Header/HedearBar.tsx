@@ -1,9 +1,11 @@
+import { Link, useLocation } from "react-router-dom";
 import Search from "../../../assets/search-outline.png";
 import logoCircle from "../../../assets/default.png";
 import { useState } from "react";
 
 const HeaderBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -12,18 +14,34 @@ const HeaderBar = () => {
     setIsMenuOpen(false);
   };
 
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case "/":
+        return "صفحه اصلی";
+      case "/about":
+        return "درباره ما";
+      case "/contact":
+        return "تماس با ما";
+      case "/roles":
+        return " قوانین و مقررات";
+      case "/questionPage":
+        return " سوالات متدوال ";
+      default:
+        return "اتورنت";
+    }
+  };
+
   return (
     <>
+      <div className="bg-[#194BF0] text-[#FFFFFF] text-[24px] md:text-[40px] lg:text-[56px] items-center text-center justify-center py-3">
+        {getPageTitle()}
+      </div>
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
           onClick={closeMenu}
         ></div>
       )}
-
-      <div className="bg-[#194BF0] text-[#FFFFFF] text-[24px] md:text-[40px] lg:text-[56px] items-center text-center justify-center py-3">
-        صفحه اصلی
-      </div>
 
       <div className="container w-full max-w-[1200px] mx-auto px-4 relative">
         <div className="flex items-center justify-between bg-[#FFFFFF] py-4">
@@ -44,9 +62,17 @@ const HeaderBar = () => {
               </div>
             </div>
           </div>
-
           <div className="hidden lg:flex items-center justify-around gap-6">
             <ul className="flex items-center justify-around gap-6 text-[#353535] font-medium text-[16px]">
+              <li className="hover:text-[#194BF0] transition-colors">
+                <Link
+                  to="/"
+                  className="block w-full h-full"
+                  onClick={closeMenu}
+                >
+                  خانه
+                </Link>
+              </li>
               <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
                 رزرو خودرو
               </li>
@@ -56,11 +82,25 @@ const HeaderBar = () => {
               <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
                 بلاگ
               </li>
-              <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
-                درباره ما
+
+              <li className="hover:text-[#194BF0] transition-colors">
+                <Link
+                  to="/about"
+                  className="block w-full h-full"
+                  onClick={closeMenu}
+                >
+                  درباره ما
+                </Link>
               </li>
-              <li className="hover:text-[#194BF0] cursor-pointer transition-colors">
-                تماس با ما
+
+              <li className="hover:text-[#194BF0] transition-colors">
+                <Link
+                  to="/contact"
+                  className="block w-full h-full"
+                  onClick={closeMenu}
+                >
+                  تماس با ما
+                </Link>
               </li>
             </ul>
             <img
@@ -119,6 +159,15 @@ const HeaderBar = () => {
             <div className="p-6 overflow-y-auto h-[calc(100%-80px)]">
               <ul className="space-y-4">
                 <li>
+                  <Link
+                    to="/"
+                    onClick={closeMenu}
+                    className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
+                  >
+                    خانه
+                  </Link>
+                </li>
+                <li>
                   <button
                     onClick={closeMenu}
                     className="w-full text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
@@ -142,21 +191,25 @@ const HeaderBar = () => {
                     بلاگ
                   </button>
                 </li>
+
                 <li>
-                  <button
+                  <Link
+                    to="/about"
                     onClick={closeMenu}
-                    className="w-full text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
+                    className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
                   >
                     درباره ما
-                  </button>
+                  </Link>
                 </li>
+
                 <li>
-                  <button
+                  <Link
+                    to="/contact"
                     onClick={closeMenu}
-                    className="w-full text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
+                    className="w-full block text-right text-[#353535] font-medium text-[18px] py-3 px-4 rounded-lg hover:bg-white/50 hover:text-[#194BF0] transition-all duration-200"
                   >
                     تماس با ما
-                  </button>
+                  </Link>
                 </li>
               </ul>
 

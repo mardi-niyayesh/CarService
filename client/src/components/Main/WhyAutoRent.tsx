@@ -1,32 +1,4 @@
-import DescriptionWhyAutoRent from "./descriptionWhyAutoRent";
-
-type feacherWhyAutoRent = {
-  name: string;
-  logo: string;
-  description: string;
-  id:number
-};
-const feacherWhyAutoRent: feacherWhyAutoRent[] = [
-  {
-    name: "تحویل در محل",
-    logo: "   ../../../assets/box.png",
-    description: "تحویل خودرو در زمان و مکان تعیین شده توسط شما خواهد بود.",
-    id:1
-  },
-  {
-    name: "پشتیبانی 24 ساعته",
-    logo: "../../../assets/24-support.png",
-    description:
-      "کارشناسان ما در هر زمان و مکان، پاسخگوی سوالات شما خواهند بود.",
-        id:2
-  },
-  {
-    name: "قیمت مناسب",
-    logo: "../../../assets/wallet-minus.png",
-    description: "هدف ما، ارائه بهترین خدمات با مناسب ترین قیمت ممکن است.",
-      id:3
-  },
-];
+import ComponentWhyAutoRent from "./ComponentWhyAutoRent";
 
 const WhyAutoRent = () => {
   return (
@@ -45,18 +17,8 @@ const WhyAutoRent = () => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 mt-8 md:mt-12 lg:mt-[-60px] relative z-10 px-4">
-        {feacherWhyAutoRent.map((feacher) => {
-          return (
-            <DescriptionWhyAutoRent
-              name={feacher.name}
-              logo={feacher.logo}
-              description={feacher.description}
-              key={feacher.id}
-              id={feacher.id}
-            />
-          );
-        })}
+      <div className="flex lg:flex-row items-center justify-center gap-6 mt-8 md:mt-12 lg:mt-[-60px] relative z-10 px-4">
+        <ComponentWhyAutoRent />
       </div>
     </div>
   );
