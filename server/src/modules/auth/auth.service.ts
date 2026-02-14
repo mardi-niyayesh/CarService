@@ -4,7 +4,7 @@ import {randomUUID} from "node:crypto";
 import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
-import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
+import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
 import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse} from "@/types";
 
@@ -35,10 +35,23 @@ export class AuthService {
 
     const hashPassword: string = await hashSecret(createData.password);
 
+    const selfRole = await this.prisma.role.findFirst({
+      where: {
+        name: "self"
+      }
+    });
+
+    if (!selfRole) throw new InternalServerErrorException({
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'self role not exist',
+      error: "Internal Server Error"
+    });
+
     const newUser = await this.prisma.user.create({
       data: {
         ...createData,
         password: hashPassword,
+        role_id: selfRole.id
       }
     });
 
@@ -82,6 +95,7 @@ export class AuthService {
       sub: user.id,
       permissions,
       jti: randomUUID() + Date.now(),
+      role: user.role.name,
       display_name: user.display_name ?? "",
     };
 
@@ -124,6 +138,7 @@ export class AuthService {
       sub: refreshPayload.user.id,
       jti: randomUUID() + Date.now(),
       permissions: refreshPayload.permissions,
+      role: refreshPayload.role,
       display_name: refreshPayload.user.display_name ?? "",
     };
 
