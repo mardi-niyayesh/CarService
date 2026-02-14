@@ -1,33 +1,17 @@
-import {RolePriority} from "@/types";
-import {UserRole} from "@/modules/prisma/generated/enums";
-
-type Comparison = "equal" | "higher";
-
 interface IsAllowedActionParams {
-  actionRole: UserRole;
-  targetRole: UserRole;
-  roleComparison?: Comparison;
+  actionPermissions: string[];
+  requiredPermissions: string[];
+  requireAll?: boolean;
 }
 
 export function isAllowedAction(
   {
-    actionRole,
-    targetRole,
-    roleComparison = "equal",
+    actionPermissions,
+    requiredPermissions,
+    requireAll = false,
   }: IsAllowedActionParams
 ): boolean {
-  const actionPriority = RolePriority[actionRole];
-  const targetPriority = RolePriority[targetRole];
+  if (requireAll) return requiredPermissions.every(p => actionPermissions.includes(p));
 
-  switch (roleComparison) {
-    case "equal": {
-      return actionPriority >= targetPriority;
-    }
-    case "higher": {
-      return actionPriority > targetPriority;
-    }
-    default: {
-      return false;
-    }
-  }
+  return requiredPermissions.some(p => actionPermissions.includes(p));
 }

@@ -3,7 +3,7 @@ import {throttlerConfig} from "@/lib";
 import {Module} from '@nestjs/common';
 import {APP_GUARD} from "@nestjs/core";
 import {ScheduleModule} from "@nestjs/schedule";
-import {AccessTokenGuard, RoleGuard} from "./common";
+import {AccessTokenGuard, PermissionGuard} from "./common";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
 
 @Module({
@@ -27,7 +27,7 @@ import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
     },
     {
       provide: APP_GUARD,
-      useClass: RoleGuard
+      useClass: PermissionGuard
     }
   ]
 })
