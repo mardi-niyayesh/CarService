@@ -1,5 +1,6 @@
 import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
+import {randomUUID} from "node:crypto";
 import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
@@ -75,8 +76,12 @@ export class AuthService {
 
     if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
 
+    const permissions: string[] = user.role.rolePermissions.map(p => p.permission.name);
+
     const accessTokenPayload: AccessTokenPayload = {
       sub: user.id,
+      permissions,
+      jti: randomUUID() + Date.now(),
       display_name: user.display_name ?? "",
     };
 
