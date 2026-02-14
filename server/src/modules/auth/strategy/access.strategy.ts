@@ -17,7 +17,7 @@ export class AccessStrategy extends PassportStrategy(Strategy, "jwt-access") {
   validate(payload: AccessTokenPayload): UserAccess {
     return {
       userId: payload.sub,
-      permissions: [""],
+      permissions: payload.permissions,
       exp: payload.exp,
       iat: payload.iat,
       jti: payload.jti,
