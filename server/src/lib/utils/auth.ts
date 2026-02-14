@@ -15,7 +15,7 @@ export function isAllowedAction(
     role = "",
   }: IsAllowedActionParams
 ): boolean {
-  if (role === BaseRoles.owner) return true;
+  if (role === BaseRoles.owner.toString()) return true;
 
   if (requireAll) return requiredPermissions.every(p => actionPermissions.includes(p));
 
