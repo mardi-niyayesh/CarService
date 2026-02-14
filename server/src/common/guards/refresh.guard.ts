@@ -61,7 +61,8 @@ export class RefreshTokenGuard implements CanActivate {
         email: tokenRecord.user.email,
         age: tokenRecord.user.age,
       },
-      permissions: tokenRecord.user.role.rolePermissions.map(p => p.permission.name)
+      permissions: tokenRecord.user.role.rolePermissions.map(p => p.permission.name),
+      role: tokenRecord.user.role.name
     } as RefreshTokenPayload;
 
     return true;

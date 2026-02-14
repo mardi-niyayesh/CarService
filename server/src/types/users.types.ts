@@ -11,6 +11,7 @@ export type CreateUserResponse = {
 export interface AccessTokenPayload {
   sub: string;
   permissions: string[];
+  role: string;
   display_name?: string;
   iat?: number;
   exp?: number;
@@ -21,6 +22,7 @@ export interface RefreshTokenPayload {
   refreshRecord: RefreshToken;
   user: SafeUser;
   permissions: string[];
+  role: string;
 }
 
 export type SafeUser = Omit<User, "password">;
