@@ -34,6 +34,14 @@ export class UsersController {
     permissions: ["user.self"]
   })
   @Get("get-me")
+  @ApiOperation({
+    summary: 'get user info',
+    description: 'get user info accessToken. **Access restricted to users with role: (self) only.**',
+    operationId: 'get_me',
+    tags: ["User"],
+  })
+  @ApiOkResponse({type: UserDto.GetUserOkResponse})
+  @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   getMe(
     @Req() req: AccessRequest
   ) {
