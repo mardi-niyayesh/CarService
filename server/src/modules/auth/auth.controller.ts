@@ -74,7 +74,7 @@ export class AuthController {
   async login(
     @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
-  ): Promise<BaseApiResponseData<CreateUserResponse & { accessToken: string }>> {
+  ): Promise<BaseApiResponseData<{ user: SafeUser; accessToken: string }>> {
     const loginResponse = await this.authService.login(data);
 
     const remember: number = data.remember

@@ -6,7 +6,7 @@ import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
 import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
-import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse} from "@/types";
+import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser} from "@/types";
 
 @Injectable()
 export class AuthService {
@@ -122,11 +122,18 @@ export class AuthService {
       }
     });
 
+    const safeUser: SafeUser = {
+      id: user.id,
+      age: user.age,
+      email: user.email,
+      role_id: user.role_id,
+      display_name: user.display_name,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    };
+
     return {
-      user: {
-        ...user,
-        password: undefined,
-      },
+      user: safeUser,
       accessToken,
       refreshToken,
     };
