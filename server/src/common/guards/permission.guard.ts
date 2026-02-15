@@ -1,13 +1,8 @@
 import {isAllowedAction} from "@/lib";
 import {AccessRequest} from "@/types";
 import {Reflector} from "@nestjs/core";
-import {IS_PUBLIC_KEY, PERMISSION_METADATA} from "@/common";
+import {IS_PUBLIC_KEY, PERMISSION_METADATA, type PermissionDecoratorParams} from "@/common";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable, InternalServerErrorException} from "@nestjs/common";
-
-interface ReflectPermission {
-  requireAll?: boolean;
-  permissions: string[];
-}
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -23,12 +18,14 @@ export class PermissionGuard implements CanActivate {
 
     if (isPublic) return true;
 
-    const {requireAll, permissions} = this.reflector.getAllAndOverride<ReflectPermission>(PERMISSION_METADATA, [
+    const {requiredAll, permissions: requiredPermissions} = this.reflector.getAllAndOverride<PermissionDecoratorParams>(PERMISSION_METADATA, [
       context.getHandler(),
       context.getClass(),
-    ]) || {requireAll: false, permissions: []};
+    ]) || {requiredAll: false, permissions: []};
 
-    if (!permissions) throw new InternalServerErrorException({
+    console.log(requiredAll, requiredPermissions);
+
+    if (!requiredPermissions) throw new InternalServerErrorException({
       message: 'Missing Role, Role is Required',
       error: "Internal Server Error",
       statusCode: 500,
@@ -37,8 +34,8 @@ export class PermissionGuard implements CanActivate {
     const actionPermissions: string[] = req.user.permissions;
 
     const isAllowed: boolean = isAllowedAction({
-      requireAll,
-      requiredPermissions: permissions,
+      requiredAll,
+      requiredPermissions,
       actionPermissions
     });
 
