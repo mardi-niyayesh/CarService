@@ -19,14 +19,25 @@ import {
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
+import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {Controller, Get, Param} from '@nestjs/common';
+import {Controller, Get, Param, Req} from '@nestjs/common';
 
 @ApiTags("User")
 @Controller('users')
 @ApiBearerAuth("accessToken")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get("get-me")
+  getMe(
+    @Req() req: AccessRequest
+  ) {
+    console.log(req.user);
+    return {
+      user: req.user,
+    };
+  }
 
   @Get(":id")
   @ApiOperation({
