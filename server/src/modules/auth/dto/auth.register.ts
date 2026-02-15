@@ -1,7 +1,7 @@
 import z from "zod";
 import {date} from "@/lib";
 import {createZodDto} from "nestjs-zod";
-import type {CreateUserResponse} from "@/types";
+import type {UserResponse} from "@/types";
 import {BaseUserSchema} from "@/modules/users/dto/users.validators";
 import {getBaseOkResponseSchema, getBaseErrorBodyResponseSchema, getNormalErrorResponse} from "@/common";
 
@@ -26,7 +26,7 @@ export const createUserResponse = {
     user: {
       id: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca",
       email: "john@example.com",
-      role_id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698f",
+      role: "self",
       display_name: "John",
       age: 24,
       password: undefined,
@@ -37,12 +37,12 @@ export const createUserResponse = {
 };
 
 /** ok example for create user */
-export class CreateUserOkResponse extends getBaseOkResponseSchema<CreateUserResponse>({
+export class CreateUserOkResponse extends getBaseOkResponseSchema<{user: UserResponse}>({
   path: createUserResponse.path,
   create: createUserResponse.create,
   response: {
     message: createUserResponse.message,
-    data: createUserResponse.data as CreateUserResponse
+    data: createUserResponse.data as {user: UserResponse}
   }
 }) {}
 
