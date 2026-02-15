@@ -67,9 +67,11 @@ maintainability, and fully standardized API responses.
 3. Create Database:
    ```postgresql
    CREATE DATABASE car_service
-       ENCODING 'UTF8'
-       LC_COLLATE 'en_US.UTF8'
-       LC_CTYPE 'en_US.UTF8';
+   ENCODING 'UTF8'
+   LC_COLLATE 'en_US.UTF8'
+   LC_CTYPE 'en_US.UTF8';
+   
+   \c car_service;
    
    CREATE COLLATION "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
    CREATE COLLATION "ar_SA" (LOCALE = 'ar_SA.utf8');
