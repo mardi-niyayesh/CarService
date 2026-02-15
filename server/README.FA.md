@@ -158,4 +158,3 @@ node dist/main.js
 ---
 
 [🇬🇧 Read in English](./README.md)
-	
