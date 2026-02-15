@@ -23,8 +23,6 @@ export class PermissionGuard implements CanActivate {
       context.getClass(),
     ]) || {requiredAll: false, permissions: []};
 
-    console.log(requiredAll, requiredPermissions);
-
     if (!requiredPermissions) throw new InternalServerErrorException({
       message: 'Missing Role, Role is Required',
       error: "Internal Server Error",
