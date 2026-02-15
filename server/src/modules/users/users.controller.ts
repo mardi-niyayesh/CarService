@@ -1,6 +1,7 @@
 import {
   ZodPipe,
   UUID4Dto,
+  Permission,
   UUID4Schema,
   type UUID4Type,
   UnauthorizedResponse,
@@ -29,14 +30,14 @@ import {Controller, Get, Param, Req} from '@nestjs/common';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Permission({
+    permissions: ["user.self"]
+  })
   @Get("get-me")
   getMe(
     @Req() req: AccessRequest
   ) {
-    console.log(req.user);
-    return {
-      user: req.user,
-    };
+    return this.usersService.findOne(req.user.userId);
   }
 
   @Get(":id")
