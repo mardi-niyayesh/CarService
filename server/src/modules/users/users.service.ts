@@ -1,5 +1,3 @@
-// import * as UserDto from "./dto";
-// import {isAllowedAction} from "@/lib";
 import {PrismaService} from "../prisma/prisma.service";
 import type {ApiResponse, CreateUserResponse} from "@/types";
 import {Injectable, NotFoundException} from '@nestjs/common';
@@ -32,54 +30,4 @@ export class UsersService {
       },
     };
   }
-
-  /** change user role
-   * - only users with role (SUPER_ADMIN) can accessibility to this route
-   */
-  // async userRole(
-  //   id: string,
-  //   data: UserDto.ChangeRoleInput,
-  // ): Promise<ApiResponse<CreateUserResponse>> {
-  //   const user = await this.findOne(id);
-  //
-  //   const userRole = user.data.user.role;
-  //   const newRole = data.role;
-  //
-  //   const isAllowed: boolean = isAllowedAction({
-  //     actionRole,
-  //     targetRole: userRole,
-  //     roleComparison: "higher"
-  //   });
-  //
-  //   if (!isAllowed) throw new ForbiddenException({
-  //     message: "Your role not access to this action.",
-  //     error: "Forbidden",
-  //     statusCode: 403
-  //   });
-  //
-  //   if (newRole === userRole) throw new ConflictException({
-  //     message: `The user already has the role ${newRole}`,
-  //     error: "Conflict",
-  //     statusCode: 409
-  //   });
-  //
-  //   const newUserData = await this.prisma.user.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       role: newRole,
-  //     }
-  //   });
-  //
-  //   return {
-  //     message: `User role updated successfully to ${newRole}`,
-  //     data: {
-  //       user: {
-  //         ...newUserData,
-  //         password: undefined
-  //       }
-  //     },
-  //   };
-  // }
 }

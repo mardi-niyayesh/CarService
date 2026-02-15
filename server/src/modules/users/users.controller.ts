@@ -3,29 +3,24 @@ import {
   UUID4Dto,
   UUID4Schema,
   type UUID4Type,
-  ForbiddenResponse,
   UnauthorizedResponse,
   BadRequestUUIDParams,
 } from "@/common";
 
 import {
-  ApiBody,
   ApiTags,
   ApiParam,
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
-  ApiConflictResponse,
   ApiNotFoundResponse,
-  ApiForbiddenResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
-import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req} from '@nestjs/common';
+import {Controller, Get, Param} from '@nestjs/common';
 
 @ApiTags("User")
 @Controller('users')
@@ -49,35 +44,5 @@ export class UsersController {
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
     return this.usersService.findOne(params.id);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Post(":id/role")
-  @ApiOperation({
-    summary: 'change user role',
-    description: 'change user role with id. **Access restricted to users with role: (SUPER_ADMIN) only.**',
-    operationId: 'change_user_role',
-    tags: ["User"],
-  })
-  @ApiParam(UUID4Dto)
-  @ApiBody({type: UserDto.ChangeRoleSchema})
-  @ApiOkResponse({type: UserDto.ChangeRoleUserOkResponse})
-  @ApiBadRequestResponse({type: UserDto.BadRequestChangeRoleResponse})
-  @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  @ApiForbiddenResponse({
-    type: ForbiddenResponse,
-    description: "when user is not access to this route."
-  })
-  @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
-  @ApiConflictResponse({type: UserDto.ConflictChangeRoleResponse})
-  changeRole(
-    @Req() req: AccessRequest,
-    @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
-    @Body(new ZodPipe(UserDto.ChangeRole)) data: UserDto.ChangeRoleInput
-  ) {
-    void params;
-    void data;
-    void req;
-    // return this.usersService.userRole(params.id, req.user.role, data);
   }
 }
