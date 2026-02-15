@@ -15,9 +15,9 @@ import {
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
+import type {RefreshRequest, BaseApiResponseData, SafeUser} from "@/types";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
-import type {RefreshRequest, BaseApiResponseData, CreateUserResponse, SafeUser} from "@/types";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
