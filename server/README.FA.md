@@ -29,13 +29,15 @@
 |----------------|---------|-------------------------------|
 | **typescript** | ^5.7.3  | Schema validation             |
 | **nestjs**     | ^11.0.1 | NestJS core utilities         |
+| **postgreSQL** | ^16.11  | Modern Database               |
+| **pg**         | ^8.18.0 | PostgreSQL driver             |
+| **prisma**     | ^7.3.0  | Prisma ORM client             |
+| **zod**        | ^4.3.6  | Schema validation             |
 | **jwt**        | ^11.0.2 | JWT authentication            |
 | **passport**   | ^11.0.5 | Passport authentication layer |
-| **swagger**    | ^11.2.6 | API documentation (Swagger)   |
-| **prisma**     | ^7.3.0  | Prisma ORM client             |
-| **pg**         | ^8.18.0 | PostgreSQL driver             |
 | **bcrypt**     | ^6.0.0  | Password hashing              |
-| **zod**        | ^4.3.6  | Schema validation             |
+| **swagger**    | ^11.2.6 | API documentation (Swagger)   |
+| **vitest**     | ^4.0.8  | Testing Services and app      |
 
 ---
 
@@ -48,13 +50,12 @@
    cd CarService/server
    ```
 
-**با ssh**
+   **با ssh**
 
    ```bash
    git clone git@github.com:mardi-niyayesh/CarService.git
    cd CarService/server
    ```
-
 
 2. **نصب وابستگی‌ها**
 
@@ -62,7 +63,18 @@
    npm install
    ```
 
-3. **ساخت فایل `.env`**
+3. **ساخت دیتابیس postgreSQL**
+   ```postgresql
+   CREATE DATABASE car_service
+       ENCODING 'UTF8'
+       LC_COLLATE 'en_US.UTF8'
+       LC_CTYPE 'en_US.UTF8';
+   
+   CREATE COLLATION "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION "ar_SA" (LOCALE = 'ar_SA.utf8');
+   ```
+
+4. **ساخت فایل `.env`**
 
    ```env
    PORT="3000"
@@ -75,15 +87,15 @@
    JWT_EXPIRES="1h"
    ```
 
-4. **تولید Prisma Client (ضروری بعد از نصب)**
+5. **تولید Prisma Client و دیتاهای اولیه(ضروری بعد از نصب)**
 
    ```bash
-   npm run prisma:generate
+   npm run prisma:seed
    ```
 
    > Prisma Client داخل ریپو قرار نمی‌گیرد و باید روی سیستم شما ساخته شود.
 
-5. **اجرای پروژه در حالت توسعه**
+6. **اجرای پروژه در حالت توسعه**
 
    ```bash
    npm run start:dev

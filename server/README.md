@@ -2,7 +2,6 @@
 
 [🇮🇷 Read in Persian](./README.FA.md)
 
-
 **Car Service Server‑Side** is a modular, scalable, and production‑ready API designed for managing a complete car rental
 system.  
 Built with **NestJS + TypeScript + Prisma + PostgreSQL + Zod + Swagger**, it focuses on clean architecture, long‑term
@@ -31,13 +30,15 @@ maintainability, and fully standardized API responses.
 |----------------|---------|-------------------------------|
 | **typescript** | ^5.7.3  | Schema validation             |
 | **nestjs**     | ^11.0.1 | NestJS core utilities         |
+| **postgreSQL** | ^16.11  | Modern Database               |
+| **pg**         | ^8.18.0 | PostgreSQL driver             |
+| **prisma**     | ^7.3.0  | Prisma ORM client             |
+| **zod**        | ^4.3.6  | Schema validation             |
 | **jwt**        | ^11.0.2 | JWT authentication            |
 | **passport**   | ^11.0.5 | Passport authentication layer |
-| **swagger**    | ^11.2.6 | API documentation (Swagger)   |
-| **prisma**     | ^7.3.0  | Prisma ORM client             |
-| **pg**         | ^8.18.0 | PostgreSQL driver             |
 | **bcrypt**     | ^6.0.0  | Password hashing              |
-| **zod**        | ^4.3.6  | Schema validation             |
+| **swagger**    | ^11.2.6 | API documentation (Swagger)   |
+| **vitest**     | ^4.0.8  | Testing Services and app      |
 
 ---
 
@@ -63,7 +64,18 @@ maintainability, and fully standardized API responses.
    npm install
    ```
 
-3. Create a `.env` file:
+3. Create Database:
+   ```postgresql
+   CREATE DATABASE car_service
+       ENCODING 'UTF8'
+       LC_COLLATE 'en_US.UTF8'
+       LC_CTYPE 'en_US.UTF8';
+   
+   CREATE COLLATION "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION "ar_SA" (LOCALE = 'ar_SA.utf8');
+   ```
+
+4. Create a `.env` file:
 
    ```env
    PORT="3000"
@@ -76,13 +88,13 @@ maintainability, and fully standardized API responses.
    JWT_EXPIRES="1h"
    ```
 
-4. Generate Prisma Client (required once):
+5. Generate Prisma Client and Create init Data (required once):
 
    ```bash
-   npm run prisma:generate
+   npm run prisma:seed
    ```
 
-5. Start development mode:
+6. Start development mode:
 
    ```bash
    npm run start:dev
