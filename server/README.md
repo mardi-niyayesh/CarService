@@ -64,30 +64,7 @@ maintainability, and fully standardized API responses.
    npm install
    ```
 
-3. Create Database and Collation:
-   **automat (recommended):**
-   ```bash
-   npm run prisma:seed
-      ```
-
-   **or manually:**
-
-   ```postgresql
-   CREATE DATABASE car_service
-   ENCODING 'UTF8'
-   LC_COLLATE 'en_US.UTF-8'
-   LC_CTYPE 'en_US.UTF-8'
-   TEMPLATE template0
-   OWNER app_owner;
-   
-   \c car_service;
-   
-   CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
-   CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8');
-   ```
-
-4. Create a `.env` file:
-
+3. Create a `.env` file:
    ```env
    # for config and development
    NODE_ENV="production"
@@ -102,10 +79,40 @@ maintainability, and fully standardized API responses.
    JWT_EXPIRES="1h"
    ```
 
-5. Generate Prisma Client and Create init Data (required once):
+4. Create Database and Collation:<br><br>
+
+   **automat (recommended):**
+   ```bash
+   npm run seed:database
+   ```
+   **Finish. 🏁 (and go to 5th)**<br><br><br>
+
+   **or manually:**
+   ```postgresql
+   CREATE DATABASE car_service
+   ENCODING 'UTF8'
+   LC_COLLATE 'en_US.UTF-8'
+   LC_CTYPE 'en_US.UTF-8'
+   TEMPLATE template0
+   OWNER app_owner;
+   
+   \c car_service;
+   
+   CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8');
+   ```
+
+   **and**
+   ```bash
+   npm run prisma:setup
+   npm run seed:roles
+   ```
+   **Finish.**<br><br><br>
+
+5. Create **owner** Role:
 
    ```bash
-   npm run prisma:seed
+   npm run seed:owner
    ```
 
 6. Start development mode:
@@ -161,14 +168,10 @@ This prevents accidental or unauthorized execution of sensitive operations.
 
 ## 🔮 Future Plans
 
-- Online payment system for car rentals
 - Invoice and receipt management
-- User rating and feedback system
 - Advanced admin panel
 - Reporting and analytics
 - Advanced filtering and search for cars
-- Multi‑language support (i18n)
-- Webhooks for important system events
 
 ---
 
