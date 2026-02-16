@@ -37,12 +37,12 @@ export const createUserResponse = {
 };
 
 /** ok example for create user */
-export class CreateUserOkResponse extends getBaseOkResponseSchema<{user: UserResponse}>({
+export class CreateUserOkResponse extends getBaseOkResponseSchema<UserResponse>({
   path: createUserResponse.path,
   create: createUserResponse.create,
   response: {
     message: createUserResponse.message,
-    data: createUserResponse.data as {user: UserResponse}
+    data: createUserResponse.data
   }
 }) {}
 
