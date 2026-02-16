@@ -60,6 +60,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.19.11",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "^8.16.0",
     "@types/supertest": "^6.0.2",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/mocker": "^4.0.18",
