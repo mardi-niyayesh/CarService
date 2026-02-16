@@ -35,6 +35,17 @@ import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/com
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /** get same refreshToken options */
+  getCookieOptions(maxAge?: number): CookieOptions {
+    return {
+      sameSite: "lax",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: "/",
+      maxAge
+    };
+  }
+
   /**
    * Creating new user accounts
    */
@@ -149,16 +160,5 @@ export class AuthController {
   ) {
     res.clearCookie("refreshToken", this.getCookieOptions());
     return this.authService.logout(req.refreshPayload);
-  }
-
-  /** get same refreshToken options */
-  getCookieOptions(maxAge?: number): CookieOptions {
-    return {
-      sameSite: "lax",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: "/",
-      maxAge
-    };
   }
 }
