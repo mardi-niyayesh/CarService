@@ -6,9 +6,9 @@ import "tsconfig-paths/register";
 import {hashSecret} from "@/lib";
 import {BaseRoles} from "@/types";
 import {NestFactory} from "@nestjs/core";
-import * as readline from "node:readline";
 import {CreateUser} from "@/modules/auth/dto";
 import {CliModule} from "@/modules/cli/cli.module";
+import * as readline from "node:readline/promises";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
 async function ask<T extends keyof typeof CreateUser.shape>(
@@ -21,12 +21,7 @@ async function ask<T extends keyof typeof CreateUser.shape>(
       output: process.stdout,
     });
 
-    const answer: string = await new Promise(resolve => {
-      rl.question(q, answer => {
-        rl.close();
-        resolve(answer.trim());
-      });
-    });
+    const answer: string = await rl.question(q);
 
     const validate = CreateUser.shape[field].safeParse(answer);
 
