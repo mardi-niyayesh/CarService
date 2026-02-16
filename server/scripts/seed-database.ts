@@ -57,12 +57,15 @@ async function main(): Promise<void> {
 
     const safeName: string = database.replace(/"/g, '""');
 
+    const dbOwner: string = await getInput(rl, "Enter Database owner role (default = postgres): ", "postgres");
+
     await client.query(`
       CREATE DATABASE "${safeName}"
       ENCODING 'UTF8'
       LC_COLLATE 'en_US.UTF-8'
       LC_CTYPE 'en_US.UTF-8'
       TEMPLATE template0
+      OWNER "${dbOwner.replace(/"/g, '""')}"
     `);
     console.log("✅ Database created successfully!");
 
