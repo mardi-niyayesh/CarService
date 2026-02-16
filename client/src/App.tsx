@@ -8,6 +8,7 @@ import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
 import RolsPage from "./pages/RolsPage";
 import QuestionPage from "./pages/QuestionPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/roles" element={<RolsPage />} />
         <Route path="/questionPage" element={<QuestionPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </>
