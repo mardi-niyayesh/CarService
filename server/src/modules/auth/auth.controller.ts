@@ -15,9 +15,9 @@ import {
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
-import type {RefreshRequest, BaseApiResponseData, SafeUser} from "@/types";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
+import type {RefreshRequest, BaseApiResponseData, SafeUser, LoginResponse} from "@/types";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -74,7 +74,7 @@ export class AuthController {
   async login(
     @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
-  ): Promise<BaseApiResponseData<{ user: SafeUser; accessToken: string }>> {
+  ): Promise<BaseApiResponseData<LoginResponse>> {
     const loginResponse = await this.authService.login(data);
 
     const remember: number = data.remember

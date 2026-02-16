@@ -1,12 +1,5 @@
 import {RefreshToken, User} from "@/modules/prisma/generated/client";
 
-/** response user type */
-export type CreateUserResponse = {
-  user: Omit<User, "password"> & {
-    password: undefined;
-  };
-}
-
 export enum BaseRoles {
   owner = "owner",
   self = "self",
@@ -36,6 +29,10 @@ export type UserResponse = {
   user: Omit<SafeUser, "role_id"> & {
     role: string;
   };
+}
+
+export interface LoginResponse extends UserResponse {
+  accessToken: string;
 }
 
 export type LoginUserSchemaType = { user: SafeUser; accessToken: string; };

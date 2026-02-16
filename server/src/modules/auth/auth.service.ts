@@ -5,8 +5,8 @@ import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
+import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser, UserResponse, LoginResponse} from "@/types";
 import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
-import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser, UserResponse} from "@/types";
 
 @Injectable()
 export class AuthService {
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   /** login users */
-  async login(loginData: AuthDto.LoginUserInput) {
+  async login(loginData: AuthDto.LoginUserInput): Promise<LoginResponse & { refreshToken: string }> {
     const user = await this.prisma.user.findFirst({
       where: {
         email: loginData.email,
@@ -132,18 +132,16 @@ export class AuthService {
       }
     });
 
-    const safeUser: SafeUser = {
-      id: user.id,
-      age: user.age,
-      email: user.email,
-      role_id: user.role_id,
-      display_name: user.display_name,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
-
     return {
-      user: safeUser,
+      user: {
+        id: user.id,
+        age: user.age,
+        email: user.email,
+        role: user.role.name,
+        display_name: user.display_name,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+      },
       accessToken,
       refreshToken,
     };
