@@ -1,72 +1,89 @@
-import {execSync} from "child_process";
+import {Client} from "pg";
 import * as readline from "node:readline/promises";
 import {stdin as input, stdout as output} from "node:process";
 
+async function getInput(question: string, defaultValue: string = ""): Promise<string> {
+  const rl = readline.createInterface({input, output});
+  const answer = (await rl.question(question)).trim();
+  rl.close();
+  return answer || defaultValue;
+}
+
+async function getDbName(client: Client): Promise<string | null> {
+  while (true) {
+    const dbName = await getInput("Enter Database name (default = car_service): ", "car_service");
+    const res = await client.query("SELECT datname FROM pg_database WHERE datname = $1", [dbName]);
+
+    if (res.rows.length > 0) {
+      const answer: string = await getInput(`Database ${dbName} already exists. change db Name? (y/N): `, "N");
+
+      if (answer.toLowerCase() === "y") {
+        continue;
+      } else {
+        return null;
+      }
+    }
+
+    return dbName;
+  }
+}
+
 async function main(): Promise<void> {
-  const rl: readline.Interface = readline.createInterface({input, output});
+  console.log("=========================================");
+  console.log("Created PostgreSQL Database and Collation");
+  console.log("=========================================");
+
+  const rl = readline.createInterface({input, output});
+
+  const userName: string = await getInput("Enter Database username (default = postgres): ", "postgres");
+  const password = await getInput("Enter Database password (default = postgres): ");
+
+  const client: Client = new Client({
+    user: userName,
+    database: "postgres",
+    password: password || undefined,
+    host: "localhost",
+    port: 5432
+  });
 
   try {
-    console.log("========================");
-    console.log("Welcome to Creating Database and Collation");
-    console.log("========================");
-    let dbName: string = await rl.question("Enter Database name (default = car_service): ").then(s => s.trim()) || "car_service";
-    const userName: string = await rl.question("Enter Database username (default = postgres): ").then(s => s.trim()) || "postgres";
+    await client.connect();
+    console.log("✅ Connected to PostgreSQL.");
 
-    // check DB connected
-    try {
-      execSync(`psql -U ${userName} -c "SELECT 1"`, {stdio: "pipe"});
-      console.log("✅ Connected to PostgreSQL");
-    } catch (_) {
-      console.log("❌ Cannot connect to PostgreSQL. Check if it's running and username/password is correct.");
-      process.exit(1);
+    const database: string | null = await getDbName(client);
+
+    if (database === null) {
+      console.log("❌ Cancelled.");
+      process.exit(0);
     }
 
-    console.log(`\n🔍 Checking if database ${dbName} exists...`);
-    try {
-      const checkDB = `psql -U ${userName} -lqt | cut -d \\| -f 1 | grep -w ${dbName} || true`;
-      const exist = execSync(checkDB, {encoding: "utf8"}).trim();
+    await client.query(`CREATE DATABASE ${database} ENCODING 'UTF8' LC_COLLATE 'en_US.UTF8' LC_CTYPE 'en_US.UTF8'`);
+    console.log("✅ Database created successfully!");
 
-      if (exist) {
-        const answer: string = await rl.question(`Database ${dbName} already exists. change db Name? (y/N): `);
-
-        if (answer.trim().toLowerCase() === "y") {
-          dbName = await rl.question("Enter Database name (default = car_service): ").then(s => s.trim()) || "car_service_nest";
-        } else {
-          console.log("❌ Cancelled.");
-          process.exit(0);
-        }
-      }
-    } catch (e) {
-      console.log((e as Error).message || "❌ Something went wrong.");
-      process.exit(1);
-    }
-
-    const createDB = `psql -U ${userName} -c "CREATE DATABASE ${dbName} ENCODING 'UTF8' LC_COLLATE 'en_US.UTF8' LC_CTYPE 'en_US.UTF8'"`;
-
-    execSync(createDB, {
-      encoding: "utf8",
-      stdio: "pipe"
+    const clientDB: Client = new Client({
+      user: userName,
+      database,
+      password: password || undefined,
+      host: "localhost",
+      port: 5432
     });
 
-    console.log("✅ Database created successfully!");
-    console.log("🔧 Creating collations...");
-
-    const collate1 = `psql -U ${userName} -d ${dbName} -c "CREATE COLLATION IF NOT EXISTS \\"ar_SA.utf8\\" (LOCALE = 'ar_SA.utf8');"`;
-    const collate2 = `psql -U ${userName} -d ${dbName} -c "CREATE COLLATION IF NOT EXISTS \\"ar_SA\\" (LOCALE = 'ar_SA.utf8');"`;
-
-    execSync(collate1, {stdio: "inherit"});
-    execSync(collate2, {stdio: "inherit"});
-
+    await clientDB.connect();
+    await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8')`);
+    await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8')`);
     console.log("✅ Collations created!");
+
+    await clientDB.end();
     console.log("\n🎉 All done!");
-    process.exit(0);
+
   } catch (e) {
-    console.log((e as Error).message);
+    console.error("❌ Error: ", (e as Error).message || "Something went wrong");
     process.exit(1);
+
   } finally {
     rl.close();
   }
 }
 
 main()
-  .catch(e => console.log(e));
+  .catch(e => console.error(e));
