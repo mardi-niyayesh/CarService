@@ -32,8 +32,10 @@ export interface RefreshTokenPayload {
 
 export type SafeUser = Omit<User, "password">;
 
-export type UserResponse = Omit<SafeUser, "role_id"> & {
-  role: string;
-};
+export type UserResponse = {
+  user: Omit<SafeUser, "role_id"> & {
+    role: string;
+  };
+}
 
 export type LoginUserSchemaType = { user: SafeUser; accessToken: string; };
