@@ -4,9 +4,9 @@ import {randomUUID} from "node:crypto";
 import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
-import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
-import {CreateUserResponse, AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser} from "@/types";
+import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
+import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser, UserResponse} from "@/types";
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   /** create user in db */
-  async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<CreateUserResponse>> {
+  async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<UserResponse>> {
     const user: User | null = await this.prisma.user.findFirst({
       where: {
         email: createData.email,
@@ -52,17 +52,27 @@ export class AuthService {
         ...createData,
         password: hashPassword,
         role_id: selfRole.id
+      },
+      include: {
+        role: true
       }
     });
 
+    const data: UserResponse = {
+      user: {
+        role: newUser.role.name,
+        updated_at: newUser.updated_at,
+        created_at: newUser.created_at,
+        age: newUser.age,
+        id: newUser.id,
+        email: newUser.email,
+        display_name: newUser.display_name,
+      }
+    };
+
     return {
       message: "user created successfully",
-      data: {
-        user: {
-          ...newUser,
-          password: undefined
-        }
-      }
+      data
     };
   }
 
