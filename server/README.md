@@ -105,14 +105,14 @@ maintainability, and fully standardized API responses.
    **and**
    ```bash
    npm run prisma:setup
-   npm run prisma:roles
+   npm run seed:roles
    ```
    **Finish.**<br><br><br>
 
 5. Create **owner** Role:
 
    ```bash
-   npm run prisma:owner
+   npm run seed:owner
    ```
 
 6. Start development mode:
