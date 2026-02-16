@@ -63,17 +63,26 @@
    npm install
    ```
 
-3. **ساخت دیتابیس postgreSQL**
+3. ساخت دیتابیس و Collationها:
+   **بصورت خودکار (پیشنهادی):**
+   ```bash
+   npm run prisma:seed
+      ```
+
+   **یا دستی:**
+
    ```postgresql
    CREATE DATABASE car_service
    ENCODING 'UTF8'
-   LC_COLLATE 'en_US.UTF8'
-   LC_CTYPE 'en_US.UTF8';
+   LC_COLLATE 'en_US.UTF-8'
+   LC_CTYPE 'en_US.UTF-8'
+   TEMPLATE template0
+   OWNER app_owner;
    
    \c car_service;
    
-   CREATE COLLATION "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
-   CREATE COLLATION "ar_SA" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8');
    ```
 
 4. **ساخت فایل `.env`**
