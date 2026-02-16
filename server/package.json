@@ -23,7 +23,7 @@
     "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
     "prisma:roles": "npm run build && node dist/scripts/seed-roles.js",
     "seed:owner": "npm run build && node dist/scripts/seed-owner.js",
-    "prisma:seed": "npm run seed:create-db && prisma migrate deploy && prisma generate && npm run build && node dist/scripts/seed-roles.js"
+    "seed:database": "npm run seed:create-db && prisma migrate deploy && prisma generate && npm run build && node dist/scripts/seed-roles.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
