@@ -22,11 +22,15 @@ async function main(): Promise<void> {
     }
 
     try {
-      const checkDB = `psql -U ${userName} -lqt | cut -d \\| -f | grep -w ${dbName}`;
-      const exist: string = execSync(checkDB, {encoding: "utf8"}).trim();
+      const checkDB = `psql -U ${userName} -lqt | cut -d \\| -f 1 | grep -w ${dbName} || true`;
+      const exist = execSync(checkDB, {encoding: "utf8"}).trim();
 
       if (exist) {
+        const answer: string = await rl.question(`Database ${dbName} already exists. change db Name? (y/N): `);
 
+        if (answer.trim().toLowerCase() === "y") {
+          dbName = await rl.question("Enter Database name (default = car_service): ").then(s => s.trim()) || "car_service_nest";
+        }
       } else {
         console.log("❌ Cancelled.");
         process.exit(0);
