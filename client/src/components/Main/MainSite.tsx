@@ -5,7 +5,6 @@ import ReserveAutorent from "./ReserveAutorent";
 import FeacherBoxcommentUser from "../comment/FeacherBoxcommentUser";
 import ComponentQuestion from "./ComponentQuestion/ComponentQuestion";
 import ArticleCar from "./Article/ArticleCar";
-
 const MainSite = () => {
   return (
     <>

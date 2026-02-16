@@ -1,0 +1,37 @@
+# Root .gitattributes for fullstack project
+
+# Normalize line endings
+* text=auto
+
+# JS/TS/JSON/CSS/HTML files LF
+*.js    text eol=lf
+*.ts    text eol=lf
+*.jsx   text eol=lf
+*.tsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.scss  text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+
+# Binary files
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.tar   binary
+*.gz    binary
+*.mp3   binary
+*.mp4   binary
+
+# Merge/diff settings
+*.lock merge=ours
+package-lock.json merge=ours
+yarn.lock merge=ours
+
+# Ignore env files in export/archive
+.env    export-ignore
+.env.*  export-ignore
