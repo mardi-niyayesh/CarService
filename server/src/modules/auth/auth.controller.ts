@@ -15,9 +15,9 @@ import {
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
+import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
-import type {RefreshRequest, BaseApiResponseData, SafeUser, LoginResponse} from "@/types";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -74,7 +74,7 @@ export class AuthController {
   async login(
     @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
-  ): Promise<BaseApiResponseData<LoginResponse>> {
+  ): Promise<ApiResponse<LoginResponse>> {
     const loginResponse = await this.authService.login(data);
 
     const remember: number = data.remember
@@ -107,15 +107,25 @@ export class AuthController {
   @ApiUnauthorizedResponse({type: AuthDto.RefreshUsersUnAuthResponse})
   refresh(
     @Req() req: RefreshRequest
-  ): BaseApiResponseData<{ accessToken: string; user: SafeUser }> {
+  ): ApiResponse<LoginResponse> {
     const accessToken: string = this.authService.refresh(req.refreshPayload);
+
+    const data: LoginResponse = {
+      user: {
+        role: req.refreshPayload.role,
+        display_name: req.refreshPayload.user.display_name,
+        created_at: req.refreshPayload.user.created_at,
+        age: req.refreshPayload.user.age,
+        updated_at: req.refreshPayload.user.updated_at,
+        email: req.refreshPayload.user.email,
+        id: req.refreshPayload.user.id,
+      },
+      accessToken
+    };
 
     return {
       message: "accessToken successfully created.",
-      data: {
-        user: req.refreshPayload.user,
-        accessToken,
-      }
+      data
     };
   }
 

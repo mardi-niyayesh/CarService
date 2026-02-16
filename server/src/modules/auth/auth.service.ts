@@ -5,7 +5,7 @@ import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
-import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, SafeUser, UserResponse, LoginResponse} from "@/types";
+import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
 import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
