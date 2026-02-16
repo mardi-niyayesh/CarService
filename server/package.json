@@ -17,12 +17,13 @@
     "test:cov": "vitest --coverage",
     "test:debug": "vitest --inspect-brk --runInBand",
     "test:e2e": "vitest --config ./test/vitest-e2e.config.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
+    "seed:create-db": "npx ts-node scripts/seed-database.ts",
+    "prisma:generate-only": "prisma generate",
     "prisma:setup": "prisma migrate deploy && prisma generate",
+    "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
     "prisma:roles": "npm run build && node dist/scripts/seed-roles.js",
     "seed:owner": "npm run build && node dist/scripts/seed-owner.js",
-    "prisma:seed": "prisma migrate deploy && prisma generate & npm run build && node dist/scripts/seed-roles.js"
+    "prisma:seed": "npm run seed:create-db && prisma migrate deploy && prisma generate && npm run build && node dist/scripts/seed-roles.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
