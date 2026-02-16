@@ -9,4 +9,4 @@ export const PERMISSIONS = {
   ...USER,
 } as const;
 
-export type PermissionEnum = typeof PERMISSIONS[keyof typeof PERMISSIONS];
+export type PermissionsType = typeof PERMISSIONS[keyof typeof PERMISSIONS];
