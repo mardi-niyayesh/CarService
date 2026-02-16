@@ -3,7 +3,7 @@
 [🇬🇧 نسخه انگلیسی](./README.md)
 [🇬🇧 Read in English](./README.md)
 
-**MyCar** یک پلتفرم کامل و مدرن برای مدیریت سیستم کرایه خودرو است که از دو بخش تشکیل شده:
+**CarService** یک پلتفرم کامل و مدرن برای مدیریت سیستم کرایه خودرو است که از دو بخش تشکیل شده:
 
 - **بک‌اند:** NestJS + Prisma + PostgreSQL + Zod + Swagger
 - **فرانت‌اند:** React + Vite + TypeScript + TailwindCSS
@@ -15,7 +15,7 @@
 # 🌐 ساختار کلی پروژه
 
 ```
-mycar/
+CarService/
 │
 ├── backend/        # Car Service – Server‑Side API (NestJS)
 │   └── server/
@@ -74,7 +74,6 @@ git clone git@github.com:mardi-niyayesh/CarService.git
 cd CarService
 ```
 
-
 ## 🏁 راه‌اندازی سریع بک‌اند
 
 ```bash
@@ -93,9 +92,9 @@ JWT_EXPIRES="1h"
 
 تولید Prisma Client (ضروری بعد از نصب):
 
-   ```bash
-   npm run prisma:generate
-   ```
+```bash
+npm run seed:database
+```
 
 > Prisma Client داخل ریپو قرار نمی‌گیرد و باید روی سیستم شما ساخته شود.
 

@@ -168,14 +168,10 @@ This prevents accidental or unauthorized execution of sensitive operations.
 
 ## 🔮 Future Plans
 
-- Online payment system for car rentals
 - Invoice and receipt management
-- User rating and feedback system
 - Advanced admin panel
 - Reporting and analytics
 - Advanced filtering and search for cars
-- Multi‑language support (i18n)
-- Webhooks for important system events
 
 ---
 

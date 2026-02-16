@@ -1,13 +1,13 @@
 # 🚗 **Car Service – Full‑Stack Car Rental Platform**
 
-[🇮🇷  نسخه فارسی](./README.FA.md)
+[🇮🇷 نسخه فارسی](./README.FA.md)
 [🇮🇷 Read in Persian](./README.FA.md)
 
 A complete full‑stack car rental platform built with a modern, scalable, and modular architecture.  
 This project includes both:
 
-- **Backend:** NestJS + Prisma + PostgreSQL + Zod + Swagger  
-- **Frontend:** React + Vite + TypeScript + TailwindCSS  
+- **Backend:** NestJS + Prisma + PostgreSQL + Zod + Swagger
+- **Frontend:** React + Vite + TypeScript + TailwindCSS
 
 Designed for long‑term maintainability, clean architecture, and production‑ready development.
 
@@ -16,7 +16,7 @@ Designed for long‑term maintainability, clean architecture, and production‑r
 # 🌐 Project Structure
 
 ```
-mycar/
+CarService/
 │
 ├── backend/        # Car Service – Server‑Side API (NestJS)
 │   └── server/
@@ -48,16 +48,16 @@ A modular, scalable API for managing the entire car rental system.
 
 ## 📦 Backend Core Packages
 
-| Tech       | Version | Description                   |
-|------------|---------|-------------------------------|
-| **nestjs** | ^11.0.1 | Backend framework             |
-| **jwt**    | ^11.0.2 | JWT authentication            |
-| **passport** | ^11.0.5 | Auth strategy layer         |
-| **swagger** | ^11.2.6 | API documentation           |
-| **prisma** | ^7.3.0  | ORM for PostgreSQL           |
-| **pg**     | ^8.18.0 | PostgreSQL driver            |
-| **bcrypt** | ^6.0.0  | Password hashing             |
-| **zod**    | ^4.3.6  | Schema validation            |
+| Tech         | Version | Description         |
+|--------------|---------|---------------------|
+| **nestjs**   | ^11.0.1 | Backend framework   |
+| **jwt**      | ^11.0.2 | JWT authentication  |
+| **passport** | ^11.0.5 | Auth strategy layer |
+| **swagger**  | ^11.2.6 | API documentation   |
+| **prisma**   | ^7.3.0  | ORM for PostgreSQL  |
+| **pg**       | ^8.18.0 | PostgreSQL driver   |
+| **bcrypt**   | ^6.0.0  | Password hashing    |
+| **zod**      | ^4.3.6  | Schema validation   |
 
 ---
 
@@ -82,7 +82,6 @@ cd server
 npm install
 ```
 
-
 Create `.env`:
 
 ```env
@@ -92,11 +91,11 @@ JWT_SECRET="your_secret_key"
 JWT_EXPIRES="1h"
 ```
 
-Generate Prisma Client (required once):
+Create Database and migrate prisma (required once):
 
-   ```bash
-   npm run prisma:generate
-   ```
+```bash
+npm run seed:database
+```
 
 Run dev:
 
@@ -125,14 +124,14 @@ A modern, fast, responsive frontend built with **React + Vite + TypeScript + Tai
 
 ## 📦 Frontend Core Packages
 
-| Tech             | Version   | Description                     |
-|------------------|-----------|---------------------------------|
-| **react**        | ^19.2.0   | UI library                      |
-| **react‑dom**    | ^19.2.0   | DOM renderer                    |
-| **vite**         | 7.2.5     | Frontend build tool             |
-| **typescript**   | ~5.9.3    | TypeScript support              |
-| **tailwindcss**  | ^4.1.17   | Utility‑first CSS framework     |
-| **swiper**       | ^12.0.3   | Carousels & sliders             |
+| Tech            | Version | Description                 |
+|-----------------|---------|-----------------------------|
+| **react**       | ^19.2.0 | UI library                  |
+| **react‑dom**   | ^19.2.0 | DOM renderer                |
+| **vite**        | 7.2.5   | Frontend build tool         |
+| **typescript**  | ~5.9.3  | TypeScript support          |
+| **tailwindcss** | ^4.1.17 | Utility‑first CSS framework |
+| **swiper**      | ^12.0.3 | Carousels & sliders         |
 
 ---
 
@@ -195,20 +194,21 @@ http://localhost:3000/api
 
 # 🔮 Full‑Stack Future Plans
 
-- Online payment integration  
-- Reservation calendar UI  
-- Admin dashboard (cars, users, reservations)  
-- User profile & rental history  
-- Advanced filtering & search  
-- Multi‑language support (i18n)  
-- Webhooks for important events  
-- Mobile‑friendly UI redesign  
+- Online payment integration
+- Reservation calendar UI
+- Admin dashboard (cars, users, reservations)
+- User profile & rental history
+- Advanced filtering & search
+- Multi‑language support (i18n)
+- Webhooks for important events
+- Mobile‑friendly UI redesign
 
 ---
 
 ## **Contributors**
 
-### 👨‍💻 Project Contributors  
+### 👨‍💻 Project Contributors
+
 A clean and modern full‑stack collaboration.
 
 <br>
@@ -232,5 +232,5 @@ A clean and modern full‑stack collaboration.
 
 ---
 
-[🇮🇷  نسخه فارسی](./README.FA.md)
+[🇮🇷 نسخه فارسی](./README.FA.md)
 [🇮🇷 Read in Persian](./README.FA.md)
