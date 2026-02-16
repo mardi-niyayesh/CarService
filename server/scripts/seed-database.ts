@@ -36,7 +36,7 @@ async function main(): Promise<void> {
   const rl = readline.createInterface({input, output});
 
   const userName: string = await getInput("Enter Database username (default = postgres): ", "postgres");
-  const password = await getInput("Enter Database password (default = postgres): ");
+  const password = await getInput("Enter Database password (default = postgres): ").then(p => p.trim());
 
   const client: Client = new Client({
     user: userName,
@@ -67,11 +67,15 @@ async function main(): Promise<void> {
       host: "localhost",
       port: 5432
     });
-
     await clientDB.connect();
-    await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8')`);
-    await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8')`);
-    console.log("✅ Collations created!");
+
+    try {
+      await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8')`);
+      await clientDB.query(`CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8')`);
+      console.log("→ Collations created (or already exist)");
+    } catch (e) {
+      console.warn("Warning: Collations not created (locale probably missing, but db created): ", (e as Error).message);
+    }
 
     await clientDB.end();
     console.log("\n🎉 All done!");
