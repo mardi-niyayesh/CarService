@@ -12,15 +12,11 @@ import * as readline from "node:readline/promises";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 
 async function ask<T extends keyof typeof CreateUser.shape>(
+  rl: readline.Interface,
   q: string,
   field: T,
 ): Promise<string> {
   while (true) {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
     const answer: string = await rl.question(q);
 
     const validate = CreateUser.shape[field].safeParse(answer);
@@ -65,8 +61,13 @@ async function bootstrap() {
 
   console.log(`creating owner...`);
 
-  const email: string = await ask("enter email: ", "email");
-  const password: string = await ask("enter password: ", "password");
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const email: string = await ask(rl, "enter email: ", "email");
+  const password: string = await ask(rl, "enter password: ", "password");
 
   const hashedPassword: string = await hashSecret(password);
 

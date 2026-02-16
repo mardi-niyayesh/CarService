@@ -34,7 +34,8 @@ export class PermissionGuard implements CanActivate {
     const isAllowed: boolean = isAllowedAction({
       requiredAll,
       requiredPermissions,
-      actionPermissions
+      actionPermissions,
+      role: req.user.role,
     });
 
     if (!isAllowed) throw new ForbiddenException({
