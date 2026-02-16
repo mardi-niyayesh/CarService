@@ -63,31 +63,12 @@
    npm install
    ```
 
-3. ساخت دیتابیس و Collationها:
-   **بصورت خودکار (پیشنهادی):**
-   ```bash
-   npm run prisma:seed
-      ```
-
-   **یا دستی:**
-
-   ```postgresql
-   CREATE DATABASE car_service
-   ENCODING 'UTF8'
-   LC_COLLATE 'en_US.UTF-8'
-   LC_CTYPE 'en_US.UTF-8'
-   TEMPLATE template0
-   OWNER app_owner;
-   
-   \c car_service;
-   
-   CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
-   CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8');
-   ```
-
-4. **ساخت فایل `.env`**
+3. **ساخت فایل `.env`**
 
    ```env
+   # for config and development
+   NODE_ENV="production"
+
    PORT="3000"
 
    # Database
@@ -97,6 +78,36 @@
    JWT_SECRET="your_secret_key"
    JWT_EXPIRES="1h"
    ```
+
+4. **ساخت دیتابیس و Collationها:**<br><br>
+   **بصورت خودکار (پیشنهادی):**
+
+   ```bash
+   npm run prisma:seed
+      ```
+   **تمام. 🏁 (برو مرجله پنجم)**<br><br><br>
+   
+   **یا دستی:**
+
+   ```postgresql
+   CREATE DATABASE car_service
+       ENCODING 'UTF8'
+       LC_COLLATE 'en_US.UTF-8'
+       LC_CTYPE 'en_US.UTF-8'
+       TEMPLATE template0
+       OWNER app_owner;
+   
+   \c car_service;
+   
+   CREATE COLLATION IF NOT EXISTS "ar_SA.utf8" (LOCALE = 'ar_SA.utf8');
+   CREATE COLLATION IF NOT EXISTS "ar_SA" (LOCALE = 'ar_SA.utf8');
+   ```
+   **و**
+   ```bash
+   npm run prisma:setup
+   npm run prisma:roles
+   ```
+   **تمام.**<br><br><br>
 
 5. **تولید Prisma Client و دیتاهای اولیه(ضروری بعد از نصب)**
 
