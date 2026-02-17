@@ -27,13 +27,14 @@ export const loginResponseSchema: LoginUserSchemaType = {
     age: 20,
     created_at: date,
     updated_at: date,
+    roles: ["self"],
+    permissions: ["user.self"]
   },
   accessToken: "accessToken",
 };
 
 export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
   path: "users/login",
-  create: false,
   response: {
     message: "user logged in successfully",
     data: loginResponseSchema,

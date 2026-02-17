@@ -34,4 +34,4 @@ export interface LoginResponse extends UserResponse {
   accessToken: string;
 }
 
-export type LoginUserSchemaType = { user: SafeUser; accessToken: string; };
+export type LoginUserSchemaType = { user: SafeUser & BaseTokens; accessToken: string; };

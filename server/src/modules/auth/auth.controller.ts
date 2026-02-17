@@ -72,6 +72,7 @@ export class AuthController {
    * Authenticating users with email/password and Issuing access tokens
    */
   @Post("login")
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Authenticate user',
     description: 'Validates user credentials and returns an access token. Also sets a secure httpOnly refresh token cookie.',
