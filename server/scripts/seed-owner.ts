@@ -47,10 +47,8 @@ async function bootstrap() {
     process.exit(1);
   }
 
-  const exist = await prisma.user.findFirst({
-    where: {
-      role_id: ownerRole.id
-    }
+  const exist = await prisma.userRole.findFirst({
+    where: {role_id: ownerRole.id}
   });
 
   if (exist) {
@@ -76,7 +74,6 @@ async function bootstrap() {
       email,
       password: hashedPassword,
       display_name: "owner",
-      role_id: ownerRole.id
     }
   });
 
