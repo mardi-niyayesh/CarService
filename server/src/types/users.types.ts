@@ -5,22 +5,23 @@ export enum BaseRoles {
   self = "self",
 }
 
-/** AccessToken payload on JWT */
-export interface AccessTokenPayload {
-  sub: string;
+interface BaseTokens {
+  roles: string[];
   permissions: string[];
-  role: string;
+}
+
+/** AccessToken payload on JWT */
+export interface AccessTokenPayload extends BaseTokens {
+  sub: string;
   display_name?: string;
   iat?: number;
   exp?: number;
   jti?: string;
 }
 
-export interface RefreshTokenPayload {
+export interface RefreshTokenPayload extends BaseTokens {
   refreshRecord: RefreshToken;
   user: SafeUser;
-  permissions: string[];
-  role: string;
 }
 
 export type SafeUser = Omit<User, "password">;
