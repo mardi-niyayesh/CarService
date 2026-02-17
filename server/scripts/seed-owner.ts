@@ -36,13 +36,15 @@ async function bootstrap() {
   const prisma = app.get(PrismaService);
 
   const ownerRole = await prisma.role.findFirst({
-    where: {
-      name: BaseRoles.owner
-    }
+    where: {name: BaseRoles.owner}
   });
 
-  if (!ownerRole) {
-    console.log("⚠ Owner role not exists in database");
+  const selfRole = await prisma.role.findFirst({
+    where: {name: BaseRoles.self}
+  });
+
+  if (!ownerRole || !selfRole) {
+    console.log("⚠ 'owner' or 'self' role not exists in database!");
     await app.close();
     process.exit(1);
   }
@@ -75,6 +77,13 @@ async function bootstrap() {
       password: hashedPassword,
       display_name: "owner",
     }
+  });
+
+  await prisma.userRole.createMany({
+    data: [
+      {role_id: ownerRole.id, user_id: owner.id},
+      {role_id: selfRole.id, user_id: owner.id},
+    ]
   });
 
   console.log(`✅ owner created:\nemail: ${owner.email}\nid: ${owner.id}\nrole: ${ownerRole.name}`);
