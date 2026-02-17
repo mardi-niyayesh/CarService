@@ -37,10 +37,9 @@ export class UsersService {
 
     const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
 
-    const [permissions] = rolePermissions
-      .map(rp => rp
-        .map(p => p.permission.name)
-      );
+    const permissions = rolePermissions.map(rp => rp
+      .map(p => p.permission.name)
+    ).map(p => p[0]).filter(p => p !== undefined);
 
     const data: UserResponse = {
       user: {
