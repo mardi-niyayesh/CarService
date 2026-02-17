@@ -17,13 +17,13 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse, ApiBody,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {Controller, Get, Param, Post, Req} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Req} from '@nestjs/common';
 
 /**
  * User management endpoints for retrieving user information.
@@ -101,10 +101,14 @@ export class UsersController {
     tags: ["User"],
   })
   @ApiParam(UUID4Dto)
+  @ApiBody({type: UserDto.UserRoleAssignedDto})
   assignRole(
+    @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    console.log(params.id);
+    console.log("data.roleId: ", data.roleId);
+    console.log("params.id: ", params.id);
+
     return {
       test: params.id,
       msg: "successfully assigned.",
