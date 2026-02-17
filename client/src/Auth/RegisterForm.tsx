@@ -1,7 +1,26 @@
 import { Link } from "react-router-dom";
 import imgLogin from "../../assets/imglogin.png";
+import { useState } from "react";
 
 const RegisterForm = () => {
+  const [email, setEmail] = useState("");
+  const [erroremail, setErroremail] = useState("");
+
+  // pattern Email
+  const emailPattern =
+    /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/;
+
+  const validateEmail = (value: string) => {
+    setEmail(value);
+    if (!value) {
+      setErroremail("ایمیل نمی تواند خالی باشد :))");
+    } else if (!emailPattern.test(value)) {
+      setErroremail("ایمیل وارد شده معتبر نمی باشد !");
+    } else {
+      setErroremail("");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl mt-10 overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
@@ -18,9 +37,17 @@ const RegisterForm = () => {
               <input
                 type="email"
                 placeholder="ایمیل خود را وارد کنید"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                onChange={(e) => validateEmail(e.target.value)}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition ${
+                  erroremail ? "border-red-500 bg-red-50" : "border-gray-300"
+                }`}
               />
             </div>
+            {erroremail && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                {erroremail}
+              </p>
+            )}
 
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-1">
@@ -75,7 +102,10 @@ const RegisterForm = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-300 transform hover:scale-[1.02]"
+              disabled={!!erroremail || !email}
+              className={`w-full font-medium py-2.5 rounded-lg transition duration-300 ${
+                !erroremail && email ? "bg-blue-600 ..." : "bg-gray-300 ..."
+              }`}
             >
               ثبت‌نام
             </button>
