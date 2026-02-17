@@ -50,17 +50,29 @@ export class AuthService {
     const newUser = await this.prisma.user.create({
       data: {
         ...createData,
-        password: hashPassword,
-        role_id: selfRole.id
+        password: hashPassword
+      }
+    });
+
+    const roles = await this.prisma.userRole.create({
+      data: {
+        role_id: selfRole.id,
+        user_id: newUser.id
       },
       include: {
-        role: true
+        role: {
+          include: {
+            rolePermissions: {
+              include: {permission: true}
+            }
+          }
+        }
       }
     });
 
     const data: UserResponse = {
       user: {
-        role: newUser.role.name,
+        roles: [roles.role.name],
         updated_at: newUser.updated_at,
         created_at: newUser.created_at,
         age: newUser.age,
