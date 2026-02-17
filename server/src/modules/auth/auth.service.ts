@@ -159,7 +159,8 @@ export class AuthService {
       }
     });
 
-    console.log(user);
+    console.log(permissions);
+    console.log(roles);
 
     return {
       user: {
@@ -169,7 +170,8 @@ export class AuthService {
         display_name: user.display_name,
         created_at: user.created_at,
         updated_at: user.updated_at,
-        roles
+        roles,
+        permissions
       },
       accessToken,
       refreshToken,
