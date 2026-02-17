@@ -27,9 +27,9 @@ export interface RefreshTokenPayload extends BaseTokens {
 export type SafeUser = Omit<User, "password">;
 
 export type UserResponse = {
-  user: Omit<SafeUser, "role_id"> & {
-    role: string;
-  };
+  user: SafeUser & {
+    roles: string[];
+  }
 }
 
 export interface LoginResponse extends UserResponse {
