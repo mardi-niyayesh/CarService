@@ -19,7 +19,7 @@ async function bootstrap(): Promise<void> {
     .map(p => p[1]);
 
   for (const p of permissions) {
-    await prisma.permission.createMany({
+    await prisma.permission.create({
       data: {
         name: p,
         description: `this permission allows ${p.split(".")[1]} on ${p.split(".")[0]}`,
@@ -61,7 +61,7 @@ async function bootstrap(): Promise<void> {
     || !selfRole
     || !userManagerRole
   ) {
-    console.log("⚠ Something went wrong in Server!");
+    console.log("⚠ Something went wrong in Server! ownerRole or selfPermission or selfRole or userManagerRole not created");
     await app.close();
     process.exit(1);
   }
@@ -76,10 +76,16 @@ async function bootstrap(): Promise<void> {
   const userManagerPermission = await prisma.permission.findMany({
     where: {
       name: {
-        startsWith: "users."
+        startsWith: PERMISSIONS.USER_VIEW.split(".")[0]
       }
     }
   });
+
+  if (!userManagerPermission) {
+    console.log("⚠ Something went wrong in Server! userManagerPermission not created");
+    await app.close();
+    process.exit(1);
+  }
 
   for (const p of userManagerPermission) {
     await prisma.rolePermission.create({
