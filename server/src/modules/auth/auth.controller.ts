@@ -130,6 +130,7 @@ export class AuthController {
         updated_at: req.refreshPayload.user.updated_at,
         email: req.refreshPayload.user.email,
         id: req.refreshPayload.user.id,
+        permissions: req.refreshPayload.permissions
       },
       accessToken
     };
