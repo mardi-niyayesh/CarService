@@ -14,7 +14,7 @@ export class InterceptorResponse<T> {
 /** validate for uuid4 in params */
 export const UUID4Schema = z.object({
   id: z.uuidv4()
-});
+}).overwrite(data => ({id: data.id.trim()}));
 
 export type UUID4Type = z.infer<typeof UUID4Schema>;
 
