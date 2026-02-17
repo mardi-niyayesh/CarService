@@ -24,7 +24,17 @@ export class RefreshTokenGuard implements CanActivate {
         user: {
           omit: {password: true},
           include: {
-            role: {include: {rolePermissions: {include: {permission: true}}}}
+            userRoles: {
+              include: {
+                role: {
+                  include: {
+                    rolePermissions: {
+                      include: {permission: true}
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -40,6 +50,14 @@ export class RefreshTokenGuard implements CanActivate {
 
       throw new UnauthorizedException('Refresh token already revoked');
     }
+
+    const roles: string[] = tokenRecord.user.userRoles.map(r => r.role.name);
+
+    const permissions = tokenRecord.user.userRoles
+      .map(r => r.role.rolePermissions)
+      .map(rp => rp)
+      .map(rp => rp.map(p => p.permission))
+      .map(rp => rp.map(p => p.name));
 
     req.refreshPayload = {
       refreshRecord: {
@@ -57,12 +75,10 @@ export class RefreshTokenGuard implements CanActivate {
         created_at: tokenRecord.user.created_at,
         updated_at: tokenRecord.user.updated_at,
         display_name: tokenRecord.user.display_name,
-        role_id: tokenRecord.user.role_id,
         email: tokenRecord.user.email,
         age: tokenRecord.user.age,
       },
-      permissions: tokenRecord.user.role.rolePermissions.map(p => p.permission.name),
-      role: tokenRecord.user.role.name
+      roles,
     } as RefreshTokenPayload;
 
     return true;
