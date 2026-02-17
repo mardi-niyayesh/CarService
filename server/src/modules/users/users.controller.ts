@@ -1,4 +1,15 @@
 import {
+  Req,
+  Get,
+  Post,
+  Body,
+  Param,
+  HttpCode,
+  HttpStatus,
+  Controller,
+} from '@nestjs/common';
+
+import {
   ZodPipe,
   UUID4Dto,
   PERMISSIONS,
@@ -10,6 +21,7 @@ import {
 } from "@/common";
 
 import {
+  ApiBody,
   ApiTags,
   ApiParam,
   ApiOperation,
@@ -17,13 +29,12 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiBody,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {Body, Controller, Get, Param, Post, Req} from '@nestjs/common';
 
 /**
  * User management endpoints for retrieving user information.
@@ -51,6 +62,7 @@ export class UsersController {
     permissions: [PERMISSIONS.USER_SELF]
   })
   @Get("get-me")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'get user info',
     description: 'get user info accessToken. **Access restricted to users with role: (self) only.**',
@@ -73,6 +85,7 @@ export class UsersController {
     permissions: [PERMISSIONS.USER_VIEW]
   })
   @Get(":id")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'get user info',
     description: 'get user info with id. **Access restricted to users with permission: (owner or user.view) only.**',
@@ -94,6 +107,7 @@ export class UsersController {
     permissions: []
   })
   @Post(":id/roles")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'assigned role to user',
     description: 'assigned role to user with id. **Access restricted to users with permission: (owner) only.**',

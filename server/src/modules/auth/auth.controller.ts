@@ -17,7 +17,7 @@ import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
 import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import {Body, Controller, HttpCode, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -50,7 +50,7 @@ export class AuthController {
    * Creating new user accounts
    */
   @Post("register")
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Register a new user',
     description: 'Creates a new user record in the database and returns the created user.',
@@ -72,7 +72,7 @@ export class AuthController {
    * Authenticating users with email/password and Issuing access tokens
    */
   @Post("login")
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Authenticate user',
     description: 'Validates user credentials and returns an access token. Also sets a secure httpOnly refresh token cookie.',
@@ -107,7 +107,7 @@ export class AuthController {
   /** Refreshing access tokens using secure httpOnly cookies */
   @UseGuards(RefreshTokenGuard)
   @Post("refresh")
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Refresh access token',
     description: 'Uses the refresh token (from httpOnly cookie) to generate a new access token.',
@@ -145,7 +145,7 @@ export class AuthController {
   /** Logout users in system and revoked refresh token */
   @UseGuards(RefreshTokenGuard)
   @Post("logout")
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Logout user',
     description: 'Uses the refresh token (from httpOnly cookie) to logout user in system and revoked refresh token.',
