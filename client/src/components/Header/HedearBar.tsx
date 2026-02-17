@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import Search from "../../../assets/search-outline.png";
 import logoCircle from "../../../assets/default.png";
+import imglogin from "../../../assets/login.png";
 import { useState } from "react";
 
 const HeaderBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const [showLoginMenue, setShowLoginMenue] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -110,9 +112,49 @@ const HeaderBar = () => {
             />
           </div>
 
-          <button className="hidden lg:block bg-[#194BF0] rounded-xl px-6 py-2 text-[#FFFFFF] font-medium hover:bg-[#1539c0] transition-colors">
-            ورود / ثبت‌نام
-          </button>
+          <div className="relative hidden lg:block">
+            <button
+              onClick={() => setShowLoginMenue(!showLoginMenue)}
+              className="bg-[#194BF0] rounded-xl px-6 py-2 text-white font-medium hover:bg-[#1539c0] transition-colors"
+            >
+              ورود / ثبت‌نام
+            </button>
+
+            {showLoginMenue && (
+              <div className="absolute top-full left-0 mt-2 z-50 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-lg border-b-2 border-b-theme-color-dark dark:border-b-theme-color-dark overflow-hidden">
+                <ul className="flex flex-col text-gray-700 dark:text-gray-100">
+                  <li>
+                    <Link
+                      to="/login"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+                      onClick={() => setShowLoginMenue(false)}
+                    >
+                      <img
+                        src={imglogin}
+                        alt=""
+                        className="w-5 h-5 opacity-70"
+                      />
+                      <span className="text-sm font-medium">ورود</span>
+                    </Link>
+                  </li>
+                  <li className="border-t border-gray-200 dark:border-gray-700">
+                    <Link
+                      to="/register"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+                      onClick={() => setShowLoginMenue(false)}
+                    >
+                      <img
+                        src={imglogin}
+                        alt=""
+                        className="w-5 h-5 opacity-70"
+                      />
+                      <span className="text-sm font-medium">ثبت‌نام</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
 
           <div className="flex lg:hidden items-center gap-4">
             <img
@@ -213,12 +255,63 @@ const HeaderBar = () => {
                 </li>
               </ul>
 
-              <button
-                onClick={closeMenu}
-                className="mt-8 w-full bg-[#194BF0] rounded-xl py-3 text-[#FFFFFF] font-medium text-[18px] hover:bg-[#1539c0] transition-colors shadow-lg"
-              >
-                ورود / ثبت‌نام
-              </button>
+              <div className="relative mt-8">
+                <button
+                  onClick={() => setShowLoginMenue(!showLoginMenue)}
+                  className="w-full bg-[#194BF0] rounded-xl py-3 text-[#FFFFFF] font-medium text-[18px] hover:bg-[#1539c0] transition-colors shadow-lg flex items-center justify-center gap-2"
+                >
+                  <span>ورود / ثبت‌نام</span>
+                  <svg 
+                    className={`w-5 h-5 transition-transform duration-300 ${showLoginMenue ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showLoginMenue && (
+                  <div className="mt-2 w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg border-2 border-[#194BF0] overflow-hidden">
+                    <ul className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+                      <li>
+                        <Link
+                          to="/login"
+                          className="flex items-center gap-3 px-4 py-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          onClick={() => {
+                            setShowLoginMenue(false);
+                            closeMenu();
+                          }}
+                        >
+                          <img
+                            src={imglogin}
+                            alt=""
+                            className="w-5 h-5 opacity-70"
+                          />
+                          <span className="text-base font-medium text-gray-700 dark:text-gray-200">ورود</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/register"
+                          className="flex items-center gap-3 px-4 py-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                          onClick={() => {
+                            setShowLoginMenue(false);
+                            closeMenu();
+                          }}
+                        >
+                          <img
+                            src={imglogin}
+                            alt=""
+                            className="w-5 h-5 opacity-70"
+                          />
+                          <span className="text-base font-medium text-gray-700 dark:text-gray-200">ثبت‌نام</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
 
               <div className="mt-12 pt-6 border-t border-white/30">
                 <div className="flex items-center justify-center gap-2">
