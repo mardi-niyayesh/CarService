@@ -29,12 +29,14 @@ export class PermissionGuard implements CanActivate {
       statusCode: 500,
     });
 
+    const roles: string[] = req.user.roles;
     const actionPermissions: string[] = req.user.permissions;
 
     const isAllowed: boolean = isAllowedAction({
       requiredAll,
       requiredPermissions,
       actionPermissions,
+      roles
     });
 
     if (!isAllowed) throw new ForbiddenException({
