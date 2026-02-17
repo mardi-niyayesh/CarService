@@ -14,22 +14,36 @@ export class UsersService {
       where: {
         id
       },
-      include: {role: true}
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                rolePermissions: {
+                  include: {permission: true}
+                }
+              }
+            }
+          }
+        }
+      }
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
+    const roles = user.userRoles.map(r => r.role.name);
+
     const data: UserResponse = {
       user: {
-        role: user.role.name,
         updated_at: user.updated_at,
         created_at: user.created_at,
         age: user.age,
         id: user.id,
         email: user.email,
         display_name: user.display_name,
+        roles
       }
     };
 
