@@ -3,6 +3,7 @@ import {RefreshToken, User} from "@/modules/prisma/generated/client";
 export enum BaseRoles {
   owner = "owner",
   self = "self",
+  user_manager = "user_manager",
 }
 
 interface BaseTokens {

@@ -48,7 +48,19 @@ async function bootstrap(): Promise<void> {
     }
   });
 
-  if (!ownerRole || !selfPermission || !selfRole) {
+  const userManagerRole = await prisma.role.create({
+    data: {
+      name: BaseRoles.user_manager,
+      description: "Full administrative access to manage all users and in the system"
+    }
+  });
+
+  if (
+    !ownerRole
+    || !selfPermission
+    || !selfRole
+    || !userManagerRole
+  ) {
     console.log("⚠ Something went wrong in Server!");
     await app.close();
     process.exit(1);
@@ -60,6 +72,23 @@ async function bootstrap(): Promise<void> {
       permission_id: selfPermission.id,
     }
   });
+
+  const userManagerPermission = await prisma.permission.findMany({
+    where: {
+      name: {
+        startsWith: "users."
+      }
+    }
+  });
+
+  for (const p of userManagerPermission) {
+    await prisma.rolePermission.create({
+      data: {
+        role_id: userManagerRole.id,
+        permission_id: p.id,
+      }
+    });
+  }
 
   console.log("✅ Seed completed: Default roles [self, owner] and other permissions have been created successfully.");
 
