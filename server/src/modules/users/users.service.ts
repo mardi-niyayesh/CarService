@@ -35,6 +35,13 @@ export class UsersService {
 
     const roles = user.userRoles.map(r => r.role.name);
 
+    const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
+
+    const [permissions] = rolePermissions
+      .map(rp => rp
+        .map(p => p.permission.name)
+      );
+
     const data: UserResponse = {
       user: {
         updated_at: user.updated_at,
@@ -43,7 +50,8 @@ export class UsersService {
         id: user.id,
         email: user.email,
         display_name: user.display_name,
-        roles
+        roles,
+        permissions
       }
     };
 

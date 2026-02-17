@@ -32,6 +32,7 @@ export const createUserResponse = {
       created_at: date,
       updated_at: date,
       roles: ["self"],
+      permissions: ["user.self"],
     }
   }
 };
