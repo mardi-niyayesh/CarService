@@ -1,6 +1,7 @@
 import {
   ZodPipe,
   UUID4Dto,
+  PERMISSIONS,
   Permission,
   UUID4Schema,
   type UUID4Type,
@@ -46,7 +47,7 @@ export class UsersController {
    * Requires authentication and "user.self" permission.
    */
   @Permission({
-    permissions: ["user.self"]
+    permissions: [PERMISSIONS.USER_SELF]
   })
   @Get("get-me")
   @ApiOperation({
@@ -67,6 +68,9 @@ export class UsersController {
    * Get user by ID.
    * Admin only endpoint. Validates UUID format.
    */
+  @Permission({
+    permissions: [PERMISSIONS.USER_VIEW]
+  })
   @Get(":id")
   @ApiOperation({
     summary: 'get user info',
