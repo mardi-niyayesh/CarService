@@ -35,7 +35,6 @@ export class PermissionGuard implements CanActivate {
       requiredAll,
       requiredPermissions,
       actionPermissions,
-      role: req.user.role,
     });
 
     if (!isAllowed) throw new ForbiddenException({

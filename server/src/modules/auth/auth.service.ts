@@ -95,10 +95,14 @@ export class AuthService {
         email: loginData.email,
       },
       include: {
-        role: {
+        userRoles: {
           include: {
-            rolePermissions: {
-              include: {permission: true}
+            role: {
+              include: {
+                rolePermissions: {
+                  include: {permission: true}
+                }
+              }
             }
           }
         }
@@ -111,14 +115,15 @@ export class AuthService {
 
     if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
 
-    const permissions: string[] = user.role.rolePermissions.map(p => p.permission.name);
+    // const permissions: string[] = user.role.rolePermissions.map(p => p.permission.name);
+
+    const roles = user.userRoles.map(r => r.role.name);
 
     const accessTokenPayload: AccessTokenPayload = {
       sub: user.id,
-      permissions,
       jti: randomUUID() + Date.now(),
-      role: user.role.name,
       display_name: user.display_name ?? "",
+      roles,
     };
 
     const accessToken: string = this.generateAccessToken(accessTokenPayload);
@@ -149,10 +154,10 @@ export class AuthService {
         id: user.id,
         age: user.age,
         email: user.email,
-        role: user.role.name,
         display_name: user.display_name,
         created_at: user.created_at,
         updated_at: user.updated_at,
+        roles
       },
       accessToken,
       refreshToken,
@@ -164,8 +169,7 @@ export class AuthService {
     const payload: AccessTokenPayload = {
       sub: refreshPayload.user.id,
       jti: randomUUID() + Date.now(),
-      permissions: refreshPayload.permissions,
-      role: refreshPayload.role,
+      roles: refreshPayload.roles,
       display_name: refreshPayload.user.display_name ?? "",
     };
 
