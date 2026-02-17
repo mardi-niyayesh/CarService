@@ -2,10 +2,8 @@ import z from 'zod';
 import {createZodDto} from "nestjs-zod";
 
 export const UserRoleAssigned = z.object({
-  roleId: z.uuidv4(),
-}).overwrite(data => ({
-  roleId: data.roleId.trim(),
-}));
+  roleId: z.uuidv4({error: "invalid role id"}),
+}).overwrite(data => ({roleId: data.roleId.trim()}));
 
 export type UserRoleAssignedType = z.infer<typeof UserRoleAssigned>;
 
