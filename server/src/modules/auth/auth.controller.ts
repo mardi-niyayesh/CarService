@@ -123,7 +123,7 @@ export class AuthController {
 
     const data: LoginResponse = {
       user: {
-        role: req.refreshPayload.role,
+        roles: req.refreshPayload.roles,
         display_name: req.refreshPayload.user.display_name,
         created_at: req.refreshPayload.user.created_at,
         age: req.refreshPayload.user.age,

@@ -53,11 +53,11 @@ export class RefreshTokenGuard implements CanActivate {
 
     const roles: string[] = tokenRecord.user.userRoles.map(r => r.role.name);
 
-    const permissions = tokenRecord.user.userRoles
-      .map(r => r.role.rolePermissions)
-      .map(rp => rp)
-      .map(rp => rp.map(p => p.permission))
-      .map(rp => rp.map(p => p.name));
+    const rolePermissions = tokenRecord.user.userRoles.map(r => r.role.rolePermissions);
+
+    const [permissions] = rolePermissions.map(rp => rp
+      .map(p => p.permission.name)
+    );
 
     req.refreshPayload = {
       refreshRecord: {
@@ -79,6 +79,7 @@ export class RefreshTokenGuard implements CanActivate {
         age: tokenRecord.user.age,
       },
       roles,
+      permissions
     } as RefreshTokenPayload;
 
     return true;

@@ -115,7 +115,11 @@ export class AuthService {
 
     if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
 
-    // const permissions: string[] = user.role.rolePermissions.map(p => p.permission.name);
+    const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
+
+    const [permissions] = rolePermissions.map(rp => rp
+      .map(p => p.permission.name)
+    );
 
     const roles = user.userRoles.map(r => r.role.name);
 
@@ -124,6 +128,7 @@ export class AuthService {
       jti: randomUUID() + Date.now(),
       display_name: user.display_name ?? "",
       roles,
+      permissions
     };
 
     const accessToken: string = this.generateAccessToken(accessTokenPayload);
@@ -149,6 +154,8 @@ export class AuthService {
       }
     });
 
+    console.log(user);
+
     return {
       user: {
         id: user.id,
@@ -170,6 +177,7 @@ export class AuthService {
       sub: refreshPayload.user.id,
       jti: randomUUID() + Date.now(),
       roles: refreshPayload.roles,
+      permissions: refreshPayload.permissions,
       display_name: refreshPayload.user.display_name ?? "",
     };
 

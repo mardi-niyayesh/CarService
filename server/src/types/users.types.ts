@@ -7,7 +7,7 @@ export enum BaseRoles {
 
 interface BaseTokens {
   roles: string[];
-  // permissions: string[];
+  permissions: string[];
 }
 
 /** AccessToken payload on JWT */
