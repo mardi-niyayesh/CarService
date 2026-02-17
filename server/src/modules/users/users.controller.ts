@@ -35,6 +35,7 @@ import {
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
+import {asyncWrapProviders} from "node:async_hooks";
 
 /**
  * User management endpoints for retrieving user information.
@@ -116,12 +117,11 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto)
   @ApiBody({type: UserDto.UserRoleAssignedDto})
-  assignRole(
+  async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    console.log("data.roleId: ", data.roleId);
-    console.log("params.id: ", params.id);
+    await this.usersService.assignRole(params.id, data.roleId);
 
     return {
       test: params.id,

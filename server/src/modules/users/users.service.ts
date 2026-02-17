@@ -59,4 +59,12 @@ export class UsersService {
       data,
     };
   }
+
+  async assignRole(userId: string, roleId: string) {
+    const user = await this.findOne(userId);
+    const role = await this.prisma.role.findFirst({where: {id: roleId}});
+
+    console.log(user);
+    console.log(role);
+  }
 }
