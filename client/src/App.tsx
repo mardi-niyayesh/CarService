@@ -9,6 +9,8 @@ import HomePage from "./pages/HomePage";
 import RolsPage from "./pages/RolsPage";
 import QuestionPage from "./pages/QuestionPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import RegisterForm from "./Auth/RegisterForm";
+import LoginForm from "./Auth/LoginForm";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/roles" element={<RolsPage />} />
         <Route path="/questionPage" element={<QuestionPage />} />
         <Route path="*" element={<NotFoundPage />} />
+         <Route path="/register" element={<RegisterForm />} />
+         <Route path="/login" element={<LoginForm />} />
       </Routes>
       <Footer />
     </>
