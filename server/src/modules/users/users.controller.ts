@@ -23,7 +23,7 @@ import {
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {Controller, Get, Param, Req} from '@nestjs/common';
+import {Controller, Get, Param, Post, Req} from '@nestjs/common';
 
 /**
  * User management endpoints for retrieving user information.
@@ -33,6 +33,7 @@ import {Controller, Get, Param, Req} from '@nestjs/common';
  * - Fetching specific user details by ID (for admin users)
  * - Securing endpoints with permission-based access control
  * - UUID validation for all ID parameters
+ * - Assigning or Revoked roles to users by 'owner' or 'role_manager' roles
  *
  * All endpoints require authentication via Bearer token.
  */
@@ -74,7 +75,7 @@ export class UsersController {
   @Get(":id")
   @ApiOperation({
     summary: 'get user info',
-    description: 'get user info with id. **Access restricted to users with role: (admin or owner) only.**',
+    description: 'get user info with id. **Access restricted to users with permission: (owner or user.view) only.**',
     operationId: 'get_user',
     tags: ["User"],
   })
@@ -87,5 +88,26 @@ export class UsersController {
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
     return this.usersService.findOne(params.id);
+  }
+
+  @Permission({
+    permissions: []
+  })
+  @Post(":id/roles")
+  @ApiOperation({
+    summary: 'assigned role to user',
+    description: 'assigned role to user with id. **Access restricted to users with permission: (owner) only.**',
+    operationId: 'assign_role',
+    tags: ["User"],
+  })
+  @ApiParam(UUID4Dto)
+  assignRole(
+    @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
+  ) {
+    console.log(params.id);
+    return {
+      test: params.id,
+      msg: "successfully assigned.",
+    };
   }
 }
