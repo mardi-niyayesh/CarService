@@ -90,7 +90,7 @@ async function bootstrap(): Promise<void> {
     });
   }
 
-  console.log("✅ Seed completed: Default roles [self, owner] and other permissions have been created successfully.");
+  console.log("✅ Seed completed: Default roles and permissions have been created successfully.");
 
   await app.close();
   process.exit(0);
