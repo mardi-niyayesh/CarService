@@ -1,0 +1,107 @@
+import { Link } from "react-router-dom";
+import imgLogin from "../../assets/imglogin.png";
+
+const RegisterForm = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl mt-10 overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
+        <div className="w-full md:w-1/2 p-6 sm:p-8 lg:p-10">
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 mb-6 text-center">
+            ثبت نام
+          </h1>
+
+          <form className="space-y-4">
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                ایمیل :
+              </label>
+              <input
+                type="email"
+                placeholder="ایمیل خود را وارد کنید"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                پس ورد :
+              </label>
+              <input
+                type="password"
+                placeholder="پس ورد خود را وارد کنید"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                نام :
+              </label>
+              <input
+                type="text"
+                placeholder="نام خود را وارد کنید"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                سن :
+              </label>
+              <input
+                type="number"
+                placeholder="سن خود را وارد کنید"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="rules"
+                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="rules" className="text-sm text-gray-600">
+                با
+                <Link
+                  to="/rules"
+                  className="mx-1 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  قوانین و مقررات سایت
+                </Link>
+                موافقت می‌کنم
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-300 transform hover:scale-[1.02]"
+            >
+              ثبت‌نام
+            </button>
+
+            <p className="text-center text-sm text-gray-600 mt-4">
+              قبلاً ثبت‌نام کرده‌اید؟
+              <Link
+                to="/login"
+                className="text-blue-600 hover:text-blue-800 font-medium mr-1"
+              >
+                وارد شوید
+              </Link>
+            </p>
+          </form>
+        </div>
+
+        <div className="hidden md:block md:w-1/2 bg-gradient-to-br  p-8 flex items-center justify-center">
+          <img
+            src={imgLogin}
+            alt="imgLogin"
+            className="w-full h-auto max-w-md object-contain"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterForm;
