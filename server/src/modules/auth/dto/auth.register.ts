@@ -26,12 +26,12 @@ export const createUserResponse = {
     user: {
       id: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca",
       email: "john@example.com",
-      role: "self",
       display_name: "John",
       age: 24,
       password: undefined,
       created_at: date,
-      updated_at: date
+      updated_at: date,
+      roles: ["self"],
     }
   }
 };
