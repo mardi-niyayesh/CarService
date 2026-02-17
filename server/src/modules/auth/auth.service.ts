@@ -85,8 +85,6 @@ export class AuthService {
       }
     };
 
-    console.log("data: ", data);
-
     return {
       message: "user created successfully",
       data
@@ -122,9 +120,9 @@ export class AuthService {
 
     const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
 
-    const [permissions] = rolePermissions.map(rp => rp
+    const permissions = rolePermissions.map(rp => rp
       .map(p => p.permission.name)
-    );
+    ).map(p => p[0]).filter(p => p !== undefined);
 
     const roles = user.userRoles.map(r => r.role.name);
 
@@ -158,9 +156,6 @@ export class AuthService {
         remember: loginData.remember,
       }
     });
-
-    console.log(permissions);
-    console.log(roles);
 
     return {
       user: {
