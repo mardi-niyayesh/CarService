@@ -70,6 +70,8 @@ export class AuthService {
       }
     });
 
+    const permissions = roles.role.rolePermissions.map(p => p.permission.name);
+
     const data: UserResponse = {
       user: {
         roles: [roles.role.name],
@@ -79,8 +81,11 @@ export class AuthService {
         id: newUser.id,
         email: newUser.email,
         display_name: newUser.display_name,
+        permissions
       }
     };
+
+    console.log("data: ", data);
 
     return {
       message: "user created successfully",
