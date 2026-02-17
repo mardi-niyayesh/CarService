@@ -64,7 +64,13 @@ export class UsersService {
     const user = await this.findOne(userId);
     const role = await this.prisma.role.findFirst({where: {id: roleId}});
 
-    console.log(user);
+    if (!role) throw new NotFoundException({
+      message: 'Role does not exist',
+      error: 'Not Found',
+      statusCode: 404,
+    });
+
+    console.log(JSON.stringify(user, null, 2));
     console.log(role);
   }
 }
