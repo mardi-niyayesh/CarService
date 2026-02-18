@@ -1,3 +1,4 @@
+import {ROLES} from "@/common";
 import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
 import {randomUUID} from "node:crypto";
@@ -35,9 +36,9 @@ export class AuthService {
 
     const hashPassword: string = await hashSecret(createData.password);
 
-    const selfRole = await this.prisma.role.findFirst({
+    const selfRole = await this.prisma.role.findUnique({
       where: {
-        name: "self"
+        name: ROLES.SELF
       }
     });
 
