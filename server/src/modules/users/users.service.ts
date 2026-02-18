@@ -65,6 +65,13 @@ export class UsersService {
    */
   async assignRole(actionPayload: UserAccess, userId: string, roleId: string) {
     const user = await this.findOne(userId);
+
+    if (user.data.user.id === actionPayload.userId) throw new ForbiddenException({
+      message: "Self-modification is restricted.",
+      error: "Forbidden",
+      statusCode: 403,
+    });
+
     const role = await this.prisma.role.findFirst({where: {id: roleId}});
 
     if (!role) throw new NotFoundException({
@@ -111,8 +118,5 @@ export class UsersService {
     });
 
     console.log(newRole);
-
-    console.log(JSON.stringify(user, null, 2));
-    console.log(role);
   }
 }
