@@ -1,9 +1,11 @@
 import {PrismaService} from "../prisma/prisma.service";
 import {ApiResponse, BaseRoles, UserAccess, UserResponse} from "@/types";
-import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, ForbiddenException, Injectable, NotFoundException, Logger} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger('UsersService');
+
   constructor(private readonly prisma: PrismaService) {}
 
   /** get user info
@@ -39,7 +41,7 @@ export class UsersService {
 
     const permissions = rolePermissions.map(rp => rp
       .map(p => p.permission.name)
-    ).map(p => p[0]).filter(p => p !== undefined);
+    ).flat();
 
     const data: UserResponse = {
       user: {
@@ -96,7 +98,7 @@ export class UsersService {
 
     if (
       !actionPayload.roles.some(r => r === BaseRoles.owner.toString())
-      && userRoles.some(r => r === "user_manager" || r === BaseRoles.owner.toString())
+      && userRoles.some(r => r === BaseRoles.user_manager.toString() || r === BaseRoles.owner.toString())
     ) throw new ForbiddenException({
       message: "Management level protection: You cannot modify roles for other managers or owners.",
       error: "Forbidden",
@@ -117,6 +119,6 @@ export class UsersService {
       }
     });
 
-    console.log(newRole);
+    this.logger.verbose(newRole);
   }
 }

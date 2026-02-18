@@ -122,7 +122,7 @@ export class AuthService {
 
     const permissions = rolePermissions.map(rp => rp
       .map(p => p.permission.name)
-    ).map(p => p[0]).filter(p => p !== undefined);
+    ).flat();
 
     const roles = user.userRoles.map(r => r.role.name);
 
