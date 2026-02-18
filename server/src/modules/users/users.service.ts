@@ -79,11 +79,38 @@ export class UsersService {
       statusCode: 403,
     });
 
-    if (user.data.user.roles.some(r => r === role.name)) throw new ConflictException({
+    const userRoles = user.data.user.roles;
+
+    if (userRoles.some(r => r === role.name)) throw new ConflictException({
       message: 'The user currently has this role.',
       error: 'Conflict',
       statusCode: 409,
     });
+
+    if (
+      !userRoles.some(r => r === BaseRoles.owner.toString())
+      && userRoles.some(r => r === "user_manager" || r === BaseRoles.owner.toString())
+    ) throw new ForbiddenException({
+      message: "Management level protection: You cannot modify roles for other managers or owners.",
+      error: "Forbidden",
+      statusCode: 403,
+    });
+
+    const newRole = await this.prisma.userRole.upsert({
+      where: {
+        role_id_user_id: {
+          role_id: role.id,
+          user_id: user.data.user.id
+        }
+      },
+      update: {},
+      create: {
+        role_id: role.id,
+        user_id: user.data.user.id
+      }
+    });
+
+    console.log(newRole);
 
     console.log(JSON.stringify(user, null, 2));
     console.log(role);
