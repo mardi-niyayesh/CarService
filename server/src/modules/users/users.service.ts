@@ -10,7 +10,7 @@ export class UsersService {
    * - only users with role (owner or role_manager) can accessibility to this route
    */
   async findOne(id: string): Promise<ApiResponse<UserResponse>> {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findUnique({
       where: {
         id
       },
@@ -72,7 +72,7 @@ export class UsersService {
       statusCode: 403,
     });
 
-    const role = await this.prisma.role.findFirst({where: {id: roleId}});
+    const role = await this.prisma.role.findUnique({where: {id: roleId}});
 
     if (!role) throw new NotFoundException({
       message: 'Role does not exist',

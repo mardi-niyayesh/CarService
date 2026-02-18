@@ -35,11 +35,11 @@ async function bootstrap() {
 
   const prisma = app.get(PrismaService);
 
-  const ownerRole = await prisma.role.findFirst({
+  const ownerRole = await prisma.role.findUnique({
     where: {name: BaseRoles.owner}
   });
 
-  const selfRole = await prisma.role.findFirst({
+  const selfRole = await prisma.role.findUnique({
     where: {name: BaseRoles.self}
   });
 

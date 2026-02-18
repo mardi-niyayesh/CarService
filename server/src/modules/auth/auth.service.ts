@@ -25,7 +25,7 @@ export class AuthService {
 
   /** create user in db */
   async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<UserResponse>> {
-    const user: User | null = await this.prisma.user.findFirst({
+    const user: User | null = await this.prisma.user.findUnique({
       where: {
         email: createData.email,
       }
@@ -93,7 +93,7 @@ export class AuthService {
 
   /** login users */
   async login(loginData: AuthDto.LoginUserInput): Promise<LoginResponse & { refreshToken: string }> {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findUnique({
       where: {
         email: loginData.email,
       },
