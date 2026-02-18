@@ -16,6 +16,10 @@ export const UserRoleAssigned = z.object({
 /** request body type */
 export type UserRoleAssignedType = z.infer<typeof UserRoleAssigned>;
 
+/** request body swagger schema */
+export class UserRoleAssignedDto extends createZodDto(UserRoleAssigned) {}
+
+/** data response */
 const userResponse = structuredClone(createUserResponse);
 
 userResponse.data.user.roles = [
@@ -46,17 +50,14 @@ export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
   }
 }) {}
 
-/** request body swagger schema */
-export class UserRoleAssignedDto extends createZodDto(UserRoleAssigned) {}
-
 /** forbidden response */
 export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse(
-  "Management level protection: Only the owner can modify managers or assign management roles.",
+  "Management level protection: Only the owner can assign management roles.",
   403
 ) {}
 
 /** conflict body */
 export class UserRoleAssignedConflictRes extends getNormalErrorResponse(
-  "The user currently has this role.",
+  'User already has some of these roles',
   409
 ) {}
