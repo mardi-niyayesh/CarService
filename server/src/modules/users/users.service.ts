@@ -154,7 +154,7 @@ export class UsersService {
     user.data.user.permissions.push(...permissions);
 
     return {
-      message: "role successfully assigned to this user.",
+      message: "roles successfully assigned to this user.",
       data: {
         user: user.data.user
       }

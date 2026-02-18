@@ -16,8 +16,9 @@ import {
   Permission,
   UUID4Schema,
   type UUID4Type,
+  ForbiddenResponse,
   UnauthorizedResponse,
-  BadRequestUUIDParams, ForbiddenResponse,
+  BadRequestUUIDParams,
 } from "@/common";
 
 import {
@@ -161,6 +162,6 @@ export class UsersController {
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ): Promise<ApiResponse<UserResponse>> {
-    return await this.usersService.assignRole(req.user, params.id, data.roleId);
+    return await this.usersService.assignRole(req.user, params.id, data.rolesId);
   }
 }

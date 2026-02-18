@@ -6,7 +6,7 @@ import {createUserResponse} from "@/modules/auth/dto";
 
 /** request body */
 export const UserRoleAssigned = z.object({
-  roleId: z
+  rolesId: z
     .array(z.uuidv4({error: "Invalid role ID format"}))
     .nonempty({error: "roles id Cannot be empty"})
     .max(4, {error: "Cannot assign more than 10 roles at once"})
@@ -29,6 +29,7 @@ userResponse.data.user.permissions = [
   "user.update",
   "user.delete",
   "role.assign",
+  "role.revoke",
   "role.create",
   "role.view",
   "role.update",
@@ -40,7 +41,7 @@ export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
   path: "/users/4361f7f4-2759-4e24-a147-8a3a44c5b459/roles",
   create: false,
   response: {
-    message: "User found successfully",
+    message: "roles successfully assigned to this user.",
     data: userResponse.data
   }
 }) {}
