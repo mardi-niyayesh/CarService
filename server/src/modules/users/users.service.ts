@@ -1,11 +1,9 @@
 import {PrismaService} from "../prisma/prisma.service";
 import {ApiResponse, BaseRoles, UserAccess, UserResponse} from "@/types";
-import {ConflictException, ForbiddenException, Injectable, NotFoundException, Logger} from '@nestjs/common';
+import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger('UsersService');
-
   constructor(private readonly prisma: PrismaService) {}
 
   /** get user info

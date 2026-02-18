@@ -139,6 +139,10 @@ export class UsersController {
     type: BadRequestUUIDParams,
     description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
   })
+  @ApiUnauthorizedResponse({
+    type: UnauthorizedResponse,
+    description: 'Invalid or missing authentication token.'
+  })
   @ApiForbiddenResponse({
     type: UserDto.UserRoleAssignedForbiddenRes,
     description: 'Access denied: Target user is a manager/owner or requester lacks sufficient rank.'
