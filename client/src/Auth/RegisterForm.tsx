@@ -5,11 +5,15 @@ import { useState } from "react";
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [erroremail, setErroremail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
+  const [firstname, setFirstname] = useState("");
 
   // pattern Email
   const emailPattern =
     /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/;
 
+  // validate Email
   const validateEmail = (value: string) => {
     setEmail(value);
     if (!value) {
@@ -18,6 +22,24 @@ const RegisterForm = () => {
       setErroremail("ایمیل وارد شده معتبر نمی باشد !");
     } else {
       setErroremail("");
+    }
+  };
+  // pattern Password
+  const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+
+  // validate Password
+  const validatePassword = (value: string) => {
+    setPassword(value);
+    if (!value) {
+      setErrorPassword("رمز عبور نمی تواند خالی باشد");
+    } else if (value.length < 6) {
+      setErrorPassword("رمز عبور باید حداقل 6 کاراکتر باشد");
+    } else if (value.length > 20) {
+      setErrorPassword("رمز عبور باید حداکثر 20 کاراکتر باشد");
+    } else if (!patternPassword.test(value)) {
+      setErrorPassword("رمز عبور باید شامل حداقل یک حرف و یک عدد باشد");
+    } else {
+      setErrorPassword("");
     }
   };
 
@@ -55,10 +77,18 @@ const RegisterForm = () => {
               </label>
               <input
                 type="password"
+                onChange={(e) => validatePassword(e.target.value)}
                 placeholder="پس ورد خود را وارد کنید"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition ${
+                  errorPassword ? "border-red-500 bg-red-50" : "border-gray-300"
+                }`}
               />
             </div>
+            {errorPassword && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                {errorPassword}
+              </p>
+            )}
 
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-1">
@@ -104,7 +134,9 @@ const RegisterForm = () => {
               type="submit"
               disabled={!!erroremail || !email}
               className={`w-full font-medium py-2.5 rounded-lg transition duration-300 ${
-                !erroremail && email ? "bg-blue-600 ..." : "bg-gray-300 ..."
+                !erroremail && email && password && !errorPassword
+                  ? "bg-blue-600 ..."
+                  : "bg-gray-300 ..."
               }`}
             >
               ثبت‌نام
