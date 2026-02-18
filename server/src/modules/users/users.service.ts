@@ -1,5 +1,5 @@
 import {PrismaService} from "../prisma/prisma.service";
-import {ApiResponse, BaseRoles, UserResponse} from "@/types";
+import {ApiResponse, BaseRoles, UserAccess, UserResponse} from "@/types";
 import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
@@ -63,7 +63,7 @@ export class UsersService {
   /** Assign Role to users
    * - only users with role (owner or user_manager) can accessibility to this route
    */
-  async assignRole(userId: string, roleId: string) {
+  async assignRole(actionPayload: UserAccess, userId: string, roleId: string) {
     const user = await this.findOne(userId);
     const role = await this.prisma.role.findFirst({where: {id: roleId}});
 
@@ -88,7 +88,7 @@ export class UsersService {
     });
 
     if (
-      !userRoles.some(r => r === BaseRoles.owner.toString())
+      !actionPayload.roles.some(r => r === BaseRoles.owner.toString())
       && userRoles.some(r => r === "user_manager" || r === BaseRoles.owner.toString())
     ) throw new ForbiddenException({
       message: "Management level protection: You cannot modify roles for other managers or owners.",

@@ -148,10 +148,11 @@ export class UsersController {
     description: 'Conflict: The user already possesses this role.'
   })
   async assignRole(
+    @Req() req: AccessRequest,
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    await this.usersService.assignRole(params.id, data.roleId);
+    await this.usersService.assignRole(req.user, params.id, data.roleId);
 
     return {
       test: params.id,
