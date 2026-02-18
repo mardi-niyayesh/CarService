@@ -67,6 +67,7 @@ export class UsersService {
   async assignRole(actionPayload: UserAccess, userId: string, roleId: string): Promise<ApiResponse<UserResponse>> {
     const user = await this.findOne(userId);
 
+    // if the request was to change self role
     if (user.data.user.id === actionPayload.userId) throw new ForbiddenException({
       message: "Self-modification is restricted.",
       error: "Forbidden",
@@ -75,20 +76,23 @@ export class UsersService {
 
     const role = await this.prisma.role.findUnique({where: {id: roleId}});
 
+    // if role not exist
     if (!role) throw new NotFoundException({
       message: 'Role does not exist',
       error: 'Not Found',
       statusCode: 404,
     });
 
+    // if the new role = 'owner' role
     if (role.name === ROLES.owner) throw new ForbiddenException({
-      message: 'Assigning the "owner" role is restricted and cannot be done through this endpoint.',
+      message: 'Assigning the "owner" role is restricted and cannot be done.',
       error: 'Forbidden',
       statusCode: 403,
     });
 
     const targetRoles: string[] = user.data.user.roles;
 
+    // if the role already exists in the user's roles
     if (targetRoles.includes(role.name)) throw new ConflictException({
       message: 'The user currently has this role.',
       error: 'Conflict',
@@ -96,9 +100,14 @@ export class UsersService {
     });
 
     const isActorOwner: boolean = actionPayload.roles.includes(ROLES.owner);
-    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.user_manager || r === ROLES.owner);
-    const isNewRoleManagerLevel: boolean = role.name === ROLES.user_manager;
+    const isNewRoleManagerLevel: boolean = role.name === ROLES.user_manager || role.name === ROLES.role_manager;
+    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.user_manager || r === ROLES.owner || ROLES.role_manager);
 
+    /**
+     * action role != 'owner':
+     * - if new role = 'role_manager' | 'user_manager' or
+     * - if target user role = 'role_manager' | 'user_manager' | 'owner'
+     */
     if (!isActorOwner && (isTargetManager || isNewRoleManagerLevel)) throw new ForbiddenException({
       message: "Management level protection: Only the owner can modify managers or assign management roles.",
       error: "Forbidden",
