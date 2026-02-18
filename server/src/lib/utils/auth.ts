@@ -15,7 +15,7 @@ export function isAllowedAction(
     roles,
   }: IsAllowedActionParams
 ): boolean {
-  const isOwner: boolean = roles.some(r => r === ROLES.owner);
+  const isOwner: boolean = roles.some(r => r === ROLES.OWNER);
 
   if (isOwner) return true;
 

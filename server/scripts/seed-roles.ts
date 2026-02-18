@@ -22,7 +22,7 @@ interface SeedCreateRoleParams {
 async function createNewRole(data: SeedCreateRoleParams): Promise<void> {
   const {app, prisma, role, permissions, not, description} = data;
 
-  if (role === ROLES.owner || role === ROLES.self) {
+  if (role === ROLES.OWNER || role === ROLES.SELF) {
     console.log(`Cannot create a new role with name: ${role}`);
     await app.close();
     process.exit(1);
@@ -97,14 +97,14 @@ async function bootstrap(): Promise<void> {
 
   const selfRole = await prisma.role.create({
     data: {
-      name: ROLES.self,
+      name: ROLES.SELF,
       description: "Basic role for users to view and update their own personal information",
     }
   });
 
   const ownerRole = await prisma.role.create({
     data: {
-      name: ROLES.owner,
+      name: ROLES.OWNER,
       description: "System owner with full access to all resources"
     }
   });
@@ -125,7 +125,7 @@ async function bootstrap(): Promise<void> {
   await createNewRole({
     app,
     prisma,
-    role: ROLES.user_manager,
+    role: ROLES.USER_MANAGER,
     permissions: PERMISSIONS.USER_VIEW,
     not: PERMISSIONS.USER_SELF,
     description: "Full administrative access to manage all users in the system",
@@ -134,7 +134,7 @@ async function bootstrap(): Promise<void> {
   await createNewRole({
     app,
     prisma,
-    role: ROLES.role_manager,
+    role: ROLES.ROLE_MANAGER,
     permissions: PERMISSIONS.ROLE_VIEW,
     description: "Full administrative access to manage all roles in the system",
   });

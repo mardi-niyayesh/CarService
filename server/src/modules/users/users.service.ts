@@ -84,7 +84,7 @@ export class UsersService {
     });
 
     // if the new role = 'owner' role
-    if (role.name === ROLES.owner) throw new ForbiddenException({
+    if (role.name === ROLES.OWNER) throw new ForbiddenException({
       message: 'Assigning the "owner" role is restricted and cannot be done.',
       error: 'Forbidden',
       statusCode: 403,
@@ -99,9 +99,9 @@ export class UsersService {
       statusCode: 409,
     });
 
-    const isActorOwner: boolean = actionPayload.roles.includes(ROLES.owner);
-    const isNewRoleManagerLevel: boolean = role.name === ROLES.user_manager || role.name === ROLES.role_manager;
-    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.user_manager || r === ROLES.owner || ROLES.role_manager);
+    const isActorOwner: boolean = actionPayload.roles.includes(ROLES.OWNER);
+    const isNewRoleManagerLevel: boolean = role.name === ROLES.USER_MANAGER || role.name === ROLES.ROLE_MANAGER;
+    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.USER_MANAGER || r === ROLES.OWNER || ROLES.ROLE_MANAGER);
 
     /**
      * action role != 'owner':
@@ -125,6 +125,15 @@ export class UsersService {
       create: {
         role_id: role.id,
         user_id: user.data.user.id
+      },
+      include: {
+        role: {
+          include: {
+            rolePermissions: {
+              include: {permission: true}
+            }
+          }
+        }
       }
     });
 
