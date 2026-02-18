@@ -1,4 +1,4 @@
-import {BaseRoles} from "@/types";
+import {ROLES} from "@/common";
 
 interface IsAllowedActionParams {
   roles: string[];
@@ -15,7 +15,7 @@ export function isAllowedAction(
     roles,
   }: IsAllowedActionParams
 ): boolean {
-  const isOwner: boolean = roles.some(r => r === BaseRoles.owner.toString());
+  const isOwner: boolean = roles.some(r => r === ROLES.owner);
 
   if (isOwner) return true;
 
