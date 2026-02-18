@@ -3,10 +3,11 @@ const USER = {
   USER_VIEW: 'user.view',
   USER_UPDATE: 'user.update',
   USER_DELETE: 'user.delete',
+  ROLE_ASSIGN: "role.assign",
+  ROLE_REVOKE: "role.revoke",
 } as const;
 
 const ROLE = {
-  ROLE_ASSIGN: "role.assign",
   ROLE_CREATE: "role.create",
   ROLE_VIEW: 'role.view',
   ROLE_UPDATE: 'role.update',
