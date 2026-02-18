@@ -20,7 +20,7 @@ export type UUID4Type = z.infer<typeof UUID4Schema>;
 
 export function UUID4Dto(name: string) {
   return {
-    name: `${name} id`,
+    name: "id",
     type: String,
     description: `${name} UUID version 4`,
     example: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca"

@@ -19,7 +19,9 @@ export function isAllowedAction(
 
   if (isOwner) return true;
 
-  if (requiredAll) return requiredPermissions.every(p => actionPermissions.includes(p));
+  const permissionSet = new Set(actionPermissions);
 
-  return requiredPermissions.some(p => actionPermissions.includes(p));
+  if (requiredAll) return requiredPermissions.every(p => permissionSet.has(p));
+
+  return requiredPermissions.some(p => permissionSet.has(p));
 }
