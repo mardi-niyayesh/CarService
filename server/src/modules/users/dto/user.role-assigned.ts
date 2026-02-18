@@ -6,8 +6,8 @@ import {createUserResponse} from "@/modules/auth/dto";
 
 /** request body */
 export const UserRoleAssigned = z.object({
-  roleId: z.uuidv4({error: "invalid role id"}),
-}).overwrite(data => ({roleId: data.roleId.trim()}));
+  roleId: z.array(z.uuidv4({error: "invalid role id"})),
+});
 
 /** request body type */
 export type UserRoleAssignedType = z.infer<typeof UserRoleAssigned>;
