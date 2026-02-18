@@ -139,6 +139,22 @@ async function bootstrap(): Promise<void> {
     description: "Full administrative access to manage all roles in the system",
   });
 
+  await createNewRole({
+    app,
+    prisma,
+    role: ROLES.CATEGORY_MANAGER,
+    permissions: PERMISSIONS.CATEGORY_CREATE,
+    description: "Full administrative access to manage all categories in the system",
+  });
+
+  await createNewRole({
+    app,
+    prisma,
+    role: ROLES.PRODUCT_MANAGER,
+    permissions: PERMISSIONS.PRODUCT_CREATE,
+    description: "Full administrative access to manage all products in the system",
+  });
+
   console.log("✅ Seed completed: Default roles and permissions have been created successfully.");
 
   await app.close();
