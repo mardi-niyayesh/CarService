@@ -124,7 +124,7 @@ export class AuthService {
       .map(p => p.permission.name)
     ).flat();
 
-    const roles = user.userRoles.map(r => r.role.name);
+    const roles: string[] = user.userRoles.map(r => r.role.name);
 
     const accessTokenPayload: AccessTokenPayload = {
       sub: user.id,

@@ -65,7 +65,7 @@ export class UsersService {
   /** Assign Role to users
    * - only users with role (owner or user_manager) can accessibility to this route
    */
-  async assignRole(actionPayload: UserAccess, userId: string, roleId: string) {
+  async assignRole(actionPayload: UserAccess, userId: string, roleId: string): Promise<ApiResponse<UserResponse>> {
     const user = await this.findOne(userId);
 
     if (user.data.user.id === actionPayload.userId) throw new ForbiddenException({
@@ -105,7 +105,7 @@ export class UsersService {
       statusCode: 403,
     });
 
-    const newRole = await this.prisma.userRole.upsert({
+    await this.prisma.userRole.upsert({
       where: {
         role_id_user_id: {
           role_id: role.id,
@@ -119,6 +119,13 @@ export class UsersService {
       }
     });
 
-    this.logger.verbose(newRole);
+    const newUserData = await this.findOne(userId);
+
+    return {
+      message: "role successfully assigned to this user.",
+      data: {
+        user: newUserData.data.user
+      }
+    };
   }
 }
