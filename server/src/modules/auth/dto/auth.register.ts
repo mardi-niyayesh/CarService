@@ -19,7 +19,7 @@ export class CreateUserSchema extends createZodDto(BaseUserSchema) {}
 
 /** object for ok response */
 export const createUserResponse = {
-  path: "users",
+  path: "auth/register",
   message: "user created successfully",
   create: true,
   data: {

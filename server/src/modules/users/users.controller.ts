@@ -35,8 +35,8 @@ import {
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
-import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
+import type {AccessRequest, ApiResponse, UserResponse} from "@/types";
 
 /**
  * User management endpoints for retrieving user information.
@@ -71,7 +71,7 @@ export class UsersController {
     operationId: 'get_me',
     tags: ["User"],
   })
-  @ApiOkResponse({type: UserDto.GetUserOkResponse})
+  @ApiOkResponse({type: UserDto.GetMeOkResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
   getMe(
     @Req() req: AccessRequest
@@ -114,7 +114,7 @@ export class UsersController {
   })
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
-  ) {
+  ): Promise<ApiResponse<UserResponse>> {
     return this.usersService.findOne(params.id);
   }
 
@@ -135,6 +135,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @ApiOkResponse({type: UserDto.RoleAssignOkRes})
   @ApiBadRequestResponse({
     type: BadRequestUUIDParams,
     description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
@@ -159,12 +160,7 @@ export class UsersController {
     @Req() req: AccessRequest,
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
-  ) {
-    await this.usersService.assignRole(req.user, params.id, data.roleId);
-
-    return {
-      test: params.id,
-      msg: "successfully assigned.",
-    };
+  ): Promise<ApiResponse<UserResponse>> {
+    return await this.usersService.assignRole(req.user, params.id, data.roleId);
   }
 }
