@@ -35,7 +35,6 @@ import {
 import * as UserDto from "./dto";
 import type {AccessRequest} from "@/types";
 import {UsersService} from "./users.service";
-import {asyncWrapProviders} from "node:async_hooks";
 
 /**
  * User management endpoints for retrieving user information.
@@ -93,7 +92,7 @@ export class UsersController {
     operationId: 'get_user',
     tags: ["User"],
   })
-  @ApiParam(UUID4Dto)
+  @ApiParam(UUID4Dto("user"))
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
@@ -104,6 +103,10 @@ export class UsersController {
     return this.usersService.findOne(params.id);
   }
 
+  /**
+   * Assign Role to Users ID.
+   * Admins only endpoint. Validates UUID format.
+   */
   @Permission({
     permissions: []
   })
@@ -115,7 +118,7 @@ export class UsersController {
     operationId: 'assign_role',
     tags: ["User"],
   })
-  @ApiParam(UUID4Dto)
+  @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
   async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,

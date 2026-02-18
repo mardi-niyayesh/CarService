@@ -1,6 +1,6 @@
 import {PrismaService} from "../prisma/prisma.service";
-import type {ApiResponse, UserResponse} from "@/types";
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {ApiResponse, BaseRoles, UserResponse} from "@/types";
+import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -71,6 +71,12 @@ export class UsersService {
       message: 'Role does not exist',
       error: 'Not Found',
       statusCode: 404,
+    });
+
+    if (role.name === BaseRoles.owner.toString()) throw new ForbiddenException({
+      message: 'Assigning the "owner" role is restricted and cannot be done through this endpoint.',
+      error: 'Forbidden',
+      statusCode: 403,
     });
 
     if (user.data.user.roles.some(r => r === role.name)) throw new ConflictException({
