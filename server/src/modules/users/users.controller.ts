@@ -27,9 +27,11 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiConflictResponse,
   ApiNotFoundResponse,
+  ApiForbiddenResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiConflictResponse, ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
@@ -121,7 +123,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
-  @ApiConflictResponse({type: })
+  @ApiConflictResponse({type: UserDto.UserRoleAssignedConflictRes})
   async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
