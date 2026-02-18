@@ -99,7 +99,7 @@ export class UsersService {
     const isNewRoleManagerLevel: boolean = role.name === BaseRoles.user_manager.toString();
 
     if (!isActorOwner && (isTargetManager || isNewRoleManagerLevel)) throw new ForbiddenException({
-      message: "Management level protection: You cannot modify roles for other managers or owner.",
+      message: "Management level protection: Only the owner can modify managers or assign management roles.",
       error: "Forbidden",
       statusCode: 403,
     });

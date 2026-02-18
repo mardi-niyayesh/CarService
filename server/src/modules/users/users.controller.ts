@@ -146,7 +146,7 @@ export class UsersController {
   })
   @ApiForbiddenResponse({
     type: UserDto.UserRoleAssignedForbiddenRes,
-    description: 'Access denied: Target user is a manager/owner or requester lacks sufficient rank.'
+    description: 'Access denied: Target user or new role is a manager/owner or requester lacks sufficient rank.'
   })
   @ApiNotFoundResponse({
     type: UserDto.NotFoundGetUserResponse,
