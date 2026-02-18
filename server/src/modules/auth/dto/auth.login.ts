@@ -34,7 +34,7 @@ export const loginResponseSchema: LoginUserSchemaType = {
 };
 
 export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
-  path: "users/login",
+  path: "auth/login",
   response: {
     message: "user logged in successfully",
     data: loginResponseSchema,

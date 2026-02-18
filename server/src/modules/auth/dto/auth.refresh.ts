@@ -4,7 +4,7 @@ import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** 200 response */
 export class RefreshUsersOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
-  path: "users/refresh",
+  path: "auth/refresh",
   create: false,
   response: {
     message: "accessToken successfully created.",
