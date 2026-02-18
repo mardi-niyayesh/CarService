@@ -17,7 +17,7 @@ import {
   UUID4Schema,
   type UUID4Type,
   UnauthorizedResponse,
-  BadRequestUUIDParams,
+  BadRequestUUIDParams, ForbiddenResponse,
 } from "@/common";
 
 import {
@@ -29,7 +29,7 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse, ApiConflictResponse, ApiForbiddenResponse,
 } from "@nestjs/swagger";
 
 import * as UserDto from "./dto";
@@ -96,6 +96,7 @@ export class UsersController {
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({type: BadRequestUUIDParams})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
+  @ApiForbiddenResponse({type: ForbiddenResponse})
   @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
@@ -120,6 +121,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @ApiConflictResponse({type: })
   async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
