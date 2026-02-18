@@ -3,8 +3,8 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import "tsconfig-paths/register";
+import {ROLES} from "@/common";
 import {hashSecret} from "@/lib";
-import {BaseRoles} from "@/types";
 import {NestFactory} from "@nestjs/core";
 import {CreateUser} from "@/modules/auth/dto";
 import {CliModule} from "@/modules/cli/cli.module";
@@ -36,11 +36,11 @@ async function bootstrap() {
   const prisma = app.get(PrismaService);
 
   const ownerRole = await prisma.role.findUnique({
-    where: {name: BaseRoles.owner}
+    where: {name: ROLES.owner}
   });
 
   const selfRole = await prisma.role.findUnique({
-    where: {name: BaseRoles.self}
+    where: {name: ROLES.self}
   });
 
   if (!ownerRole || !selfRole) {

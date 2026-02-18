@@ -3,52 +3,67 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import "tsconfig-paths/register";
-import {BaseRoles} from "@/types";
-import {PERMISSIONS} from "@/common";
 import {NestFactory} from "@nestjs/core";
 import {CliModule} from "@/modules/cli/cli.module";
 import {INestApplicationContext} from "@nestjs/common";
 import {PrismaService} from "@/modules/prisma/prisma.service";
+import {PERMISSIONS, ROLES, RolesType, PermissionsType} from "@/common";
 
-/** create user manage role */
-async function createUserManagerRole(app: INestApplicationContext, prisma: PrismaService): Promise<void> {
-  const userManagerRole = await prisma.role.create({
-    data: {
-      name: BaseRoles.user_manager,
-      description: "Full administrative access to manage all users in the system"
-    }
-  });
+interface SeedCreateRoleParams {
+  app: INestApplicationContext;
+  prisma: PrismaService;
+  role: RolesType;
+  permissions: PermissionsType;
+  not?: PermissionsType
+  description: string;
+}
 
-  if (!userManagerRole) {
-    console.log("⚠ Something went wrong in Server! userManagerRole not created!");
+/** create roles */
+async function createNewRole(data: SeedCreateRoleParams): Promise<void> {
+  const {app, prisma, role, permissions, not, description} = data;
+
+  if (role === ROLES.owner || role === ROLES.self) {
+    console.log(`Cannot create a new role with name: ${role}`);
     await app.close();
     process.exit(1);
   }
 
-  const userManagerPermission = await prisma.permission.findMany({
+  const newRole = await prisma.role.create({
+    data: {
+      name: role,
+      description
+    }
+  });
+
+  if (!newRole) {
+    console.log(`⚠ Something went wrong in Server! ${role} not created!`);
+    await app.close();
+    process.exit(1);
+  }
+
+  const newRolePermissions = await prisma.permission.findMany({
     where: {
       AND: [
         {
           OR: [
-            {name: {startsWith: PERMISSIONS.USER_VIEW.split(".")[0]}},
-            {name: {startsWith: PERMISSIONS.ROLE_VIEW.split(".")[0]}},
+            {name: {startsWith: permissions.split(".")[0]}},
           ]
         },
-        {name: {not: PERMISSIONS.USER_SELF}}
+        {name: {not}}
       ]
     }
   });
 
-  if (!userManagerPermission) {
-    console.log("⚠ Something went wrong in Server! userManagerPermission not created");
+  if (!newRolePermissions) {
+    console.log(`⚠ Something went wrong in Server! permissions for ${role} not created`);
     await app.close();
     process.exit(1);
   }
 
-  for (const p of userManagerPermission) {
+  for (const p of newRolePermissions) {
     await prisma.rolePermission.create({
       data: {
-        role_id: userManagerRole.id,
+        role_id: newRole.id,
         permission_id: p.id,
       }
     });
@@ -82,23 +97,19 @@ async function bootstrap(): Promise<void> {
 
   const selfRole = await prisma.role.create({
     data: {
-      name: BaseRoles.self,
+      name: ROLES.self,
       description: "Basic role for users to view and update their own personal information",
     }
   });
 
   const ownerRole = await prisma.role.create({
     data: {
-      name: BaseRoles.owner,
+      name: ROLES.owner,
       description: "System owner with full access to all resources"
     }
   });
 
-  if (
-    !ownerRole
-    || !selfPermission
-    || !selfRole
-  ) {
+  if (!ownerRole || !selfPermission || !selfRole) {
     console.log("⚠ Something went wrong in Server! ownerRole or selfPermission or selfRole or userManagerRole not created");
     await app.close();
     process.exit(1);
@@ -111,7 +122,22 @@ async function bootstrap(): Promise<void> {
     }
   });
 
-  await createUserManagerRole(app, prisma);
+  await createNewRole({
+    app,
+    prisma,
+    role: ROLES.user_manager,
+    permissions: PERMISSIONS.USER_VIEW,
+    not: PERMISSIONS.USER_SELF,
+    description: "Full administrative access to manage all users in the system",
+  });
+
+  await createNewRole({
+    app,
+    prisma,
+    role: ROLES.role_manager,
+    permissions: PERMISSIONS.ROLE_VIEW,
+    description: "Full administrative access to manage all roles in the system",
+  });
 
   console.log("✅ Seed completed: Default roles and permissions have been created successfully.");
 
