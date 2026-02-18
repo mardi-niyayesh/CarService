@@ -6,7 +6,7 @@ import {ApiResponse, BaseApiResponseData} from "@/types";
 export function getNormalErrorResponse(message: string, statusCode: number) {
   const error: string = getDefaultMessage(statusCode);
 
-  class UserNotFoundResponse {
+  class NormalErrorResponse {
     @ApiProperty({example: message})
     message: string;
 
@@ -17,7 +17,7 @@ export function getNormalErrorResponse(message: string, statusCode: number) {
     statusCode: number;
   }
 
-  return UserNotFoundResponse;
+  return NormalErrorResponse;
 }
 
 /** example response when user not authorized */
