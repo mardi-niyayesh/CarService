@@ -123,6 +123,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @ApiForbiddenResponse({type: UserDto.UserRoleAssignedForbiddenRes})
   @ApiConflictResponse({type: UserDto.UserRoleAssignedConflictRes})
   async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
