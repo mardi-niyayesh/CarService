@@ -24,7 +24,11 @@ userResponse.data.user.permissions = [
   "user.view",
   "user.update",
   "user.delete",
-  "user.self"
+  "role.assign",
+  "role.create",
+  "role.view",
+  "role.update",
+  "role.delete"
 ];
 
 /** ok response */
