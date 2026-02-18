@@ -27,9 +27,14 @@ async function createUserManagerRole(app: INestApplicationContext, prisma: Prism
 
   const userManagerPermission = await prisma.permission.findMany({
     where: {
-      name: {
-        startsWith: PERMISSIONS.USER_VIEW.split(".")[0]
-      }
+      OR: [
+        {
+          name: {startsWith: PERMISSIONS.USER_VIEW.split(".")[0]}
+        },
+        {
+          name: {startsWith: PERMISSIONS.ROLE_CREATE.split(".")[0]}
+        },
+      ],
     }
   });
 
