@@ -1,13 +1,13 @@
 import {PrismaService} from "../prisma/prisma.service";
 import type {ApiResponse, UserResponse} from "@/types";
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** get user info
-   * - only users with role (SUPER_ADMIN or ADMIN) can accessibility to this route
+   * - only users with role (owner or role_manager) can accessibility to this route
    */
   async findOne(id: string): Promise<ApiResponse<UserResponse>> {
     const user = await this.prisma.user.findFirst({
@@ -60,6 +60,9 @@ export class UsersService {
     };
   }
 
+  /** Assign Role to users
+   * - only users with role (owner or user_manager) can accessibility to this route
+   */
   async assignRole(userId: string, roleId: string) {
     const user = await this.findOne(userId);
     const role = await this.prisma.role.findFirst({where: {id: roleId}});
@@ -68,6 +71,12 @@ export class UsersService {
       message: 'Role does not exist',
       error: 'Not Found',
       statusCode: 404,
+    });
+
+    if (user.data.user.roles.some(r => r === role.name)) throw new ConflictException({
+      message: 'The user currently has this role.',
+      error: 'Conflict',
+      statusCode: 409,
     });
 
     console.log(JSON.stringify(user, null, 2));
