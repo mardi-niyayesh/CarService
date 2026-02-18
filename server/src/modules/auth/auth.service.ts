@@ -71,7 +71,9 @@ export class AuthService {
       }
     });
 
-    const permissions = roles.role.rolePermissions.map(p => p.permission.name);
+    const permissions = [...new Set(
+      roles.role.rolePermissions.map(p => p.permission.name)
+    )];
 
     const data: UserResponse = {
       user: {
@@ -121,9 +123,11 @@ export class AuthService {
 
     const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
 
-    const permissions = rolePermissions.map(rp => rp
-      .map(p => p.permission.name)
-    ).flat();
+    const permissions = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
 
     const roles: string[] = user.userRoles.map(r => r.role.name);
 

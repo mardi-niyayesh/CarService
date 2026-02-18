@@ -55,9 +55,11 @@ export class RefreshTokenGuard implements CanActivate {
 
     const rolePermissions = tokenRecord.user.userRoles.map(r => r.role.rolePermissions);
 
-    const permissions = rolePermissions.map(rp => rp
-      .map(p => p.permission.name)
-    ).flat();
+    const permissions = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
 
     req.refreshPayload = {
       refreshRecord: {
