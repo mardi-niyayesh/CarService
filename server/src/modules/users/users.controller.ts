@@ -96,10 +96,22 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
-  @ApiBadRequestResponse({type: BadRequestUUIDParams})
-  @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  @ApiForbiddenResponse({type: ForbiddenResponse})
-  @ApiNotFoundResponse({type: UserDto.NotFoundGetUserResponse})
+  @ApiBadRequestResponse({
+    type: BadRequestUUIDParams,
+    description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
+  })
+  @ApiUnauthorizedResponse({
+    type: UnauthorizedResponse,
+    description: 'Invalid or missing authentication token.'
+  })
+  @ApiForbiddenResponse({
+    type: ForbiddenResponse,
+    description: 'when target user not access to get user'
+  })
+  @ApiNotFoundResponse({
+    type: UserDto.NotFoundGetUserResponse,
+    description: 'The requested user does not exist in the database.'
+  })
   findOne(
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
@@ -123,8 +135,18 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
-  @ApiForbiddenResponse({type: UserDto.UserRoleAssignedForbiddenRes})
-  @ApiConflictResponse({type: UserDto.UserRoleAssignedConflictRes})
+  @ApiBadRequestResponse({
+    type: BadRequestUUIDParams,
+    description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
+  })
+  @ApiForbiddenResponse({
+    type: UserDto.UserRoleAssignedForbiddenRes,
+    description: 'Access denied: Target user is a manager/owner or requester lacks sufficient rank.'
+  })
+  @ApiConflictResponse({
+    type: UserDto.UserRoleAssignedConflictRes,
+    description: 'Conflict: The user already possesses this role.'
+  })
   async assignRole(
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,

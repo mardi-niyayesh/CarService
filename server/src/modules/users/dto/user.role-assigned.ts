@@ -15,7 +15,7 @@ export class UserRoleAssignedDto extends createZodDto(UserRoleAssigned) {}
 
 /** forbidden response */
 export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse(
-  "Assigning the \"owner\" role is restricted and cannot be done through this endpoint.",
+  "Management level protection: You cannot modify roles for other managers or owners.",
   403
 ) {}
 
