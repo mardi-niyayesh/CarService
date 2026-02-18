@@ -1,5 +1,6 @@
+import {ROLES} from "@/common";
 import {PrismaService} from "../prisma/prisma.service";
-import {ApiResponse, BaseRoles, UserAccess, UserResponse} from "@/types";
+import {ApiResponse, UserAccess, UserResponse} from "@/types";
 import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
@@ -80,7 +81,7 @@ export class UsersService {
       statusCode: 404,
     });
 
-    if (role.name === BaseRoles.owner.toString()) throw new ForbiddenException({
+    if (role.name === ROLES.owner) throw new ForbiddenException({
       message: 'Assigning the "owner" role is restricted and cannot be done through this endpoint.',
       error: 'Forbidden',
       statusCode: 403,
@@ -94,9 +95,9 @@ export class UsersService {
       statusCode: 409,
     });
 
-    const isActorOwner: boolean = actionPayload.roles.includes(BaseRoles.owner.toString());
-    const isTargetManager: boolean = targetRoles.some(r => r === BaseRoles.user_manager.toString() || r === BaseRoles.owner.toString());
-    const isNewRoleManagerLevel: boolean = role.name === BaseRoles.user_manager.toString();
+    const isActorOwner: boolean = actionPayload.roles.includes(ROLES.owner);
+    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.user_manager || r === ROLES.owner);
+    const isNewRoleManagerLevel: boolean = role.name === ROLES.user_manager;
 
     if (!isActorOwner && (isTargetManager || isNewRoleManagerLevel)) throw new ForbiddenException({
       message: "Management level protection: Only the owner can modify managers or assign management roles.",
