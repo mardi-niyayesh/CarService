@@ -8,6 +8,7 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [firstname, setFirstname] = useState("");
+  const [errorFirstname, setErrorFirstname] = useState("");
 
   // pattern Email
   const emailPattern =
@@ -43,6 +44,18 @@ const RegisterForm = () => {
     }
   };
 
+  // validate firstaname
+
+  const validateFirstname = (value: string) => {
+    setFirstname(value);
+    if (value.length < 3) {
+      setErrorFirstname( "نام کاربری باید حدالقل 3 کاراکتر باشد");
+    } else if (value.length > 40) {
+      setErrorFirstname("نام کاربری حداکثر40 کاراکتر باشد");
+    } else {
+      setErrorFirstname("");
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl mt-10 overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
@@ -97,11 +110,21 @@ const RegisterForm = () => {
               <input
                 type="text"
                 placeholder="نام خود را وارد کنید"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                onChange={(e) => validateFirstname(e.target.value)}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition ${
+                  errorFirstname
+                    ? "border-red-500 bg-red-50"
+                    : "border-gray-300"
+                }`}
               />
             </div>
 
             <div>
+              {errorFirstname && (
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  {errorFirstname}
+                </p>
+              )}
               <label className="block text-gray-700 text-sm font-medium mb-1">
                 سن :
               </label>
