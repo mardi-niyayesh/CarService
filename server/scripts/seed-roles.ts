@@ -14,13 +14,14 @@ interface SeedCreateRoleParams {
   prisma: PrismaService;
   role: RolesType;
   permissions: PermissionsType;
-  not?: PermissionsType
+  not?: PermissionsType[];
+  advanced?: PermissionsType[];
   description: string;
 }
 
 /** create roles */
 async function createNewRole(data: SeedCreateRoleParams): Promise<void> {
-  const {app, prisma, role, permissions, not, description} = data;
+  const {app, prisma, role, permissions, not, advanced, description} = data;
 
   if (role === ROLES.OWNER || role === ROLES.SELF) {
     console.log(`Cannot create a new role with name: ${role}`);
@@ -41,15 +42,23 @@ async function createNewRole(data: SeedCreateRoleParams): Promise<void> {
     process.exit(1);
   }
 
+  type Exact = { name: PermissionsType }[];
+  type Contains = { name: { contains: PermissionsType } }[];
+
+  const NOT: Contains = (not || []).map(n => ({name: {contains: n}}));
+
+  const exactPermissions: Exact = (advanced || []).map(p => ({name: p}));
+
   const newRolePermissions = await prisma.permission.findMany({
     where: {
       AND: [
         {
           OR: [
             {name: {startsWith: permissions.split(".")[0]}},
+            ...exactPermissions
           ]
         },
-        {name: {not}}
+        ...(NOT.length > 0 ? [{NOT}] : []),
       ]
     }
   });
@@ -60,14 +69,16 @@ async function createNewRole(data: SeedCreateRoleParams): Promise<void> {
     process.exit(1);
   }
 
-  for (const p of newRolePermissions) {
-    await prisma.rolePermission.create({
-      data: {
+  if (newRolePermissions.length > 0) {
+    await prisma.rolePermission.createMany({
+      data: newRolePermissions.map(p => ({
         role_id: newRole.id,
         permission_id: p.id,
-      }
+      }))
     });
   }
+
+  console.log(`✅ Role "${role}" created with ${newRolePermissions.length} permissions`);
 }
 
 async function bootstrap(): Promise<void> {
@@ -127,7 +138,8 @@ async function bootstrap(): Promise<void> {
     prisma,
     role: ROLES.USER_MANAGER,
     permissions: PERMISSIONS.USER_VIEW,
-    not: PERMISSIONS.USER_SELF,
+    not: [PERMISSIONS.USER_SELF],
+    advanced: [PERMISSIONS.ROLE_ASSIGN, PERMISSIONS.ROLE_REVOKE],
     description: "Full administrative access to manage all users in the system",
   });
 
@@ -136,6 +148,7 @@ async function bootstrap(): Promise<void> {
     prisma,
     role: ROLES.ROLE_MANAGER,
     permissions: PERMISSIONS.ROLE_VIEW,
+    not: [PERMISSIONS.ROLE_ASSIGN, PERMISSIONS.ROLE_REVOKE],
     description: "Full administrative access to manage all roles in the system",
   });
 
