@@ -12,9 +12,7 @@ export const UserRoleAssigned = z.object({
 /** request body type */
 export type UserRoleAssignedType = z.infer<typeof UserRoleAssigned>;
 
-const userResponse = {
-  ...createUserResponse
-};
+const userResponse = structuredClone(createUserResponse);
 
 userResponse.data.user.roles = [
   "self",

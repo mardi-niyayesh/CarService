@@ -123,7 +123,7 @@ export class UsersController {
    * Admins only endpoint. Validates UUID format.
    */
   @Permission({
-    permissions: []
+    permissions: [PERMISSIONS.ROLE_ASSIGN]
   })
   @Post(":id/roles")
   @HttpCode(HttpStatus.OK)
