@@ -38,9 +38,11 @@ export class UsersService {
 
     const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
 
-    const permissions = rolePermissions.map(rp => rp
-      .map(p => p.permission.name)
-    ).flat();
+    const permissions = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
 
     const data: UserResponse = {
       user: {
@@ -61,88 +63,100 @@ export class UsersService {
     };
   }
 
-  /** Assign Role to users
-   * - only users with role (owner or user_manager) can accessibility to this route
+  /** Assign roles to user
+   * - Accessible only by users with 'owner' or 'user_manager' role
    */
-  async assignRole(actionPayload: UserAccess, userId: string, roleId: string): Promise<ApiResponse<UserResponse>> {
+  async assignRole(
+    actionPayload: UserAccess,
+    userId: string,
+    rolesId: string[]
+  ): Promise<ApiResponse<UserResponse>> {
     const user = await this.findOne(userId);
 
-    // if the request was to change self role
+    // Prevent self-assignment
     if (user.data.user.id === actionPayload.userId) throw new ForbiddenException({
-      message: "Self-modification is restricted.",
+      message: 'You cannot assign roles to yourself',
       error: "Forbidden",
       statusCode: 403,
     });
 
-    const role = await this.prisma.role.findUnique({where: {id: roleId}});
+    const roles = await this.prisma.role.findMany({
+      where: {
+        OR: rolesId.map(r => ({id: r}))
+      },
+      include: {
+        rolePermissions: {
+          include: {permission: true}
+        }
+      }
+    });
 
-    // if role not exist
-    if (!role) throw new NotFoundException({
-      message: 'Role does not exist',
+    // Validate all roles exist
+    if (roles.length !== rolesId.length) throw new NotFoundException({
+      message: 'One or many Roles does not exist',
       error: 'Not Found',
       statusCode: 404,
     });
 
-    // if the new role = 'owner' role
-    if (role.name === ROLES.OWNER) throw new ForbiddenException({
-      message: 'Assigning the "owner" role is restricted and cannot be done.',
+    const restrictedRoles: string[] = [ROLES.OWNER, ROLES.SELF];
+    const newRolesName: string[] = roles.map(r => r.name);
+
+    // Block restricted roles
+    if (newRolesName.some(r => restrictedRoles.includes(r))) throw new ForbiddenException({
+      message: 'owner and self roles cannot be assigned',
       error: 'Forbidden',
       statusCode: 403,
     });
 
     const targetRoles: string[] = user.data.user.roles;
 
-    // if the role already exists in the user's roles
-    if (targetRoles.includes(role.name)) throw new ConflictException({
-      message: 'The user currently has this role.',
+    // Check for duplicate assignments
+    if (targetRoles.some(r => newRolesName.includes(r))) throw new ConflictException({
+      message: 'User already has some of these roles',
       error: 'Conflict',
       statusCode: 409,
     });
 
+    const rolesManager: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER];
+    const rolesManagerStrict: string[] = structuredClone(rolesManager);
+    rolesManagerStrict.push(ROLES.OWNER);
+
     const isActorOwner: boolean = actionPayload.roles.includes(ROLES.OWNER);
-    const isNewRoleManagerLevel: boolean = role.name === ROLES.USER_MANAGER || role.name === ROLES.ROLE_MANAGER;
-    const isTargetManager: boolean = targetRoles.some(r => r === ROLES.USER_MANAGER || r === ROLES.OWNER || ROLES.ROLE_MANAGER);
+    const isTargetManager: boolean = targetRoles.some(r => rolesManagerStrict.includes(r));
+    const isNewRoleManager: boolean = newRolesName.some(r => rolesManager.includes(r));
 
     /**
      * action role != 'owner':
      * - if new role = 'role_manager' | 'user_manager' or
      * - if target user role = 'role_manager' | 'user_manager' | 'owner'
      */
-    if (!isActorOwner && (isTargetManager || isNewRoleManagerLevel)) throw new ForbiddenException({
-      message: "Management level protection: Only the owner can modify managers or assign management roles.",
+    if (!isActorOwner && (isTargetManager || isNewRoleManager)) throw new ForbiddenException({
+      message: "Management level protection: Only the owner can assign management roles.",
       error: "Forbidden",
       statusCode: 403,
     });
 
-    await this.prisma.userRole.upsert({
-      where: {
-        role_id_user_id: {
-          role_id: role.id,
-          user_id: user.data.user.id
-        }
-      },
-      update: {},
-      create: {
-        role_id: role.id,
-        user_id: user.data.user.id
-      },
-      include: {
-        role: {
-          include: {
-            rolePermissions: {
-              include: {permission: true}
-            }
-          }
-        }
-      }
+    await this.prisma.userRole.createMany({
+      data: rolesId.map(r => ({role_id: r, user_id: user.data.user.id}))
     });
 
-    const newUserData = await this.findOne(userId);
+    const rolesName: string[] = roles.map(r => r.name);
+
+    const rolePermissions = roles.map(r => r.rolePermissions);
+
+    const permissions: string[] = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
+
+    user.data.user.roles.push(...rolesName);
+    user.data.user.permissions.push(...permissions);
 
     return {
       message: "role successfully assigned to this user.",
       data: {
-        user: newUserData.data.user
+        user: user.data.user
       }
     };
   }

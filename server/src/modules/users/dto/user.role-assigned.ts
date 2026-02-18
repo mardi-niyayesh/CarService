@@ -6,7 +6,11 @@ import {createUserResponse} from "@/modules/auth/dto";
 
 /** request body */
 export const UserRoleAssigned = z.object({
-  roleId: z.array(z.uuidv4({error: "invalid role id"})),
+  roleId: z
+    .array(z.uuidv4({error: "Invalid role ID format"}))
+    .nonempty({error: "roles id Cannot be empty"})
+    .max(4, {error: "Cannot assign more than 10 roles at once"})
+    .transform(ids => [...new Set(ids)])
 });
 
 /** request body type */
