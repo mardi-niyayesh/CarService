@@ -128,8 +128,8 @@ export class UsersController {
   @Post(":id/roles")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'assigned role to user',
-    description: 'assigned role to user with id. **Access restricted to users with permission: (owner) only.**',
+    summary: 'assigned role to users',
+    description: 'Assigns a role to a user. **Note: Even with role.assign permission, modifying managers or assigning management roles is restricted to Owners only.**',
     operationId: 'assign_role',
     tags: ["User"],
   })

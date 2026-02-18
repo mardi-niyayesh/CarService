@@ -86,19 +86,20 @@ export class UsersService {
       statusCode: 403,
     });
 
-    const userRoles = user.data.user.roles;
+    const targetRoles: string[] = user.data.user.roles;
 
-    if (userRoles.some(r => r === role.name)) throw new ConflictException({
+    if (targetRoles.includes(role.name)) throw new ConflictException({
       message: 'The user currently has this role.',
       error: 'Conflict',
       statusCode: 409,
     });
 
-    if (
-      !actionPayload.roles.some(r => r === BaseRoles.owner.toString())
-      && userRoles.some(r => r === BaseRoles.user_manager.toString() || r === BaseRoles.owner.toString())
-    ) throw new ForbiddenException({
-      message: "Management level protection: You cannot modify roles for other managers or owners.",
+    const isActorOwner: boolean = actionPayload.roles.includes(BaseRoles.owner.toString());
+    const isTargetManager: boolean = targetRoles.some(r => r === BaseRoles.user_manager.toString() || r === BaseRoles.owner.toString());
+    const isNewRoleManagerLevel: boolean = role.name === BaseRoles.user_manager.toString();
+
+    if (!isActorOwner && (isTargetManager || isNewRoleManagerLevel)) throw new ForbiddenException({
+      message: "Management level protection: You cannot modify roles for other managers or owner.",
       error: "Forbidden",
       statusCode: 403,
     });
