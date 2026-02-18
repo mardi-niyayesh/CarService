@@ -147,6 +147,10 @@ export class UsersController {
     type: UserDto.UserRoleAssignedForbiddenRes,
     description: 'Access denied: Target user is a manager/owner or requester lacks sufficient rank.'
   })
+  @ApiNotFoundResponse({
+    type: UserDto.NotFoundGetUserResponse,
+    description: 'The requested user or role does not exist in the database.'
+  })
   @ApiConflictResponse({
     type: UserDto.UserRoleAssignedConflictRes,
     description: 'Conflict: The user already possesses this role.'
