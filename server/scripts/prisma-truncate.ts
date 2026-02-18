@@ -13,9 +13,15 @@ async function bootstrap(): Promise<void> {
 
   const prisma: PrismaService = app.get(PrismaService);
 
+  console.log("connect to prisma and Running TRUNCATE script");
+
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "User", "UserRole", "Role", "Permission", "RolePermission", "RefreshToken" RESTART IDENTITY CASCADE;`
+    `TRUNCATE TABLE "users", "user_roles", "roles", "permissions", "role_permission", "refresh_tokens" RESTART IDENTITY CASCADE;`
   );
+
+  console.log("Finish and TRUNCATE Successfully.");
+  await app.close();
+  process.exit();
 }
 
 bootstrap()
