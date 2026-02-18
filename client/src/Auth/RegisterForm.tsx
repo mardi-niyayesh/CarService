@@ -9,6 +9,8 @@ const RegisterForm = () => {
   const [errorPassword, setErrorPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [errorFirstname, setErrorFirstname] = useState("");
+  const [age, setAge] = useState("");
+  const [errorage, setErrorage] = useState("");
 
   // pattern Email
   const emailPattern =
@@ -25,6 +27,7 @@ const RegisterForm = () => {
       setErroremail("");
     }
   };
+  
   // pattern Password
   const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
 
@@ -45,15 +48,32 @@ const RegisterForm = () => {
   };
 
   // validate firstaname
-
   const validateFirstname = (value: string) => {
     setFirstname(value);
     if (value.length < 3) {
-      setErrorFirstname( "نام کاربری باید حدالقل 3 کاراکتر باشد");
+      setErrorFirstname("نام کاربری باید حدالقل 3 کاراکتر باشد");
     } else if (value.length > 40) {
       setErrorFirstname("نام کاربری حداکثر40 کاراکتر باشد");
     } else {
       setErrorFirstname("");
+    }
+  };
+
+  //pattern age => NOT latter
+  const patternAge = /^[0-9]+$/;
+
+  // validate Age
+  const validateAge = (value: string) => {
+    setAge(value);
+    const ageNumber = Number(value);
+    if (ageNumber < 0) {
+      setErrorage("سن حداقل صفر سال است");
+    } else if (ageNumber > 120) {
+      setErrorage("سن حداکثر 120 سال باشد");
+    } else if (patternAge.test(String(ageNumber))) {
+      setErrorage("");
+    } else {
+      setErrorage("");
     }
   };
   return (
@@ -131,9 +151,17 @@ const RegisterForm = () => {
               <input
                 type="number"
                 placeholder="سن خود را وارد کنید"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                onChange={(e) => validateAge(e.target.value)}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition ${
+                  errorage ? "border-red-500 bg-red-50" : "border-gray-300"
+                }`}
               />
             </div>
+            {errorage && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                {errorage}
+              </p>
+            )}
 
             <div className="flex items-center gap-2">
               <input
