@@ -1,15 +1,15 @@
 import z from 'zod';
-import {createZodDto} from "nestjs-zod";
-import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 import {UserResponse} from "@/types";
+import {createZodDto} from "nestjs-zod";
 import {createUserResponse} from "@/modules/auth/dto";
+import {getBaseOkResponseSchema, getNormalErrorResponse} from "@/common";
 
 /** request body */
 export const UserRoleAssigned = z.object({
   rolesId: z
     .array(z.uuidv4({error: "Invalid role ID format"}))
     .nonempty({error: "roles id Cannot be empty"})
-    .max(4, {error: "Cannot assign more than 10 roles at once"})
+    .max(4, {error: "Cannot assign more than 4 roles at once"})
     .transform(ids => [...new Set(ids)])
 });
 
