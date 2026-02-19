@@ -129,8 +129,20 @@ export class UsersController {
   @Post(":id/roles")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'assigned role to users',
-    description: 'Assigns a role to a user. **Note: Even with role.assign permission, modifying managers or assigning management roles is restricted to Owners only.**',
+    summary: 'Assign roles to a user',
+    description: `
+  Assigns one or more roles to a target user with strict validation rules:
+
+  - **Self-assignment is forbidden** (a user cannot assign roles to themselves).
+  - **Restricted roles** ("owner", "self") cannot be assigned under any circumstances.
+  - **Duplicate prevention**: roles already held by the user cannot be reassigned.
+  - **Management-level protection**: assigning or modifying management roles 
+    ("role_manager", "user_manager") is restricted to users with the "owner" role.
+  - All roles must exist; invalid role IDs will result in a 404 error.
+
+  This endpoint ensures role integrity, prevents privilege escalation, 
+  and enforces organizational security policies.
+  `,
     operationId: 'assign_role',
     tags: ["User"],
   })

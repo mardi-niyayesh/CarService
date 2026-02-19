@@ -1,17 +1,23 @@
 import 'dotenv/config';
 import helmet from "helmet";
+import path from "node:path";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import cookieParser from "cookie-parser";
 import {TransformInterceptors} from "./common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
+import {NestExpressApplication} from "@nestjs/platform-express";
 
 /** run application */
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // base url
   app.setGlobalPrefix('api');
+
+  app.useStaticAssets(path.join(process.cwd(), "public"), {
+    prefix: '/static/',
+  });
 
   /** global configs */
   app.use(helmet());
@@ -41,7 +47,8 @@ async function bootstrap(): Promise<void> {
     swaggerOptions: {
       withCredentials: true,
       persistAuthorization: true,
-    }
+    },
+    customCssUrl: "/static/styles/swagger.css"
   });
 
   /** listen app on port */
