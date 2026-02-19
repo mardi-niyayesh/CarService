@@ -48,20 +48,26 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
   const response = {
     message: props.response.message,
   };
-  
+
   if ("data" in responseData) {
     (response as typeof responseData).data = responseData.data;
   }
 
   class BaseOkResponse {
-    @ApiProperty({example: true})
-    success: boolean;
-
     @ApiProperty({example: props.create ? 201 : 200})
     statusCode: number;
 
+    @ApiProperty({example: true})
+    success: boolean;
+
     @ApiProperty({example: props.create ? "Resource Created" : "Resource Successfully"})
     detail: string;
+
+    @ApiProperty({example: props.path})
+    path: string;
+
+    @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
+    timestamp: string;
 
     @ApiProperty({
       example: response
@@ -70,12 +76,6 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
       message: string;
       data?: T;
     };
-
-    @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
-    timestamp: string;
-
-    @ApiProperty({example: props.path})
-    path: string;
   }
 
   return BaseOkResponse;
