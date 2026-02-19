@@ -150,7 +150,7 @@ export class AuthService {
     };
 
     return this.generateAccessToken(payload);
-  }
+  };
 
   /** revoked refresh token and logout */
   async logout(refreshPayload: RefreshTokenPayload): Promise<ApiResponse<void>> {
