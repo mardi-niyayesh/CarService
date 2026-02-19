@@ -5,7 +5,7 @@ import type {BaseApiResponse, BaseApiResponseData, InterceptorResponse} from "@/
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
 
 @Injectable()
-export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse | BaseApiResponseData<T>, InterceptorResponse<T>> {
+export class ResponseInterceptors<T> implements NestInterceptor<BaseApiResponse | BaseApiResponseData<T>, InterceptorResponse<T>> {
   intercept(
     context: ExecutionContext,
     next: CallHandler<BaseApiResponse | BaseApiResponseData<T>>
