@@ -1,34 +1,45 @@
-import { type FormData } from "../types/auth.types";
+import {type RegisterFormData } from "../types/auth.types";
 import { type LoginFormData } from "../types/auth.types";
 
-export const registerUser = async (userData: FormData) => {
-  const response = await fetch("http://localhost:3000/api/auth/register", {
+export const registerUser = async (userData: RegisterFormData) => {
+  try{
+//  console.log('. داده ارسالی به سرور:', userData);
+   const response = await fetch("/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
   });
-
-  if (!response.ok) {
-    throw new Error("خطا در ثبت‌نام");
+  //  console.log('. وضعیت پاسخ:', response.status);
+   const data = await response.json();
+    // console.log('. داده دریافتی از سرور:', data);
+    return data
+  }catch(error){
+  console.error('خطا در درخواست:', error);
+    throw error;
   }
-
-  return await response.json();
 };
 
-export const loginUser = async (userData: LoginFormData) => {
-  const response = await fetch("http://localhost:3000/api/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
-  });
 
-  if (!response.ok) {
-    throw new Error("خطا در ورود");
+export const loginUser = async (userData:LoginFormData) => {
+  try {
+    // console.log('. داده ارسالی به سرور:', userData);
+    
+    const response = await fetch('api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+    
+    // console.log('. وضعیت پاسخ:', response.status);
+    
+    const data = await response.json();
+    // console.log('. داده دریافتی از سرور:', data);
+    
+    return data; 
+  } catch (error) {
+    console.error('خطا در درخواست:', error);
+    throw error;
   }
-
-  return await response.json();
 };
