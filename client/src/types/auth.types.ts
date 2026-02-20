@@ -1,10 +1,3 @@
-export type FormData = {
-  email: string;
-  password: string;
-  firstname: string;
-  age: number;
-  rules: boolean;
-};
 
 // type for props components
  export type FormInputProps = {
@@ -31,3 +24,10 @@ export type LoginFormData = {
   email: string;
   password: string;
 };
+
+//type props Modle
+export type SuccessModalProps= {
+  isOpen: boolean;
+  onClose: () => void;  
+  message: string;
+}
