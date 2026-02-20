@@ -1,7 +1,6 @@
 const USER = {
   USER_SELF: "user.self",
   USER_VIEW: 'user.view',
-  USER_UPDATE: 'user.update',
   USER_DELETE: 'user.delete',
   ROLE_ASSIGN: "role.assign",
   ROLE_REVOKE: "role.revoke",
