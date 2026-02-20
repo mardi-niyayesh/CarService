@@ -1,5 +1,5 @@
 import reservCar from "../../../assets/reservCar.png";
-import ComponentReservAutorent from "./componentReservAutorent";
+import ComponentReservAutorent from "./ComponentReservAutorent";
 
 const feacherData = [
   {
