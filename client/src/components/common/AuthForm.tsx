@@ -91,7 +91,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
               <>
                 <FormInput
                   label="نام کاربری"
-                  name="firstname"
+                  name="display_name"
                   type="text"
                   placeholder="نام خود را وارد کنید"
                   register={register}
