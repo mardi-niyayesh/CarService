@@ -17,7 +17,8 @@ import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
 import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UseInterceptors} from '@nestjs/common';
+import {LoggingInterceptor} from "@/common/interceptors/logging.interceptor";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -29,6 +30,7 @@ import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from 
  * - Refreshing access tokens using secure httpOnly cookies
  * - Logout users in system and revoked refresh token
  */
+@UseInterceptors(LoggingInterceptor)
 @ApiTags('Auth')
 @Controller('auth')
 @Public()
