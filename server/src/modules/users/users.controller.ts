@@ -64,17 +64,17 @@ export class UsersController {
   @Permission({
     permissions: [PERMISSIONS.USER_SELF]
   })
-  @Get("get-me")
+  @Get("profile")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'get user info',
+    summary: 'get user info by self',
     description: 'get user info accessToken. **Access restricted to users with role: (self) only.**',
-    operationId: 'get_me',
+    operationId: 'get_profile',
     tags: ["User"],
   })
   @ApiOkResponse({type: UserDto.GetMeOkResponse})
   @ApiUnauthorizedResponse({type: UnauthorizedResponse})
-  getMe(
+  getProfile(
     @Req() req: AccessRequest
   ) {
     return this.usersService.findOne(req.user.userId);
