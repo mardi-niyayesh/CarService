@@ -16,8 +16,7 @@ import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
 import type {RefreshRequest, LoginResponse, ApiResponse, AccessRequest} from "@/types";
-import {LoggingInterceptor} from "@/common/interceptors/logging.interceptor";
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public, AccessTokenGuard, Permission, PERMISSIONS} from "@/common";
 
 /**
@@ -30,7 +29,6 @@ import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public, AccessTokenG
  * - Refreshing access tokens using secure httpOnly cookies
  * - Logout users in system and revoked refresh token
  */
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('Auth')
 @Controller('auth')
 @Public()
@@ -171,8 +169,8 @@ export class AuthController {
   @Permission({
     permissions: [PERMISSIONS.USER_SELF]
   })
-  @HttpCode(HttpStatus.OK)
   @Post("forget-password")
+  @HttpCode(HttpStatus.OK)
   @ApiCookieAuth("accessToken")
   @ApiOperation({
     summary: 'Forgot password',
