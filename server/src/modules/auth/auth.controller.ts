@@ -31,7 +31,6 @@ import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public, AccessTokenG
  */
 @ApiTags('Auth')
 @Controller('auth')
-@Public()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -49,6 +48,7 @@ export class AuthController {
   /**
    * Creating new user accounts
    */
+  @Public()
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -71,6 +71,7 @@ export class AuthController {
   /**
    * Authenticating users with email/password and Issuing access tokens
    */
+  @Public()
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -106,6 +107,7 @@ export class AuthController {
 
   /** Refreshing access tokens using secure httpOnly cookies */
   @UseGuards(RefreshTokenGuard)
+  @Public()
   @Post("refresh")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -144,6 +146,7 @@ export class AuthController {
 
   /** Logout users in system and revoked refresh token */
   @UseGuards(RefreshTokenGuard)
+  @Public()
   @Post("logout")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -165,10 +168,10 @@ export class AuthController {
   }
 
   /** Reset user password with token */
-  @UseGuards(AccessTokenGuard)
   @Permission({
     permissions: [PERMISSIONS.USER_SELF]
   })
+  @UseGuards(AccessTokenGuard)
   @Post("forget-password")
   @HttpCode(HttpStatus.OK)
   @ApiCookieAuth("accessToken")
