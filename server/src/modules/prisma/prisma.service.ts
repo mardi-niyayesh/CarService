@@ -21,7 +21,7 @@ export class PrismaService
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     if (!PrismaService.initialize) {
       PrismaService.initialize = true;
       await this.$connect();
@@ -29,8 +29,8 @@ export class PrismaService
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async onModuleDestroy() {
-    if (!PrismaService.initialize) {
+  async onModuleDestroy(): Promise<void> {
+    if (PrismaService.initialize) {
       PrismaService.initialize = false;
       await this.$disconnect();
     }
