@@ -15,10 +15,10 @@ import {
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
-import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
-import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UseInterceptors} from '@nestjs/common';
+import type {RefreshRequest, LoginResponse, ApiResponse, AccessRequest} from "@/types";
 import {LoggingInterceptor} from "@/common/interceptors/logging.interceptor";
+import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UseInterceptors} from '@nestjs/common';
+import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public, AccessTokenGuard, Permission, PERMISSIONS} from "@/common";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -164,5 +164,28 @@ export class AuthController {
   ) {
     res.clearCookie("refreshToken", this.getCookieOptions());
     return this.authService.logout(req.refreshPayload);
+  }
+
+  /** Reset user password with token */
+  @UseGuards(AccessTokenGuard)
+  @Permission({
+    permissions: [PERMISSIONS.USER_SELF]
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post("forget-password")
+  @ApiCookieAuth("accessToken")
+  @ApiOperation({
+    summary: 'Forgot password',
+    description: 'Starts the password reset process by sending a reset link to the user email.',
+    operationId: 'auth_forgot_password',
+    tags: ["Auth"],
+  })
+  forgetPassword(
+    @Req() req: AccessRequest,
+  ) {
+    console.log(req.user);
+    return {
+      test: "password is reset/",
+    };
   }
 }
