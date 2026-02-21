@@ -16,7 +16,7 @@ import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import type {RefreshRequest, LoginResponse, ApiResponse, AccessRequest} from "@/types";
+import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
 import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 
 /**
@@ -167,7 +167,7 @@ export class AuthController {
   /** Reset user password with token */
   @Post("forget-password")
   @HttpCode(HttpStatus.OK)
-  @ApiCookieAuth("accessToken")
+  @ApiBody({type: AuthDto.ForgotPasswordSchema})
   @ApiOperation({
     summary: 'Forgot password',
     description: 'Starts the password reset process by sending a reset link to the user email.',
@@ -175,9 +175,9 @@ export class AuthController {
     tags: ["Auth"],
   })
   forgetPassword(
-    @Req() req: AccessRequest,
+    @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ) {
-    console.log(req.user);
+    console.log(body.email);
     return {
       test: "password is reset",
     };
