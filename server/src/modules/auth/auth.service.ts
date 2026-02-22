@@ -1,10 +1,13 @@
+import path from "node:path";
 import {ROLES} from "@/common";
 import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
+import {readFileSync} from "node:fs";
 import {randomUUID} from "node:crypto";
 import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
+import {EmailService} from "@/modules/email/email.service";
 import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
 import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
 import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
@@ -13,7 +16,8 @@ import {ConflictException, HttpStatus, Injectable, InternalServerErrorException,
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   /** generate new accessToken with payload */
@@ -205,5 +209,38 @@ export class AuthService {
     return {
       message: "user logout successfully"
     };
+  }
+
+  /** send email to user for reset password */
+  async forgotPassword(to: string): Promise<ApiResponse<{ email: string }>> {
+    const templatePath: string = path.join(process.cwd(), "public/html/forgot-password.html");
+
+    let html: string;
+    try {
+      html = readFileSync(templatePath, 'utf8');
+    } catch (err) {
+      throw new InternalServerErrorException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to load email template',
+        error: (err as Error).message,
+      });
+    }
+
+    try {
+      await this.emailService.sendHtmlEmail(to, html);
+
+      return {
+        message: "Email sent successfully",
+        data: {
+          email: to
+        }
+      };
+    } catch (e) {
+      throw new InternalServerErrorException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: (e as Error).message || 'Failed to send reset password email',
+        error: (e as Error).name || "Internal Server Error",
+      });
+    }
   }
 }
