@@ -10,7 +10,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {EmailService} from "@/modules/email/email.service";
 import {compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
 import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
-import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -277,7 +277,40 @@ export class AuthService {
     }
   }
 
-  async resetPassword(token: string) {
+  /** Reset password with token */
+  async resetPassword(token: string, password: string): Promise<ApiResponse<void>> {
+    const hashedToken: string = hashSecretToken(token);
 
+    const findToken = await this.prisma.passwordToken.findFirst({
+      where: {token: hashedToken},
+      include: {user: true}
+    });
+
+    if (!findToken) throw new NotFoundException({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Reset password token is invalid or has expired.',
+      error: "Not Found"
+    });
+
+    if (findToken.expires_at < new Date()) throw new BadRequestException({
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: 'The reset password token has expired. Please request a new one.',
+      error: 'TokenExpired'
+    });
+
+    const newPassword: string = await hashSecret(password);
+
+    await this.prisma.user.update({
+      where: {
+        id: findToken.user.id
+      },
+      data: {
+        password: newPassword
+      }
+    });
+
+    return {
+      message: "Password reset successfully",
+    };
   }
 }
