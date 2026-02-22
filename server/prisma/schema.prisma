@@ -20,8 +20,9 @@ model User {
   display_name String?  @db.VarChar(50)
   age          Int?
 
-  refreshTokens RefreshToken[]
-  userRoles     UserRole[]
+  refreshTokens  RefreshToken[]
+  userRoles      UserRole[]
+  passwordTokens PasswordToken?
 
   @@map("users")
 }
@@ -31,9 +32,14 @@ model PasswordToken {
   id         String   @id @default(uuid(4))
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  user_id    String
+  user_id    String   @unique
   token      String   @db.VarChar(64)
   expires_at DateTime
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("password_tokens")
 }
 
 // RefreshToken Model
