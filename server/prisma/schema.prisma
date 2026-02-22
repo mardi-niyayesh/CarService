@@ -26,6 +26,16 @@ model User {
   @@map("users")
 }
 
+// token for passwords
+model PasswordToken {
+  id         String   @id @default(uuid(4))
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user_id    String
+  token      String   @db.VarChar(64)
+  expires_at DateTime
+}
+
 // RefreshToken Model
 model RefreshToken {
   id         String    @id @default(uuid(4))
