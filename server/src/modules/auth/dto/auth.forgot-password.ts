@@ -19,7 +19,7 @@ export class ForgotPasswordSchema extends createZodDto(ForgotPassword) {}
 export class OkForgotPasswordRes extends getBaseOkResponseSchema<ForgotApiResponse>({
   path: "/auth/forget-password",
   response: {
-    message: "Email sent successfully",
+    message: "Email sent successfully, Please check your inbox",
     data: {
       email: "user@exmaple.com",
       time: "15 minutes left",

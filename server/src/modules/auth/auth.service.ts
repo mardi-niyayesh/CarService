@@ -261,7 +261,7 @@ export class AuthService {
       });
 
       return {
-        message: "Email sent successfully",
+        message: "Email sent successfully, Please check your inbox",
         data: {
           email: to,
           time: `${expireMinutes} minutes left`,
