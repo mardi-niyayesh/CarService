@@ -6,10 +6,11 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
-  ApiTooManyRequestsResponse, ApiNotFoundResponse,
+  ApiTooManyRequestsResponse,
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
