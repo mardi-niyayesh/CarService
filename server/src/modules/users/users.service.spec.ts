@@ -57,7 +57,9 @@ describe("UsersService", (): void => {
     prisma.user.findFirst.mockResolvedValue(null);
 
     // noinspection ES6RedundantAwait
-    await expect(service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")).rejects.toThrow(NotFoundException);
+    await expect(
+      service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")
+    ).rejects.toThrow(NotFoundException);
   });
 
   /** reset all */
