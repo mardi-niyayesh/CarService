@@ -174,11 +174,9 @@ export class AuthController {
     operationId: 'auth_forgot_password',
     tags: ["Auth"],
   })
-  async forgetPassword(
+  forgetPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ) {
-    return {
-      test: "password is reset",
-    };
+    return this.authService.forgotPassword(body.email);
   }
 }
