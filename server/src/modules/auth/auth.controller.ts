@@ -19,7 +19,7 @@ import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import type {RefreshRequest, LoginResponse, ApiResponse, UserResponse} from "@/types";
 import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
-import {OkResetPasswordRes} from "./dto";
+import {NotFoundResetPasswordRes} from "./dto";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -191,6 +191,7 @@ export class AuthController {
     return this.authService.forgotPassword(body.email);
   }
 
+  /** reset password with token */
   @Post("reset-password")
   @HttpCode(HttpStatus.OK)
   @ApiBody({type: AuthDto.ResetPasswordSchema})
@@ -201,6 +202,7 @@ export class AuthController {
     tags: ["Auth"],
   })
   @ApiOkResponse({type: AuthDto.OkResetPasswordRes})
+  @ApiNotFoundResponse({type: AuthDto.NotFoundResetPasswordRes})
   resetPassword(
     @Body(new ZodPipe(AuthDto.ResetPassword)) body: AuthDto.ResetPasswordType
   ): Promise<ApiResponse<void>> {
