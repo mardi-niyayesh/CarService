@@ -175,11 +175,15 @@ export class AuthController {
     operationId: 'auth_forgot_password',
     tags: ["Auth"],
   })
+  @ApiOkResponse({type: AuthDto.OkForgotPasswordRes})
   @ApiNotFoundResponse({
     type: UserDto.NotFoundGetUserResponse,
     description: 'The requested user does not exist in the database.'
   })
-  @ApiConflictResponse({type: AuthDto.ConflictForgotPasswordRes})
+  @ApiConflictResponse({
+    type: AuthDto.ConflictForgotPasswordRes,
+    description: "A password reset token is already active for this user. Please check your email for the existing reset link. You must wait until the token expires before requesting a new one."
+  })
   forgetPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ) {

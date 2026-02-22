@@ -212,7 +212,7 @@ export class AuthService {
   }
 
   /** send email to user for reset password */
-  async forgotPassword(to: string): Promise<ApiResponse<{ email: string }>> {
+  async forgotPassword(to: string): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: to
@@ -229,11 +229,13 @@ export class AuthService {
     const token: string = generateRandomToken();
     const hashedToken: string = hashSecretToken(token);
 
+    const expireMinutes: number = 15;
+
     await this.prisma.passwordToken.create({
       data: {
         user_id: user.id,
         token: hashedToken,
-        expires_at: new Date(Date.now() + 15 * 60 * 1000)
+        expires_at: new Date(Date.now() + expireMinutes * 60 * 1000)
       }
     });
 
@@ -243,9 +245,10 @@ export class AuthService {
     try {
       html = readFileSync(templatePath, 'utf8');
 
-      const resetLink: string = process.env.CLIENT_RESET_PASSWORD! + "?token=" + token;
+      const resetLink: string = `${process.env.CLIENT_RESET_PASSWORD}?token=${token}`;
 
       html = html.replace("{{resetLink}}", resetLink);
+      html = html.replace("{{expireMinutes}}", expireMinutes.toString());
     } catch (err) {
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -260,7 +263,9 @@ export class AuthService {
       return {
         message: "Email sent successfully",
         data: {
-          email: to
+          email: to,
+          time: `${expireMinutes} minutes left`,
+          timeNumber: expireMinutes
         }
       };
     } catch (e) {
@@ -270,5 +275,9 @@ export class AuthService {
         error: (e as Error).name || "Internal Server Error",
       });
     }
+  }
+
+  async resetPassword(token: string) {
+
   }
 }
