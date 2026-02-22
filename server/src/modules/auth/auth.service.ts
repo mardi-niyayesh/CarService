@@ -224,20 +224,14 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
+    console.log(user);
+
     if (user.passwordToken) throw new ConflictException('A password reset token is already active. Please check your email.');
 
     const token: string = generateRandomToken();
     const hashedToken: string = hashSecretToken(token);
 
     const expireMinutes: number = 15;
-
-    await this.prisma.passwordToken.create({
-      data: {
-        user_id: user.id,
-        token: hashedToken,
-        expires_at: new Date(Date.now() + expireMinutes * 60 * 1000)
-      }
-    });
 
     const templatePath: string = path.join(process.cwd(), "public/html/forgot-password.html");
 
@@ -259,6 +253,14 @@ export class AuthService {
 
     try {
       await this.emailService.sendHtmlEmail(to, html);
+
+      await this.prisma.passwordToken.create({
+        data: {
+          user_id: user.id,
+          token: hashedToken,
+          expires_at: new Date(Date.now() + expireMinutes * 60 * 1000)
+        }
+      });
 
       return {
         message: "Email sent successfully",
