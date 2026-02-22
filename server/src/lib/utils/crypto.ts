@@ -18,7 +18,7 @@ export async function compareSecret(
 }
 
 /** generate refresh token from randomBytes */
-export function generateRefreshToken(): string {
+export function generateRandomToken(): string {
   return randomBytes(64).toString("hex");
 }
 

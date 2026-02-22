@@ -8,7 +8,7 @@ import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
 import {EmailService} from "@/modules/email/email.service";
-import {compareSecret, generateRefreshToken, hashSecret, hashSecretToken} from "@/lib";
+import {compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
 import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
 import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 
@@ -144,7 +144,7 @@ export class AuthService {
     };
 
     const accessToken: string = this.generateAccessToken(accessTokenPayload);
-    const refreshToken: string = generateRefreshToken();
+    const refreshToken: string = generateRandomToken();
 
     const expires_at: Date = new Date(
       Date.now() + (
