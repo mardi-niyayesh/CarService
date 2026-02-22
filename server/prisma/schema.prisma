@@ -20,9 +20,9 @@ model User {
   display_name String?  @db.VarChar(50)
   age          Int?
 
-  refreshTokens  RefreshToken[]
-  userRoles      UserRole[]
-  passwordTokens PasswordToken?
+  refreshTokens RefreshToken[]
+  userRoles     UserRole[]
+  passwordToken PasswordToken?
 
   @@map("users")
 }
