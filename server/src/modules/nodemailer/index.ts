@@ -1,1 +1,1 @@
-export * from "./nodemailer.module";
+export * from "./email.module";
