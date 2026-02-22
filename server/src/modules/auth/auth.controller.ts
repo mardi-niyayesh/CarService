@@ -9,11 +9,12 @@ import {
   ApiForbiddenResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
-  ApiTooManyRequestsResponse,
+  ApiTooManyRequestsResponse, ApiNotFoundResponse,
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
+import * as UserDto from "@/modules/users/dto";
 import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
@@ -174,6 +175,11 @@ export class AuthController {
     operationId: 'auth_forgot_password',
     tags: ["Auth"],
   })
+  @ApiNotFoundResponse({
+    type: UserDto.NotFoundGetUserResponse,
+    description: 'The requested user does not exist in the database.'
+  })
+  @ApiConflictResponse({type: AuthDto.ConflictForgotPasswordRes})
   forgetPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ) {
