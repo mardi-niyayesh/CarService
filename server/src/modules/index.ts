@@ -4,3 +4,4 @@ export * from "./auth";
 export * from "./users";
 export * from "./scheduler";
 export * from "./cli";
+export * from "./email";

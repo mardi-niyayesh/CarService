@@ -16,6 +16,7 @@ import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
     Modules.SchedulerModule,
     Modules.CliModule,
     Modules.RolesModule,
+    Modules.EmailModule
   ],
   providers: [
     {
