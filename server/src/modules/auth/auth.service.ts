@@ -10,7 +10,7 @@ import {PrismaService} from "../prisma/prisma.service";
 import {EmailService} from "@/modules/email/email.service";
 import {compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
 import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
-import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
+import {ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -213,11 +213,39 @@ export class AuthService {
 
   /** send email to user for reset password */
   async forgotPassword(to: string): Promise<ApiResponse<{ email: string }>> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: to
+      },
+      include: {
+        passwordToken: true
+      }
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.passwordToken) throw new ConflictException('A password reset token is already active. Please check your email.');
+
+    const token: string = generateRandomToken();
+    const hashedToken: string = hashSecretToken(token);
+
+    await this.prisma.passwordToken.create({
+      data: {
+        user_id: user.id,
+        token: hashedToken,
+        expires_at: new Date(Date.now() + 15 * 60 * 1000)
+      }
+    });
+
     const templatePath: string = path.join(process.cwd(), "public/html/forgot-password.html");
 
     let html: string;
     try {
       html = readFileSync(templatePath, 'utf8');
+
+      const resetLink: string = process.env.CLIENT_RESET_PASSWORD! + "?token=" + token;
+
+      html = html.replace("{{resetLink}}", resetLink);
     } catch (err) {
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
