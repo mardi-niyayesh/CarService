@@ -46,13 +46,15 @@ async function bootstrap(): Promise<void> {
 
   const document = SwaggerModule.createDocument(app, swaggerConfigV1);
 
-  SwaggerModule.setup("api/docs", app, document, {
-    swaggerOptions: {
-      withCredentials: true,
-      persistAuthorization: true,
-    },
-    customCssUrl: "/static/styles/swagger.css"
-  });
+  if (process.env.NODE_ENV !== "test") {
+    SwaggerModule.setup("api/docs", app, document, {
+      swaggerOptions: {
+        withCredentials: true,
+        persistAuthorization: true,
+      },
+      customCssUrl: "/static/styles/swagger.css"
+    });
+  }
 
   // listen app on default port
   await app.listen(process.env.PORT ?? 3000);
