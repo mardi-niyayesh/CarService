@@ -17,9 +17,8 @@ import {AuthService} from "./auth.service";
 import * as UserDto from "@/modules/users/dto";
 import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import type {RefreshRequest, LoginResponse, ApiResponse} from "@/types";
+import type {RefreshRequest, LoginResponse, ApiResponse, UserResponse} from "@/types";
 import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
-import {ResetPassword} from "./dto";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -66,7 +65,7 @@ export class AuthController {
   @ApiTooManyRequestsResponse({type: TooManyRequestResponse})
   register(
     @Body(new ZodPipe(AuthDto.CreateUser)) data: AuthDto.CreateUserInput
-  ) {
+  ): Promise<ApiResponse<UserResponse>> {
     return this.authService.register(data);
   }
 
@@ -161,7 +160,7 @@ export class AuthController {
   logout(
     @Req() req: RefreshRequest,
     @Res({passthrough: true}) res: Response
-  ) {
+  ): Promise<ApiResponse<void>> {
     res.clearCookie("refreshToken", this.getCookieOptions());
     return this.authService.logout(req.refreshPayload);
   }
@@ -187,7 +186,7 @@ export class AuthController {
   })
   forgetPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
-  ) {
+  ): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
     return this.authService.forgotPassword(body.email);
   }
 
@@ -202,12 +201,7 @@ export class AuthController {
   })
   resetPassword(
     @Body(new ZodPipe(AuthDto.ResetPassword)) body: AuthDto.ResetPasswordType
-  ) {
-    console.log(body);
-
-    return {
-      test: true,
-      url: "/auth/reset-password",
-    };
+  ): Promise<ApiResponse<void>> {
+    return this.authService.resetPassword(body.token, body.password);
   }
 }
