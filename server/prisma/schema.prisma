@@ -39,6 +39,7 @@ model PasswordToken {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([token])
+  @@index([expires_at])
   @@map("password_tokens")
 }
 
