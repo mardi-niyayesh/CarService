@@ -20,6 +20,11 @@ export class OkResetPasswordRes extends getBaseOkResponseSchema<void>({
   }
 }) {}
 
+export class BadRequestResetPasswordRes extends getNormalErrorResponse(
+  "The reset password token has expired. Please request a new one.",
+  400
+) {}
+
 export class NotFoundResetPasswordRes extends getNormalErrorResponse(
   "Reset password token is invalid or has expired.",
   404
