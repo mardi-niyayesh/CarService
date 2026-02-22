@@ -165,7 +165,7 @@ export class AuthController {
     return this.authService.logout(req.refreshPayload);
   }
 
-  /** Reset user password with token */
+  /** Send Email for Reset password */
   @Post("forget-password")
   @HttpCode(HttpStatus.OK)
   @ApiBody({type: AuthDto.ForgotPasswordSchema})
@@ -188,5 +188,18 @@ export class AuthController {
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ) {
     return this.authService.forgotPassword(body.email);
+  }
+
+  @Post("reset-password")
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({})
+  @ApiOperation({
+    summary: 'Reset password with token',
+    description: 'Complete the password reset process by providing the reset token (received via email) and the new password. The token must be valid and not expired.',
+    operationId: 'auth_reset_password',
+    tags: ["Auth"],
+  })
+  resetPassword() {
+
   }
 }
