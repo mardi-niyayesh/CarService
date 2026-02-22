@@ -224,8 +224,6 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    console.log(user);
-
     if (user.passwordToken) throw new ConflictException('A password reset token is already active. Please check your email.');
 
     const token: string = generateRandomToken();
@@ -309,6 +307,10 @@ export class AuthService {
       data: {
         password: newPassword
       }
+    });
+
+    await this.prisma.passwordToken.delete({
+      where: {id: findToken.id}
     });
 
     return {
