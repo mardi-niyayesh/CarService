@@ -1,0 +1,13 @@
+import z from "zod";
+import {createZodDto} from "nestjs-zod";
+import {BaseUserSchema} from "@/modules/users/dto/users.validators";
+
+export const ResetPassword = BaseUserSchema.pick({
+  password: true
+}).extend({
+  token: z.string().length(128, {error: 'Token must be exactly 128 characters long'}),
+});
+
+export type ResetPasswordType = z.infer<typeof ResetPassword>;
+
+export class ResetPasswordSchema extends createZodDto(ResetPassword) {}
