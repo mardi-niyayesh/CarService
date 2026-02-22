@@ -1,5 +1,6 @@
 import z from "zod";
 import {createZodDto} from "nestjs-zod";
+import {getBaseOkResponseSchema} from "@/common";
 import {BaseUserSchema} from "@/modules/users/dto/users.validators";
 
 export const ResetPassword = BaseUserSchema.pick({
@@ -11,3 +12,10 @@ export const ResetPassword = BaseUserSchema.pick({
 export type ResetPasswordType = z.infer<typeof ResetPassword>;
 
 export class ResetPasswordSchema extends createZodDto(ResetPassword) {}
+
+export class OkResetPasswordRes extends getBaseOkResponseSchema<void>({
+  path: "/auth/reset-password",
+  response: {
+    message: "The reset password token has expired. Please request a new one.",
+  }
+}) {}
