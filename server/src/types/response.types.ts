@@ -1,3 +1,12 @@
+/** base response for exceptions and ok responses */
+interface BaseResponse {
+  success: boolean;
+  statusCode: number;
+  detail: string;
+  timestamp: string;
+  path?: string;
+}
+
 /** API Responses without data */
 export interface BaseApiResponse {
   message: string;
@@ -11,14 +20,6 @@ export interface BaseApiResponseData<T> extends BaseApiResponse {
 /** Base API Responses */
 export type ApiResponse<T> = T extends void ? BaseApiResponse : BaseApiResponseData<T>;
 
-interface BaseResponse {
-  success: boolean;
-  statusCode: number;
-  detail: string;
-  timestamp: string;
-  path?: string;
-}
-
 /** schema response when request is ok */
 export interface InterceptorResponse<T> extends BaseResponse {
   response: BaseApiResponseData<T> | BaseApiResponse;
@@ -30,14 +31,14 @@ export interface ZodFieldError {
   error: string;
 }
 
-export interface BaseException {
+export interface BaseException extends BaseResponse {
+  message: string;
   error: string;
 }
 
-export interface ExceptionData {
+export interface ZodException extends BaseResponse {
+  message: string;
   errors: ZodFieldError[];
 }
 
-export interface ExceptionResponse extends BaseResponse {
-  message: string;
-}
+export type ExceptionResponse<T> = T extends void ? BaseException : ZodException;
