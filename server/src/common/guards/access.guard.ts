@@ -25,7 +25,7 @@ export class AccessTokenGuard extends AuthGuard("jwt-access") implements CanActi
   handleRequest<T = UserAccess>(err: Error, user: T, _info: unknown, _context: ExecutionContext, _status?: unknown) {
     if (err || !user) throw new UnauthorizedException({
       message: "Access token missing or expired",
-      error: "Unauthorized",
+      error: "accessToken Expires",
     } as BaseException);
     return user;
   }

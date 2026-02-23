@@ -1,7 +1,7 @@
 import {hashSecretToken} from '@/lib';
 import {PrismaService} from '@/modules/prisma/prisma.service';
 import {BaseException, RefreshRequest, RefreshTokenPayload} from '@/types';
-import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
+import {CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -51,9 +51,9 @@ export class RefreshTokenGuard implements CanActivate {
         data: {revoked_at: new Date()}
       });
 
-      throw new UnauthorizedException({
-        message: 'Refresh token already revoked',
-        error: 'Invalid refreshToken'
+      throw new ForbiddenException({
+        message: 'Refresh token already revoked.',
+        error: 'RefreshToken is Revoked',
       } as BaseException);
     }
 
