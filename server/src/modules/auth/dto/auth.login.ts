@@ -44,20 +44,20 @@ export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchema
 /** bad request example for login user */
 export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
   {
-    fields: "email",
-    message: "Invalid email address"
+    field: "email",
+    error: "Invalid email address"
   },
   {
-    fields: "password",
-    message: "Too small: expected string to have >=6 characters"
+    field: "password",
+    error: "Too small: expected string to have >=6 characters"
   },
   {
-    fields: "password",
-    message: "password must contain at least one letter and one number"
+    field: "password",
+    error: "password must contain at least one letter and one number"
   },
   {
-    fields: "remember",
-    message: "Invalid input: expected boolean, received string"
+    field: "remember",
+    error: "Invalid input: expected boolean, received string",
   }
 ]) {}
 

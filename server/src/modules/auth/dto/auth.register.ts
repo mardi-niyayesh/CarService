@@ -56,23 +56,23 @@ export class CreateUserConflictResponse extends getNormalErrorResponse(
 /** bad request example for create user */
 export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
   {
-    fields: "email",
-    message: "Invalid email address"
+    field: "email",
+    error: "Invalid email address"
   },
   {
-    fields: "password",
-    message: "Too small: expected string to have >=6 characters"
+    field: "password",
+    error: "Too small: expected string to have >=6 characters"
   },
   {
-    fields: "password",
-    message: "password must contain at least one letter and one number"
+    field: "password",
+    error: "password must contain at least one letter and one number"
   },
   {
-    fields: "display_name",
-    message: "Too small: expected string to have >=3 characters"
+    field: "display_name",
+    error: "Too small: expected string to have >=3 characters"
   },
   {
-    fields: "age",
-    message: "Too big: expected number to be <=120"
+    field: "age",
+    error: "Too big: expected number to be <=120"
   }
 ]) {}
