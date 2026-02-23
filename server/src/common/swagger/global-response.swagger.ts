@@ -1,6 +1,6 @@
 import {getDefaultMessage} from "@/lib";
 import {ApiProperty} from "@nestjs/swagger";
-import {ApiResponse, BaseApiResponseData} from "@/types";
+import {ApiResponse, BaseApiResponseData, ZodFieldError} from "@/types";
 
 /** normal example error  */
 export function getNormalErrorResponse(message: string, statusCode: number) {
@@ -79,12 +79,6 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
   }
 
   return BaseOkResponse;
-}
-
-/** params type for get schema for swagger when zod validate not success */
-export interface ZodFieldError {
-  fields: string;
-  message: string;
 }
 
 /** get schema for swagger when zod validate not success */
