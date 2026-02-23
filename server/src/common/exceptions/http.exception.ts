@@ -1,6 +1,6 @@
 import {getDefaultMessage} from "@/lib";
 import type {Request, Response} from 'express';
-import {BaseResponse, ZodException, BaseException} from "@/types";
+import {BaseResponse, ZodExceptionRes, BaseExceptionRes} from "@/types";
 import {Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus} from "@nestjs/common";
 
 @Catch()
@@ -26,21 +26,21 @@ export class ResponseException implements ExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    let finalResponse: ZodException | BaseException;
+    let finalResponse: ZodExceptionRes | BaseExceptionRes;
 
     if (body !== null && typeof body === 'object' && "errors" in body) {
-      const exceptionZod = body as ZodException;
+      const exceptionZod = body as ZodExceptionRes;
 
       finalResponse = {
         ...baseErrorResponse,
         message: exceptionZod.message,
         errors: exceptionZod.errors,
-      } as ZodException;
+      } as ZodExceptionRes;
     } else {
       const message: string = typeof body === 'string'
         ? body
-        : (body as BaseException).message || "Internal Server Error";
-      const error: string = (exception as BaseException).error || "Unknown Error";
+        : (body as BaseExceptionRes).message || "Internal Server Error";
+      const error: string = (exception as BaseExceptionRes).error || "Unknown Error";
 
       finalResponse = {
         ...baseErrorResponse,

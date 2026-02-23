@@ -14,7 +14,6 @@ export class ZodPipe<T extends z.ZodTypeAny> implements PipeTransform {
 
     if (!result.success) {
       throw new BadRequestException({
-        statusCode: 400,
         errors: formatZodError(result.error),
         message: "Invalid request.",
       } as ZodException);

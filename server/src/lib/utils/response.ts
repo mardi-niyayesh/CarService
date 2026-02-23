@@ -1,4 +1,5 @@
 import z from 'zod';
+import {ZodFieldError} from "@/types";
 import {HttpStatus} from "@nestjs/common";
 
 /** date for responses */
@@ -22,7 +23,7 @@ export function getDefaultMessage(status: HttpStatus): string {
 }
 
 /** get structure format for zod errors */
-export function formatZodError(zodError: z.ZodError) {
+export function formatZodError(zodError: z.ZodError): ZodFieldError[] {
   return zodError?.issues?.map(i => ({
     field: i.path.join(", "),
     error: i.message,

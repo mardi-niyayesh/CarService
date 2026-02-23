@@ -31,12 +31,15 @@ export interface ZodFieldError {
   error: string;
 }
 
-export interface BaseException extends BaseResponse {
+export interface BaseException {
   message: string;
   error: string;
 }
 
-export interface ZodException extends BaseResponse {
+export interface ZodException {
   message: string;
   errors: ZodFieldError[];
 }
+
+export type BaseExceptionRes = & BaseResponse & BaseException;
+export type ZodExceptionRes = & BaseResponse & ZodException;

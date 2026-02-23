@@ -1,6 +1,6 @@
 import {ROLES} from "@/common";
 import {PrismaService} from "../prisma/prisma.service";
-import {ApiResponse, UserAccess, UserResponse} from "@/types";
+import {ApiResponse, BaseException, UserAccess, UserResponse} from "@/types";
 import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 
 @Injectable()
@@ -30,7 +30,10 @@ export class UsersService {
       }
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException({
+      message: "User not exist in database",
+      error: "User Not Found",
+    } as BaseException);
 
     const roles = user.userRoles.map(r => r.role.name);
 
@@ -91,18 +94,18 @@ export class UsersService {
 
       const targetUser = await tx.user.findUnique(userIncludes);
 
-      if (!targetUser) {
-        throw new NotFoundException('User not found');
-      }
+      if (!targetUser) throw new NotFoundException({
+        message: "User not exist in database",
+        error: "User Not Found",
+      });
 
       const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
 
       // Prevent self-assignment
       if (targetUser.id === actionPayload.userId) throw new ForbiddenException({
         message: 'You cannot assign roles to yourself',
-        error: "Forbidden",
-        statusCode: 403,
-      });
+        error: "Permission Denied",
+      } as BaseException);
 
       const roles = await tx.role.findMany({
         where: {
@@ -117,10 +120,9 @@ export class UsersService {
 
       // Validate all roles exist
       if (roles.length !== rolesId.length) throw new NotFoundException({
-        message: 'One or many Roles does not exist',
-        error: 'Not Found',
-        statusCode: 404,
-      });
+        message: 'One or many Roles does not exist in database',
+        error: 'Role Not Found',
+      } as BaseException);
 
       const restrictedRoles: string[] = [ROLES.OWNER, ROLES.SELF];
       const newRolesName: string[] = roles.map(r => r.name);
@@ -128,16 +130,14 @@ export class UsersService {
       // Block restricted roles
       if (newRolesName.some(r => restrictedRoles.includes(r))) throw new ForbiddenException({
         message: 'owner and self roles cannot be assigned',
-        error: 'Forbidden',
-        statusCode: 403,
-      });
+        error: 'Permission Denied',
+      } as BaseException);
 
       // Check for duplicate assignments
       if (targetRoles.some(r => newRolesName.includes(r))) throw new ConflictException({
         message: 'User already has some of these roles',
-        error: 'Conflict',
-        statusCode: 409,
-      });
+        error: 'Conflict User Roles',
+      } as BaseException);
 
       const rolesManager: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER];
       const rolesManagerStrict: string[] = structuredClone(rolesManager);
@@ -154,9 +154,8 @@ export class UsersService {
        */
       if (!isActorOwner && (isTargetManager || isNewRoleManager)) throw new ForbiddenException({
         message: "Management level protection: Only the owner can assign management roles.",
-        error: "Forbidden",
-        statusCode: 403,
-      });
+        error: "Permission Denied",
+      } as BaseException);
 
       await tx.userRole.createMany({
         data: rolesId.map(r => ({role_id: r, user_id: targetUser.id}))

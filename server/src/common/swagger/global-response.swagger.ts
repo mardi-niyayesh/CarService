@@ -38,7 +38,7 @@ export function getNormalErrorResponse(props: GetNormalErrorTypes) {
 }
 
 /** example response when user not authorized */
-function getUnauthorizedResponse(path: string) {
+export function getUnauthorizedResponse(path: string) {
   return class UnauthorizedResponse extends getNormalErrorResponse({
     message: "Access token missing or expired.",
     statusCode: 401,
