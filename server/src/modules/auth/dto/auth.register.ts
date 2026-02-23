@@ -17,9 +17,11 @@ export type CreateUserInput = z.infer<typeof BaseUserSchema>;
 /** Create User DTO for Swagger */
 export class CreateUserSchema extends createZodDto(BaseUserSchema) {}
 
+const path = "auth/register";
+
 /** object for ok response */
 export const createUserResponse = {
-  path: "auth/register",
+  path,
   message: "user created successfully",
   create: true,
   data: {
@@ -48,31 +50,38 @@ export class CreateUserOkResponse extends getBaseOkResponseSchema<UserResponse>(
 }) {}
 
 /** conflict example for create user */
-export class CreateUserConflictResponse extends getNormalErrorResponse(
-  "User already exists",
-  409
-) {}
+export class CreateUserConflictResponse extends getNormalErrorResponse({
+  message: 'User already exists in database',
+  path,
+  statusCode: 409,
+  error: "Conflict Users"
+}) {}
 
 /** bad request example for create user */
-export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
-  {
-    field: "email",
-    error: "Invalid email address"
-  },
-  {
-    field: "password",
-    error: "Too small: expected string to have >=6 characters"
-  },
-  {
-    field: "password",
-    error: "password must contain at least one letter and one number"
-  },
-  {
-    field: "display_name",
-    error: "Too small: expected string to have >=3 characters"
-  },
-  {
-    field: "age",
-    error: "Too big: expected number to be <=120"
-  }
-]) {}
+export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema({
+  errors: [
+    {
+      field: "email",
+      error: "Invalid email address"
+    },
+    {
+      field: "password",
+      error: "Too small: expected string to have >=6 characters"
+    },
+    {
+      field: "password",
+      error: "password must contain at least one letter and one number"
+    },
+    {
+      field: "display_name",
+      error: "Too small: expected string to have >=3 characters"
+    },
+    {
+      field: "age",
+      error: "Too big: expected number to be <=120"
+    }
+  ],
+  message: "Invalid Request.",
+  path,
+  statusCode: 400,
+}) {}
