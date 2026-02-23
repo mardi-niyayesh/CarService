@@ -1,5 +1,10 @@
+import z from 'zod';
 import {HttpStatus} from "@nestjs/common";
 
+/** date for responses */
+export const date = new Date();
+
+/** get Default message with status code */
 export function getDefaultMessage(status: HttpStatus): string {
   const defaultMessages: Partial<Record<HttpStatus, string>> = {
     [HttpStatus.OK]: 'Request Successful',
@@ -14,4 +19,12 @@ export function getDefaultMessage(status: HttpStatus): string {
     [HttpStatus.INTERNAL_SERVER_ERROR]: 'Internal Server Error',
   };
   return defaultMessages[status] || 'Unknown';
+}
+
+/** get structure format for zod errors */
+export function formatZodError(error: z.ZodError) {
+  return error?.issues?.map(i => ({
+    fields: i.path.join(", "),
+    message: i.message,
+  }));
 }
