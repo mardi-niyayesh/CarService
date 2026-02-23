@@ -22,9 +22,9 @@ export function getDefaultMessage(status: HttpStatus): string {
 }
 
 /** get structure format for zod errors */
-export function formatZodError(error: z.ZodError) {
-  return error?.issues?.map(i => ({
-    fields: i.path.join(", "),
-    message: i.message,
+export function formatZodError(zodError: z.ZodError) {
+  return zodError?.issues?.map(i => ({
+    field: i.path.join(", "),
+    error: i.message,
   }));
 }
