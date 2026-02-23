@@ -4,9 +4,9 @@ import path from "node:path";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import cookieParser from "cookie-parser";
-import {ResponseInterceptors} from "./common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import {NestExpressApplication} from "@nestjs/platform-express";
+import {ResponseInterceptors, ResponseException} from "./common";
 
 /** run application */
 async function bootstrap(): Promise<void> {
@@ -25,6 +25,7 @@ async function bootstrap(): Promise<void> {
   app.use(cookieParser());
 
   // change response structure
+  app.useGlobalFilters(new ResponseException());
   app.useGlobalInterceptors(new ResponseInterceptors());
 
   // Swagger Version 1
