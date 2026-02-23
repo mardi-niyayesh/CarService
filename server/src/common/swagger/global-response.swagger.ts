@@ -101,5 +101,5 @@ export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
 }
 
 export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
-  {fields: "id", message: "Invalid UUID"}
+  {field: "id", error: "Invalid UUID"}
 ]) {}

@@ -11,12 +11,33 @@ export interface BaseApiResponseData<T> extends BaseApiResponse {
 /** Base API Responses */
 export type ApiResponse<T> = T extends void ? BaseApiResponse : BaseApiResponseData<T>;
 
-/** schema response when request is ok */
-export class InterceptorResponse<T> {
+interface BaseResponse {
   success: boolean;
   statusCode: number;
   detail: string;
-  response: BaseApiResponseData<T> | BaseApiResponse;
   timestamp: string;
   path?: string;
+}
+
+/** schema response when request is ok */
+export interface InterceptorResponse<T> extends BaseResponse {
+  response: BaseApiResponseData<T> | BaseApiResponse;
+}
+
+/** params type for get schema for swagger when zod validate not success */
+export interface ZodFieldError {
+  field: string;
+  error: string;
+}
+
+export interface BaseException {
+  error: string;
+}
+
+export interface ExceptionData {
+  errors: ZodFieldError[];
+}
+
+export interface ExceptionResponse extends BaseResponse {
+  message: string;
 }
