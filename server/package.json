@@ -26,6 +26,7 @@
     "prisma:generate": "prisma generate",
     "prisma:setup": "prisma migrate deploy && prisma generate",
     "prisma:sync": "npx ts-node scripts/prisma-sync.ts",
+    "prisma:reset": "npx prisma migrate reset && npm run prisma:generate",
     "prisma:studio": "npx prisma studio"
   },
   "dependencies": {
