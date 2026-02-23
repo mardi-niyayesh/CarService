@@ -81,7 +81,5 @@ export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema
       error: "Too big: expected number to be <=120"
     }
   ],
-  message: "Invalid Request.",
   path,
-  statusCode: 400,
 }) {}

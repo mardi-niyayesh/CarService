@@ -33,8 +33,10 @@ export const loginResponseSchema: LoginUserSchemaType = {
   accessToken: "accessToken",
 };
 
+const path = "auth/login";
+
 export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
-  path: "auth/login",
+  path,
   response: {
     message: "user logged in successfully",
     data: loginResponseSchema,
@@ -42,26 +44,31 @@ export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchema
 }) {}
 
 /** bad request example for login user */
-export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
-  {
-    field: "email",
-    error: "Invalid email address"
-  },
-  {
-    field: "password",
-    error: "Too small: expected string to have >=6 characters"
-  },
-  {
-    field: "password",
-    error: "password must contain at least one letter and one number"
-  },
-  {
-    field: "remember",
-    error: "Invalid input: expected boolean, received string",
-  }
-]) {}
+export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema({
+  path,
+  errors: [
+    {
+      field: "email",
+      error: "Invalid email address"
+    },
+    {
+      field: "password",
+      error: "Too small: expected string to have >=6 characters"
+    },
+    {
+      field: "password",
+      error: "password must contain at least one letter and one number"
+    },
+    {
+      field: "remember",
+      error: "Invalid input: expected boolean, received string",
+    }
+  ],
+}) {}
 
-export class LoginUserInvalidAuthResponse extends getNormalErrorResponse(
-  "Invalid credentials",
-  401
-) {}
+export class LoginUserInvalidAuthResponse extends getNormalErrorResponse({
+  message: "Invalid user credentials",
+  error: "Invalid Credentials",
+  path,
+  statusCode: 401
+}) {}

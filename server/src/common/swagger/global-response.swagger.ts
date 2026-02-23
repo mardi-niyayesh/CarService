@@ -105,7 +105,7 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
   return BaseOkResponse;
 }
 
-type GetZodErrorTypes = Omit<GetNormalErrorTypes, "error"> & {
+type GetZodErrorTypes = Omit<GetNormalErrorTypes, "error" | "message" | "statusCode"> & {
   errors: ZodFieldError[];
 }
 
@@ -127,7 +127,7 @@ export function getBaseErrorBodyResponseSchema(props: GetZodErrorTypes) {
     @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
     timestamp: string;
 
-    @ApiProperty({example: props.message})
+    @ApiProperty({example: "Invalid Request."})
     message: string;
 
     @ApiProperty({example: props.errors})
@@ -141,7 +141,5 @@ export function getBadRequestUUIDParams(path: string) {
   return class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema({
     path,
     errors: [{field: "id", error: "Invalid UUIDv4"}],
-    statusCode: 400,
-    message: "Invalid UUIDv4 in Params"
   }) {};
 }
