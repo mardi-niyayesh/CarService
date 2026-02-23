@@ -16,9 +16,9 @@ import {
   Permission,
   UUID4Schema,
   type UUID4Type,
-  ForbiddenResponse,
-  UnauthorizedResponse,
-  BadRequestUUIDParams,
+  getForbiddenResponse,
+  getUnauthorizedResponse,
+  getBadRequestUUIDParams,
 } from "@/common";
 
 import {
@@ -73,7 +73,7 @@ export class UsersController {
     tags: ["User"],
   })
   @ApiOkResponse({type: UserDto.GetMeOkResponse})
-  @ApiUnauthorizedResponse({type: UnauthorizedResponse})
+  @ApiUnauthorizedResponse({type: getUnauthorizedResponse("users/profile")})
   getProfile(
     @Req() req: AccessRequest
   ) {
@@ -98,15 +98,15 @@ export class UsersController {
   @ApiParam(UUID4Dto("user"))
   @ApiOkResponse({type: UserDto.GetUserOkResponse})
   @ApiBadRequestResponse({
-    type: BadRequestUUIDParams,
+    type: getBadRequestUUIDParams("users/:id"),
     description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
   })
   @ApiUnauthorizedResponse({
-    type: UnauthorizedResponse,
+    type: getUnauthorizedResponse("users/:id"),
     description: 'Invalid or missing authentication token.'
   })
   @ApiForbiddenResponse({
-    type: ForbiddenResponse,
+    type: getForbiddenResponse("users/:id"),
     description: 'when target user not access to get user'
   })
   @ApiNotFoundResponse({
@@ -150,11 +150,11 @@ export class UsersController {
   @ApiBody({type: UserDto.UserRoleAssignedDto})
   @ApiOkResponse({type: UserDto.RoleAssignOkRes})
   @ApiBadRequestResponse({
-    type: BadRequestUUIDParams,
+    type: getBadRequestUUIDParams(":id/roles"),
     description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
   })
   @ApiUnauthorizedResponse({
-    type: UnauthorizedResponse,
+    type: getUnauthorizedResponse(":id/roles"),
     description: 'Invalid or missing authentication token.'
   })
   @ApiForbiddenResponse({

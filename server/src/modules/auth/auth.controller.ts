@@ -15,7 +15,6 @@ import {
 
 import * as AuthDto from "./dto";
 import {AuthService} from "./auth.service";
-import * as UserDto from "@/modules/users/dto";
 import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
 import type {RefreshRequest, LoginResponse, ApiResponse, UserResponse} from "@/types";
@@ -180,7 +179,7 @@ export class AuthController {
   })
   @ApiOkResponse({type: AuthDto.OkForgotPasswordRes})
   @ApiNotFoundResponse({
-    type: UserDto.NotFoundGetUserResponse,
+    type: AuthDto.NotFoundUserForgotPassRes,
     description: 'The requested user does not exist in the database.'
   })
   @ApiConflictResponse({
