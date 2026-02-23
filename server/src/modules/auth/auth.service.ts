@@ -9,7 +9,7 @@ import {User} from "../prisma/generated/client";
 import {PrismaService} from "../prisma/prisma.service";
 import {EmailService} from "@/modules/email/email.service";
 import {compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
-import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse} from "@/types";
+import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse, BaseException} from "@/types";
 import {BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
@@ -36,7 +36,10 @@ export class AuthService {
       }
     });
 
-    if (user) throw new ConflictException('User already exists');
+    if (user) throw new ConflictException({
+      message: 'User already exists in database',
+      error: 'Conflict Users'
+    } as BaseException);
 
     const hashPassword: string = await hashSecret(createData.password);
 
@@ -47,10 +50,9 @@ export class AuthService {
     });
 
     if (!selfRole) throw new InternalServerErrorException({
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'self role not exist',
-      error: "Internal Server Error"
-    });
+      message: 'self role not exist in database',
+      error: 'Self Role not exist'
+    } as BaseException);
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -119,11 +121,17 @@ export class AuthService {
       }
     });
 
-    if (!user) throw new UnauthorizedException("Invalid credentials");
+    if (!user) throw new UnauthorizedException({
+      message: "Invalid user credentials",
+      error: "Invalid Credentials"
+    } as BaseException);
 
     const isValidPassword: boolean = await compareSecret(loginData.password, user.password);
 
-    if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
+    if (!isValidPassword) throw new UnauthorizedException({
+      message: "Invalid user credentials",
+      error: "Invalid Credentials"
+    } as BaseException);
 
     const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
 
@@ -222,9 +230,15 @@ export class AuthService {
       }
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException({
+      message: 'User not found in database',
+      error: 'User Not Found'
+    } as BaseException);
 
-    if (user.passwordToken) throw new ConflictException('A password reset token is already active. Please check your email.');
+    if (user.passwordToken) throw new ConflictException({
+      message: 'A password reset token is already active. Please check your Inbox Email or spam.',
+      error: 'Email Already Send'
+    } as BaseException);
 
     const token: string = generateRandomToken();
     const hashedToken: string = hashSecretToken(token);
@@ -243,10 +257,9 @@ export class AuthService {
       html = html.replace("{{expireMinutes}}", expireMinutes.toString());
     } catch (err) {
       throw new InternalServerErrorException({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to load email template',
         error: (err as Error).message,
-      });
+      } as BaseException);
     }
 
     try {
@@ -270,10 +283,9 @@ export class AuthService {
       };
     } catch (e) {
       throw new InternalServerErrorException({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: (e as Error).message || 'Failed to send reset password email',
         error: (e as Error).name || "Internal Server Error",
-      });
+      } as BaseException);
     }
   }
 
@@ -287,15 +299,14 @@ export class AuthService {
     });
 
     if (!findToken) throw new NotFoundException({
-      statusCode: HttpStatus.NOT_FOUND,
       message: 'Reset password token is invalid or has expired.',
-      error: "Not Found"
-    });
+      error: "Token Not Found"
+    } as BaseException);
 
     if (findToken.expires_at < new Date()) throw new BadRequestException({
       statusCode: HttpStatus.BAD_REQUEST,
       message: 'The reset password token has expired. Please request a new one.',
-      error: 'TokenExpired'
+      error: 'Token Expired'
     });
 
     const newPassword: string = await hashSecret(password);
