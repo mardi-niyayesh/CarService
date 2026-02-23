@@ -13,19 +13,25 @@ export type ResetPasswordType = z.infer<typeof ResetPassword>;
 
 export class ResetPasswordSchema extends createZodDto(ResetPassword) {}
 
+const path = "auth/reset-password";
+
 export class OkResetPasswordRes extends getBaseOkResponseSchema<void>({
-  path: "/auth/reset-password",
+  path,
   response: {
-    message: "The reset password token has expired. Please request a new one.",
+    message: "Password reset successfully",
   }
 }) {}
 
-export class BadRequestResetPasswordRes extends getNormalErrorResponse(
-  "The reset password token has expired. Please request a new one.",
-  400
-) {}
+export class BadRequestResetPasswordRes extends getNormalErrorResponse({
+  message: "The reset password token has expired. Please request a new one.",
+  path,
+  statusCode: 400,
+  error: "Token Expired",
+}) {}
 
-export class NotFoundResetPasswordRes extends getNormalErrorResponse(
-  "Reset password token is invalid or has expired.",
-  404
-) {}
+export class NotFoundResetPasswordRes extends getNormalErrorResponse({
+  message: "Reset password token is invalid or has expired.",
+  error: "Token Not Found",
+  path,
+  statusCode: 404,
+}) {}
