@@ -39,10 +39,12 @@ export class AuthController {
 
   /** get same refreshToken options */
   getCookieOptions(maxAge?: number): CookieOptions {
+    const isProduction: boolean = process.env.NODE_ENV === 'production';
+
     return {
-      sameSite: "lax",
+      sameSite: isProduction ? "strict" : "lax",
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       path: "/",
       maxAge
     };
@@ -183,7 +185,11 @@ export class AuthController {
   })
   @ApiConflictResponse({
     type: AuthDto.ConflictForgotPasswordRes,
-    description: "A password reset token is already active for this user. Please check your email for the existing reset link. You must wait until the token expires before requesting a new one."
+    description: `
+  A password reset token is already active for this user.
+     
+  - **Please check your email for the existing reset link. 
+  - **You must wait until the token expires before requesting a new one.`
   })
   forgetPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
