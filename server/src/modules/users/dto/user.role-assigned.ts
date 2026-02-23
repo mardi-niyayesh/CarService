@@ -51,13 +51,17 @@ export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
 }) {}
 
 /** forbidden response */
-export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse(
-  "Management level protection: Only the owner can assign management roles.",
-  403
-) {}
+export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse({
+  message: "Management level protection: Only the owner can assign management roles.",
+  statusCode: 403,
+  error: "Permission Denied",
+  path: "users/:id/roles"
+}) {}
 
 /** conflict body */
-export class UserRoleAssignedConflictRes extends getNormalErrorResponse(
-  'User already has some of these roles',
-  409
-) {}
+export class UserRoleAssignedConflictRes extends getNormalErrorResponse({
+  message: 'User already has some of these roles',
+  statusCode: 409,
+  path: "users/:id/roles",
+  error: "Conflict User Roles",
+}) {}

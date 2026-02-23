@@ -22,7 +22,9 @@ export class GetMeOkResponse extends getBaseOkResponseSchema<UserResponse>({
   }
 }) {}
 
-export class NotFoundGetUserResponse extends getNormalErrorResponse(
-  "User not found",
-  404
-) {}
+export class NotFoundGetUserResponse extends getNormalErrorResponse({
+  path: "/users/:id",
+  message: "User not found in database",
+  error: "User Not Found",
+  statusCode: 404
+}) {}
