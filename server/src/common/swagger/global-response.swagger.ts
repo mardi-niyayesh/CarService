@@ -2,44 +2,68 @@ import {getDefaultMessage} from "@/lib";
 import {ApiProperty} from "@nestjs/swagger";
 import {ApiResponse, BaseApiResponseData, ZodFieldError} from "@/types";
 
-/** normal example error  */
-export function getNormalErrorResponse(message: string, statusCode: number) {
-  const error: string = getDefaultMessage(statusCode);
+interface GetNormalErrorTypes {
+  message: string;
+  statusCode: number;
+  path: string;
+  error: string;
+}
 
+/** normal example error  */
+export function getNormalErrorResponse(props: GetNormalErrorTypes) {
   class NormalErrorResponse {
-    @ApiProperty({example: message})
+    @ApiProperty({example: props.statusCode})
+    statusCode: number;
+
+    @ApiProperty({example: false})
+    success: boolean;
+
+    @ApiProperty({example: getDefaultMessage(props.statusCode)})
+    detail: string;
+
+    @ApiProperty({example: props.path})
+    path: string;
+
+    @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
+    timestamp: string;
+
+    @ApiProperty({example: props.message})
     message: string;
 
-    @ApiProperty({example: error})
+    @ApiProperty({example: props.error})
     error: string;
-
-    @ApiProperty({example: statusCode})
-    statusCode: number;
   }
 
   return NormalErrorResponse;
 }
 
 /** example response when user not authorized */
-export class UnauthorizedResponse extends getNormalErrorResponse(
-  "Access token missing or expired.",
-  401
-) {}
-
-/** example response when too many requests from one ip in 1 minutes */
-export class TooManyRequestResponse {
-  @ApiProperty({example: "Too many requests. Try again 5 minutes later."})
-  message: string;
-
-  @ApiProperty({example: 429})
-  statusCode: number;
+function getUnauthorizedResponse(path: string) {
+  return class UnauthorizedResponse extends getNormalErrorResponse({
+    message: "Access token missing or expired.",
+    statusCode: 401,
+    error: "accessToken Expires",
+    path
+  }) {};
 }
 
+/** example response when too many requests from one ip in 1 minutes */
+export class TooManyRequestResponse extends getNormalErrorResponse({
+  message: "Too many requests. Try again 5 minutes later.",
+  path: "/auth/register",
+  error: "Many Request",
+  statusCode: 429
+}) {}
+
 /** get schema for swagger when not allowed */
-export class ForbiddenResponse extends getNormalErrorResponse(
-  "Your role not access to this action.",
-  403
-) {}
+export function getForbiddenResponse(path: string) {
+  return class ForbiddenResponse extends getNormalErrorResponse({
+    message: "Your role not access to this action.",
+    statusCode: 403,
+    error: "Permission Denied",
+    path
+  }) {};
+}
 
 /** get schema when request is ok */
 export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: ApiResponse<T>, path: string }) {
@@ -81,25 +105,43 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
   return BaseOkResponse;
 }
 
+type GetZodErrorTypes = Omit<GetNormalErrorTypes, "error"> & {
+  errors: ZodFieldError[];
+}
+
 /** get schema for swagger when zod validate not success */
-export function getBaseErrorBodyResponseSchema(errors: ZodFieldError[]) {
-  class BaseErrorResponse {
+export function getBaseErrorBodyResponseSchema(props: GetZodErrorTypes) {
+  class ZodErrorResponse {
     @ApiProperty({example: 400})
     statusCode: number;
 
-    @ApiProperty({
-      example: errors,
-      isArray: true,
-    })
-    errors: ZodFieldError[];
+    @ApiProperty({example: false})
+    success: boolean;
 
-    @ApiProperty({example: "Invalid request."})
+    @ApiProperty({example: "Invalid Request."})
+    detail: string;
+
+    @ApiProperty({example: props.path})
+    path: string;
+
+    @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
+    timestamp: string;
+
+    @ApiProperty({example: props.message})
     message: string;
+
+    @ApiProperty({example: props.errors})
+    errors: ZodFieldError[];
   }
 
-  return BaseErrorResponse;
+  return ZodErrorResponse;
 }
 
-export class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema([
-  {field: "id", error: "Invalid UUID"}
-]) {}
+export function getBadRequestUUIDParams(path: string) {
+  return class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema({
+    path,
+    errors: [{field: "id", error: "Invalid UUIDv4"}],
+    statusCode: 400,
+    message: "Invalid UUIDv4 in Params"
+  }) {};
+}
