@@ -1,5 +1,5 @@
 /** base response for exceptions and ok responses */
-interface BaseResponse {
+export interface BaseResponse {
   success: boolean;
   statusCode: number;
   detail: string;
@@ -40,5 +40,3 @@ export interface ZodException extends BaseResponse {
   message: string;
   errors: ZodFieldError[];
 }
-
-export type ExceptionResponse<T> = T extends void ? BaseException : ZodException;

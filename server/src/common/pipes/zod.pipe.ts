@@ -1,5 +1,6 @@
 import z from "zod";
 import {formatZodError} from "@/lib";
+import {ZodException} from "@/types";
 import {Injectable, PipeTransform, BadRequestException} from '@nestjs/common';
 
 @Injectable()
@@ -16,7 +17,7 @@ export class ZodPipe<T extends z.ZodTypeAny> implements PipeTransform {
         statusCode: 400,
         errors: formatZodError(result.error),
         message: "Invalid request.",
-      });
+      } as ZodException);
     }
 
     return result.data;
