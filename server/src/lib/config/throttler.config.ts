@@ -6,7 +6,7 @@ const BLOCK_DURATION: number = ONE_MINUTE * 5;
 
 export const throttlerConfig: ThrottlerModuleOptions = {
   throttlers: [{
-    ttl: isProduction ? ONE_MINUTE : 1000,
+    ttl: isProduction ? ONE_MINUTE : ONE_MINUTE / 2,
     limit: isProduction ? 10 : 15,
     blockDuration: isProduction ? ONE_MINUTE * 5 : ONE_MINUTE * 10,
   }],

@@ -40,7 +40,9 @@ export class ResponseException implements ExceptionFilter {
       const message: string = typeof body === 'string'
         ? body
         : (body as BaseExceptionRes).message || "Internal Server Error";
-      const error: string = (body as BaseExceptionRes).error || "Unknown Error";
+      const error: string = message.includes("Too many requests.")
+        ? "Too Many Requests From Your IP"
+        : (body as BaseExceptionRes).error || "Unknown Error";
 
       finalResponse = {
         ...baseErrorResponse,

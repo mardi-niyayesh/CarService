@@ -14,6 +14,7 @@ import {
 } from "@nestjs/swagger";
 
 import * as AuthDto from "./dto";
+import {isProduction} from "@/lib";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
 import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
@@ -38,8 +39,6 @@ export class AuthController {
 
   /** get same refreshToken options */
   getCookieOptions(maxAge?: number): CookieOptions {
-    const isProduction: boolean = process.env.NODE_ENV === 'production';
-
     return {
       sameSite: isProduction ? "strict" : "lax",
       httpOnly: true,
