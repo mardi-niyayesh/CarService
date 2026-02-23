@@ -1,5 +1,5 @@
 import {isAllowedAction} from "@/lib";
-import {AccessRequest} from "@/types";
+import {AccessRequest, BaseException} from "@/types";
 import {Reflector} from "@nestjs/core";
 import {IS_PUBLIC_KEY, PERMISSION_METADATA, type PermissionDecoratorParams} from "@/common";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable, InternalServerErrorException} from "@nestjs/common";
@@ -25,9 +25,8 @@ export class PermissionGuard implements CanActivate {
 
     if (!requiredPermissions) throw new InternalServerErrorException({
       message: 'Missing Role, Role is Required',
-      error: "Internal Server Error",
-      statusCode: 500,
-    });
+      error: "Role Not Send",
+    } as BaseException);
 
     const roles: string[] = req.user.roles;
     const actionPermissions: string[] = req.user.permissions;
@@ -41,9 +40,8 @@ export class PermissionGuard implements CanActivate {
 
     if (!isAllowed) throw new ForbiddenException({
       message: "Your role not access to this action.",
-      error: "Forbidden",
-      statusCode: 403,
-    });
+      error: "Permission Denied",
+    } as BaseException);
 
     return true;
   }

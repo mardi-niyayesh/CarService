@@ -1,6 +1,6 @@
 import {hashSecretToken} from '@/lib';
-import {RefreshRequest, RefreshTokenPayload} from '@/types';
 import {PrismaService} from '@/modules/prisma/prisma.service';
+import {BaseException, RefreshRequest, RefreshTokenPayload} from '@/types';
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
@@ -40,7 +40,10 @@ export class RefreshTokenGuard implements CanActivate {
       }
     });
 
-    if (!tokenRecord) throw new UnauthorizedException('Invalid or expired refresh token');
+    if (!tokenRecord) throw new UnauthorizedException({
+      message: 'Invalid or expired refresh token',
+      error: 'Invalid refreshToken'
+    } as BaseException);
 
     if (tokenRecord.revoked_at) {
       await this.prisma.refreshToken.updateMany({
@@ -48,7 +51,10 @@ export class RefreshTokenGuard implements CanActivate {
         data: {revoked_at: new Date()}
       });
 
-      throw new UnauthorizedException('Refresh token already revoked');
+      throw new UnauthorizedException({
+        message: 'Refresh token already revoked',
+        error: 'Invalid refreshToken'
+      } as BaseException);
     }
 
     const roles: string[] = tokenRecord.user.userRoles.map(r => r.role.name);
