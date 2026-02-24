@@ -1,0 +1,13 @@
+.swagger-ui .opblock-description-wrapper .renderedMarkdown ul,
+.swagger-ui .opblock-description-wrapper .renderedMarkdown ol {
+    color: #e74c3c;
+}
+
+.swagger-ui .opblock-description-wrapper .renderedMarkdown li {
+    color: #e74c3c;
+}
+
+.swagger-ui .opblock-description-wrapper .renderedMarkdown ul li::marker,
+.swagger-ui .opblock-description-wrapper .renderedMarkdown ol li::marker {
+    color: #c0392b;
+}

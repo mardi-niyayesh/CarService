@@ -23,18 +23,20 @@ export const loginResponseSchema: LoginUserSchemaType = {
   user: {
     id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698a",
     email: "john@example.com",
-    role_id: "7b0cfb3e-34fd-4607-bf49-2c99bd46698f",
     display_name: "john",
     age: 20,
     created_at: date,
     updated_at: date,
+    roles: ["self"],
+    permissions: ["user.self"]
   },
   accessToken: "accessToken",
 };
 
+const path = "auth/login";
+
 export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchemaType>({
-  path: "users/login",
-  create: false,
+  path,
   response: {
     message: "user logged in successfully",
     data: loginResponseSchema,
@@ -42,26 +44,31 @@ export class LoginUserOkResponse extends getBaseOkResponseSchema<LoginUserSchema
 }) {}
 
 /** bad request example for login user */
-export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
-  {
-    fields: "email",
-    message: "Invalid email address"
-  },
-  {
-    fields: "password",
-    message: "Too small: expected string to have >=6 characters"
-  },
-  {
-    fields: "password",
-    message: "password must contain at least one letter and one number"
-  },
-  {
-    fields: "remember",
-    message: "Invalid input: expected boolean, received string"
-  }
-]) {}
+export class LoginUserBadRequestResponse extends getBaseErrorBodyResponseSchema({
+  path,
+  errors: [
+    {
+      field: "email",
+      error: "Invalid email address"
+    },
+    {
+      field: "password",
+      error: "Too small: expected string to have >=6 characters"
+    },
+    {
+      field: "password",
+      error: "password must contain at least one letter and one number"
+    },
+    {
+      field: "remember",
+      error: "Invalid input: expected boolean, received string",
+    }
+  ],
+}) {}
 
-export class LoginUserInvalidAuthResponse extends getNormalErrorResponse(
-  "Invalid credentials",
-  401
-) {}
+export class LoginUserInvalidAuthResponse extends getNormalErrorResponse({
+  message: "Invalid user credentials",
+  error: "Invalid Credentials",
+  path,
+  statusCode: 401
+}) {}

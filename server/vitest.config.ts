@@ -6,10 +6,11 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   test: {
+    mockReset: true,
     globals: true,
     environment: 'node',
     include: ['**/*.spec.ts', '**/*.test.ts'],
-    setupFiles: ['./test/setup.ts'],
+    setupFiles: ['./test/vitest.setup.ts'],
     exclude: ['**/node_modules/**', '**/dist/**'],
     coverage: {
       provider: "v8",

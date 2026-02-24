@@ -1,41 +1,232 @@
+import {ROLES} from "@/common";
 import {PrismaService} from "../prisma/prisma.service";
-import type {ApiResponse, UserResponse} from "@/types";
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {ApiResponse, BaseException, UserAccess, UserResponse} from "@/types";
+import {BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+
+interface ModifyRoleServiceParams {
+  actionPayload: UserAccess;
+  userId: string;
+  rolesId: string[];
+  action: "revoke" | "assign";
+}
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** get user info
-   * - only users with role (SUPER_ADMIN or ADMIN) can accessibility to this route
+   * - only users with role (owner or role_manager) can accessibility to this route
    */
-  async findOne(id: string): Promise<ApiResponse<{ user: UserResponse }>> {
-    const user = await this.prisma.user.findFirst({
+  async findOne(id: string): Promise<ApiResponse<UserResponse>> {
+    const user = await this.prisma.user.findUnique({
       where: {
         id
       },
-      include: {role: true}
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                rolePermissions: {
+                  include: {permission: true}
+                }
+              }
+            }
+          }
+        }
+      }
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException({
+      message: "User not exist in database",
+      error: "User Not Found",
+    } as BaseException);
 
-    const userResponse: UserResponse = {
-      role: user.role.name,
-      updated_at: user.updated_at,
-      created_at: user.created_at,
-      age: user.age,
-      id: user.id,
-      email: user.email,
-      display_name: user.display_name,
+    const roles = user.userRoles.map(r => r.role.name);
+
+    const rolePermissions = user.userRoles.map(r => r.role.rolePermissions);
+
+    const permissions = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
+
+    const data: UserResponse = {
+      user: {
+        updated_at: user.updated_at,
+        created_at: user.created_at,
+        age: user.age,
+        id: user.id,
+        email: user.email,
+        display_name: user.display_name,
+        roles,
+        permissions
+      }
     };
 
     return {
       message: 'User found successfully',
-      data: {
-        user: userResponse,
-      },
+      data,
     };
+  }
+
+  /** Assign roles to user
+   * - Accessible only by users with 'owner' or 'user_manager' role
+   */
+  async modifyRole(params: ModifyRoleServiceParams): Promise<ApiResponse<UserResponse>> {
+    return this.prisma.$transaction(async tx => {
+      const {rolesId, userId, action, actionPayload} = params;
+
+      const targetUser = await tx.user.findUnique({
+        where: {
+          id: userId
+        },
+        include: {
+          userRoles: {
+            include: {role: true}
+          }
+        },
+        omit: {password: true}
+      });
+
+      if (!targetUser) throw new NotFoundException({
+        message: "User not exist in database",
+        error: "User Not Found",
+      });
+
+      // Prevent self-assignment
+      if (targetUser.id === actionPayload.userId) throw new ForbiddenException({
+        message: `You cannot ${action} roles to yourself`,
+        error: "Permission Denied",
+      } as BaseException);
+
+      const roles = await tx.role.findMany({
+        where: {id: {in: rolesId}},
+      });
+
+      // Validate all roles exist
+      if (roles.length !== rolesId.length) throw new NotFoundException({
+        message: 'One or many Roles does not exist in database',
+        error: 'Role Not Found',
+      } as BaseException);
+
+      const restrictedRoles: string[] = [ROLES.OWNER, ROLES.SELF];
+      const newRolesName: string[] = roles.map(r => r.name);
+
+      // Block restricted roles
+      if (newRolesName.some(r => restrictedRoles.includes(r))) throw new ForbiddenException({
+        message: `owner and self roles cannot be ${action}ed`,
+        error: 'Permission Denied',
+      } as BaseException);
+
+      // Target Roles in Array
+      const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
+
+      if (targetRoles.some(r => r === ROLES.OWNER)) throw new ForbiddenException({
+        message: "The 'owner' role is immutable; modifications to this account's privileges are strictly prohibited.",
+        error: 'Permission Denied',
+      } as BaseException);
+
+      if (action === "assign") {
+        const existingRoles = newRolesName.filter(r => targetRoles.includes(r));
+
+        // Check for duplicate assignments
+        if (existingRoles.length > 0) throw new ConflictException({
+          message: `User already has these roles: ${existingRoles.join(", ")}`,
+          error: 'Conflict User Roles',
+        } as BaseException);
+      } else {
+        const missingRoles = newRolesName.filter(role => !targetRoles.includes(role));
+
+        // Check exist all roles in targetRoles
+        if (missingRoles.length > 0) throw new BadRequestException({
+          message: `User does not have these roles: ${missingRoles.join(", ")}`,
+          error: 'Roles Not Found in Target Roles',
+        } as BaseException);
+      }
+
+      const rolesManagerStrict: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER, ROLES.OWNER];
+
+      const isActorOwner: boolean = actionPayload.roles.includes(ROLES.OWNER);
+      const isTargetManager: boolean = targetRoles.some(r => rolesManagerStrict.includes(r));
+      const isNewRoleManager: boolean = newRolesName.some(r => rolesManagerStrict.includes(r));
+
+      /**
+       * action role != 'owner':
+       * - if new role = 'role_manager' | 'user_manager' or
+       * - if target user role = 'role_manager' | 'user_manager' | 'owner'
+       */
+      if (!isActorOwner && (isTargetManager || isNewRoleManager)) throw new ForbiddenException({
+        message: `Management level protection: You don't have enough privilege to ${action} high-level roles (role_manager, user_manager).`,
+        error: "Permission Denied",
+      } as BaseException);
+
+      if (action === "assign") {
+        await tx.userRole.createMany({
+          data: rolesId.map(r => ({role_id: r, user_id: targetUser.id}))
+        });
+      } else {
+        await tx.userRole.deleteMany({
+          where: {
+            user_id: userId,
+            role_id: {
+              in: rolesId
+            }
+          }
+        });
+      }
+
+      const newUserData = await tx.user.findUnique({
+        where: {id: userId},
+        include: {
+          userRoles: {
+            include: {
+              role: {
+                include: {
+                  rolePermissions: {
+                    include: {permission: true}
+                  }
+                }
+              }
+            }
+          }
+        },
+        omit: {password: true}
+      });
+
+      if (!newUserData) throw new InternalServerErrorException({
+        message: "User Not Found in database",
+        error: "Something went wrong",
+      } as BaseException);
+
+      const newTargetRoles: string[] = newUserData.userRoles.map(r => r.role.name);
+
+      const newTargetRolePermissions = newUserData.userRoles.map(r => r.role.rolePermissions);
+
+      const newTargetPermissions: string[] = [...new Set(
+        newTargetRolePermissions.map(rp => rp
+          .map(p => p.permission.name)
+        ).flat()
+      )];
+
+      const data: UserResponse = {
+        user: {
+          updated_at: newUserData.updated_at,
+          created_at: newUserData.created_at,
+          age: newUserData.age,
+          id: newUserData.id,
+          email: newUserData.email,
+          display_name: newUserData.display_name,
+          roles: newTargetRoles,
+          permissions: newTargetPermissions
+        }
+      };
+
+      return {
+        message: `Roles successfully ${action === 'assign' ? 'assigned to' : 'revoked from'} this user.`,
+        data
+      };
+    });
   }
 }

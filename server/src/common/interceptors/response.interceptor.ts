@@ -1,12 +1,11 @@
 import {Observable, map} from 'rxjs';
-import {getDefaultMessage} from "@/lib";
-import {InterceptorResponse} from "../dto";
 import type {Response, Request} from "express";
-import {BaseApiResponse, BaseApiResponseData} from "@/types";
+import {getDefaultMessage, getServerTime} from "@/lib";
+import type {BaseApiResponse, BaseApiResponseData, InterceptorResponse} from "@/types";
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
 
 @Injectable()
-export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse | BaseApiResponseData<T>, InterceptorResponse<T>> {
+export class ResponseInterceptors<T> implements NestInterceptor<BaseApiResponse | BaseApiResponseData<T>, InterceptorResponse<T>> {
   intercept(
     context: ExecutionContext,
     next: CallHandler<BaseApiResponse | BaseApiResponseData<T>>
@@ -14,19 +13,19 @@ export class TransformInterceptors<T> implements NestInterceptor<BaseApiResponse
 
     const ctx = context.switchToHttp();
     const res = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const req = ctx.getRequest<Request>();
 
     return next.handle().pipe(
       map(response => {
         const statusCode: number = res.statusCode;
 
         return {
-          success: statusCode >= 200 && statusCode <= 300,
           statusCode,
+          success: statusCode >= 200 && statusCode < 300,
           detail: getDefaultMessage(statusCode),
+          path: req.url,
+          timestamp: getServerTime(),
           response,
-          timestamp: new Date().toISOString(),
-          path: request.url,
         };
       })
     );

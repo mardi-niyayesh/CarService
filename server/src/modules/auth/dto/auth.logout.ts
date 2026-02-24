@@ -1,7 +1,7 @@
 import {getBaseOkResponseSchema} from "@/common";
 
 export class LogoutOkResponse extends getBaseOkResponseSchema<void>({
-  path: "/api/auth/logout",
+  path: "auth/logout",
   response: {
     message: "user logout successfully"
   }

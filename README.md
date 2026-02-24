@@ -16,7 +16,7 @@ Designed for long‑term maintainability, clean architecture, and production‑r
 # 🌐 Project Structure
 
 ```
-CarService/
+car_service/
 │
 ├── backend/        # Car Service – Server‑Side API (NestJS)
 │   └── server/
@@ -64,15 +64,15 @@ A modular, scalable API for managing the entire car rental system.
 ## Clone repo
 
 ```bash
-git clone https://github.com/mardi-niyayesh/CarService.git
-cd CarService
+git clone https://github.com/mardi-niyayesh/car_service.git
+cd car_service
 ```
 
 **or with ssh**
 
 ```bash
-git clone git@github.com:mardi-niyayesh/CarService.git
-cd CarService
+git clone git@github.com:mardi-niyayesh/car_service.git
+cd car_service
 ```
 
 ## 🏁 Backend Quick Start

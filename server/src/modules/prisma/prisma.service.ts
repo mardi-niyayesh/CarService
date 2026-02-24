@@ -3,14 +3,12 @@ import {PrismaClient} from './generated/client';
 import {Injectable, OnModuleInit, OnModuleDestroy} from '@nestjs/common';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
 
   private static initialize: boolean = false;
 
   constructor() {
-    const adapter = new PrismaPg({
+    const adapter: PrismaPg = new PrismaPg({
       connectionString: process.env.DATABASE_URL as string,
     });
     super({
@@ -21,7 +19,7 @@ export class PrismaService
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     if (!PrismaService.initialize) {
       PrismaService.initialize = true;
       await this.$connect();
@@ -29,8 +27,8 @@ export class PrismaService
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async onModuleDestroy() {
-    if (!PrismaService.initialize) {
+  async onModuleDestroy(): Promise<void> {
+    if (PrismaService.initialize) {
       PrismaService.initialize = false;
       await this.$disconnect();
     }

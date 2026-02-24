@@ -9,9 +9,17 @@ export class TokenCleanerService {
 
   @Cron(CronExpression.EVERY_5_MINUTES) // five minutes
   async cleanExpiresToken(): Promise<void> {
+    const now: Date = new Date();
+
     await this.prisma.refreshToken.deleteMany({
       where: {
-        expires_at: {lt: new Date()},
+        expires_at: {lt: now},
+      }
+    });
+
+    await this.prisma.passwordToken.deleteMany({
+      where: {
+        expires_at: {lt: now},
       }
     });
   }

@@ -1,1 +1,1 @@
-export * from "./too-many-requests.exception";
+export * from "./http.exception";

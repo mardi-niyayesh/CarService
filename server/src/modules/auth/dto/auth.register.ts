@@ -17,61 +17,69 @@ export type CreateUserInput = z.infer<typeof BaseUserSchema>;
 /** Create User DTO for Swagger */
 export class CreateUserSchema extends createZodDto(BaseUserSchema) {}
 
+const path = "auth/register";
+
 /** object for ok response */
 export const createUserResponse = {
-  path: "users",
+  path,
   message: "user created successfully",
   create: true,
   data: {
     user: {
       id: "d228cc19-b8c9-41c4-8c70-c2c6effb05ca",
       email: "john@example.com",
-      role: "self",
       display_name: "John",
       age: 24,
       password: undefined,
       created_at: date,
-      updated_at: date
+      updated_at: date,
+      roles: ["self"],
+      permissions: ["user.self"],
     }
   }
 };
 
 /** ok example for create user */
-export class CreateUserOkResponse extends getBaseOkResponseSchema<{user: UserResponse}>({
+export class CreateUserOkResponse extends getBaseOkResponseSchema<UserResponse>({
   path: createUserResponse.path,
   create: createUserResponse.create,
   response: {
     message: createUserResponse.message,
-    data: createUserResponse.data as {user: UserResponse}
+    data: createUserResponse.data
   }
 }) {}
 
 /** conflict example for create user */
-export class CreateUserConflictResponse extends getNormalErrorResponse(
-  "User already exists",
-  409
-) {}
+export class CreateUserConflictResponse extends getNormalErrorResponse({
+  message: 'User already exists in database',
+  path,
+  statusCode: 409,
+  error: "Conflict Users"
+}) {}
 
 /** bad request example for create user */
-export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema([
-  {
-    fields: "email",
-    message: "Invalid email address"
-  },
-  {
-    fields: "password",
-    message: "Too small: expected string to have >=6 characters"
-  },
-  {
-    fields: "password",
-    message: "password must contain at least one letter and one number"
-  },
-  {
-    fields: "display_name",
-    message: "Too small: expected string to have >=3 characters"
-  },
-  {
-    fields: "age",
-    message: "Too big: expected number to be <=120"
-  }
-]) {}
+export class CreateUserBadRequestResponse extends getBaseErrorBodyResponseSchema({
+  errors: [
+    {
+      field: "email",
+      error: "Invalid email address"
+    },
+    {
+      field: "password",
+      error: "Too small: expected string to have >=6 characters"
+    },
+    {
+      field: "password",
+      error: "password must contain at least one letter and one number"
+    },
+    {
+      field: "display_name",
+      error: "Too small: expected string to have >=3 characters"
+    },
+    {
+      field: "age",
+      error: "Too big: expected number to be <=120"
+    }
+  ],
+  path,
+}) {}

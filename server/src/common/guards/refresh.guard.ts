@@ -1,7 +1,7 @@
 import {hashSecretToken} from '@/lib';
-import {RefreshRequest, RefreshTokenPayload} from '@/types';
 import {PrismaService} from '@/modules/prisma/prisma.service';
-import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
+import {BaseException, RefreshRequest, RefreshTokenPayload} from '@/types';
+import {CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -24,13 +24,26 @@ export class RefreshTokenGuard implements CanActivate {
         user: {
           omit: {password: true},
           include: {
-            role: {include: {rolePermissions: {include: {permission: true}}}}
+            userRoles: {
+              include: {
+                role: {
+                  include: {
+                    rolePermissions: {
+                      include: {permission: true}
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     });
 
-    if (!tokenRecord) throw new UnauthorizedException('Invalid or expired refresh token');
+    if (!tokenRecord) throw new UnauthorizedException({
+      message: 'Invalid or expired refresh token',
+      error: 'Invalid refreshToken'
+    } as BaseException);
 
     if (tokenRecord.revoked_at) {
       await this.prisma.refreshToken.updateMany({
@@ -38,8 +51,21 @@ export class RefreshTokenGuard implements CanActivate {
         data: {revoked_at: new Date()}
       });
 
-      throw new UnauthorizedException('Refresh token already revoked');
+      throw new ForbiddenException({
+        message: 'Refresh token already revoked.',
+        error: 'RefreshToken is Revoked',
+      } as BaseException);
     }
+
+    const roles: string[] = tokenRecord.user.userRoles.map(r => r.role.name);
+
+    const rolePermissions = tokenRecord.user.userRoles.map(r => r.role.rolePermissions);
+
+    const permissions = [...new Set(
+      rolePermissions.map(rp => rp
+        .map(p => p.permission.name)
+      ).flat()
+    )];
 
     req.refreshPayload = {
       refreshRecord: {
@@ -57,12 +83,11 @@ export class RefreshTokenGuard implements CanActivate {
         created_at: tokenRecord.user.created_at,
         updated_at: tokenRecord.user.updated_at,
         display_name: tokenRecord.user.display_name,
-        role_id: tokenRecord.user.role_id,
         email: tokenRecord.user.email,
         age: tokenRecord.user.age,
       },
-      permissions: tokenRecord.user.role.rolePermissions.map(p => p.permission.name),
-      role: tokenRecord.user.role.name
+      roles,
+      permissions
     } as RefreshTokenPayload;
 
     return true;

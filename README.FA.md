@@ -15,7 +15,7 @@
 # 🌐 ساختار کلی پروژه
 
 ```
-CarService/
+car_service/
 │
 ├── backend/        # Car Service – Server‑Side API (NestJS)
 │   └── server/

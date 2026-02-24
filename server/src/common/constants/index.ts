@@ -1,1 +1,2 @@
-export * from "./permissions";
+export * from "./role.constant";
+export * from "./permission.constant";
