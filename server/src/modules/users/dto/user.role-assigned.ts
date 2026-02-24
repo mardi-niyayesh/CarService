@@ -50,6 +50,13 @@ export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
   }
 }) {}
 
+export class UserRoleAssignBadReqRes extends getNormalErrorResponse({
+  message: "User already has these roles: category_manager, product_manager",
+  error: "Conflict User Roles",
+  path: "users/:id/roles",
+  statusCode: 400
+}) {}
+
 /** forbidden response */
 export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse({
   message: `Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).`,

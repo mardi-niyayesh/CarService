@@ -152,8 +152,8 @@ export class UsersController {
   @ApiBody({type: UserDto.UserRoleAssignedDto})
   @ApiOkResponse({type: UserDto.RoleAssignOkRes})
   @ApiBadRequestResponse({
-    type: getBadRequestUUIDParams(":id/roles"),
-    description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
+    type: UserDto.UserRoleAssignBadReqRes,
+    description: 'Conflict User Roles'
   })
   @ApiUnauthorizedResponse({
     type: getUnauthorizedResponse(":id/roles"),
