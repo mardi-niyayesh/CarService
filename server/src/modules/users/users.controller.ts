@@ -6,7 +6,7 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-  Controller,
+  Controller, Delete,
 } from '@nestjs/common';
 
 import {
@@ -177,5 +177,47 @@ export class UsersController {
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ): Promise<ApiResponse<UserResponse>> {
     return await this.usersService.assignRole(req.user, params.id, data.rolesId);
+  }
+
+  @Permission({
+    permissions: [PERMISSIONS.ROLE_REVOKE]
+  })
+  @Post(":id/roles")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Revoked roles to a user',
+    description: `
+  Assigns one or more roles to a target user with strict validation rules:
+
+  - **Self-assignment is forbidden** (a user cannot assign roles to themselves).
+  - **Restricted roles** ("owner", "self") cannot be assigned under any circumstances.
+  - **Duplicate prevention**: roles already held by the user cannot be reassigned.
+  - **Management-level protection**: assigning or modifying critical management roles 
+  ("role_manager", "user_manager") is exclusively reserved for the "owner". 
+  Other managers cannot grant these specific privileges to prevent peer-level 
+  escalation, though they may assign other authorized management roles.
+  - All roles must exist; invalid role IDs will result in a 404 error.
+
+  This endpoint ensures role integrity, prevents privilege escalation, 
+  and enforces organizational security policies.
+  `,
+    operationId: 'revoke_role',
+    tags: ["User"],
+  })
+  @ApiParam(UUID4Dto("user"))
+  @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @Delete(":id/roles")
+  revokeRole(
+    @Req() req: AccessRequest,
+    @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
+    @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
+  ) {
+    console.dir(req.user, {colors: true, depth: 2, showHidden: true});
+    console.dir(data.rolesId, {colors: true, depth: 2, showHidden: true});
+    console.dir(params.id, {colors: true, depth: 2, showHidden: true});
+
+    return {
+      test: true
+    };
   }
 }
