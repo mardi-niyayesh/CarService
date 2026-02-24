@@ -12,6 +12,13 @@ export class RoleRevokeOkRes extends getBaseOkResponseSchema<UserResponse>({
   }
 }) {}
 
+export class UserRevokeBadReqRes extends getNormalErrorResponse({
+  message: "User does not have these roles: category_manager, product_manager",
+  path: "/users/:id/roles",
+  error: "Roles Not Found in Target Roles",
+  statusCode: 400
+}) {}
+
 /** forbidden response */
 export class UserRoleRevokedForbiddenRes extends getNormalErrorResponse({
   message: "Management level protection: You don't have enough privilege to revoke high-level roles (role_manager, user_manager).",
