@@ -214,6 +214,18 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @ApiBadRequestResponse({
+    type: getBadRequestUUIDParams(":id/roles"),
+    description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
+  })
+  @ApiUnauthorizedResponse({
+    type: getUnauthorizedResponse(":id/roles"),
+    description: 'Invalid or missing authentication token.'
+  })
+  @ApiNotFoundResponse({
+    type: UserDto.NotFoundGetUserResponse,
+    description: 'The requested user or role does not exist in the database.'
+  })
   revokeRole(
     @Req() req: AccessRequest,
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) body: UserDto.UserRoleAssignedType,
