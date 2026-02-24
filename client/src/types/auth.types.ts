@@ -31,3 +31,11 @@ export type SuccessModalProps= {
   onClose: () => void;  
   message: string;
 }
+//type AuthFormProps
+ export type AuthFormProps = {
+  type: "register" | "login";
+  onSubmit: (data: any) => void;
+  isPending?: boolean;
+  error?: string | null;
+  resetForm?: boolean;
+};
