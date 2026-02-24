@@ -1,6 +1,6 @@
 import {Observable, map} from 'rxjs';
-import {getDefaultMessage} from "@/lib";
 import type {Response, Request} from "express";
+import {getDefaultMessage, getServerTime} from "@/lib";
 import type {BaseApiResponse, BaseApiResponseData, InterceptorResponse} from "@/types";
 import {Injectable, ExecutionContext, NestInterceptor, CallHandler} from '@nestjs/common';
 
@@ -24,7 +24,7 @@ export class ResponseInterceptors<T> implements NestInterceptor<BaseApiResponse 
           success: statusCode >= 200 && statusCode < 300,
           detail: getDefaultMessage(statusCode),
           path: req.url,
-          timestamp: new Date().toISOString(),
+          timestamp: getServerTime(),
           response,
         };
       })

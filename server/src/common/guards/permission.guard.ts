@@ -1,6 +1,6 @@
 import {isAllowedAction} from "@/lib";
-import {AccessRequest, BaseException} from "@/types";
 import {Reflector} from "@nestjs/core";
+import {AccessRequest, BaseException} from "@/types";
 import {IS_PUBLIC_KEY, PERMISSION_METADATA, type PermissionDecoratorParams} from "@/common";
 import {CanActivate, ExecutionContext, ForbiddenException, Injectable, InternalServerErrorException} from "@nestjs/common";
 

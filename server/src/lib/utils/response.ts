@@ -5,6 +5,9 @@ import {HttpStatus} from "@nestjs/common";
 /** date for responses */
 export const date = new Date();
 
+/** Get present tense and convert to string */
+export const getServerTime: () => string = () => new Date().toISOString();
+
 /** get Default message with status code */
 export function getDefaultMessage(status: HttpStatus): string {
   const defaultMessages: Partial<Record<HttpStatus, string>> = {

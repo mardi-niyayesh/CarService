@@ -1,5 +1,5 @@
-import {getDefaultMessage} from "@/lib";
 import type {Request, Response} from 'express';
+import {getDefaultMessage, getServerTime} from "@/lib";
 import {BaseResponse, ZodExceptionRes, BaseExceptionRes} from "@/types";
 import {Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus} from "@nestjs/common";
 
@@ -23,7 +23,7 @@ export class ResponseException implements ExceptionFilter {
       success: false,
       detail: getDefaultMessage(status),
       path: req.url,
-      timestamp: new Date().toISOString(),
+      timestamp: getServerTime(),
     };
 
     let finalResponse: ZodExceptionRes | BaseExceptionRes;
