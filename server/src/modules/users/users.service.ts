@@ -1,7 +1,14 @@
 import {ROLES} from "@/common";
 import {PrismaService} from "../prisma/prisma.service";
 import {ApiResponse, BaseException, UserAccess, UserResponse} from "@/types";
-import {ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+
+interface ModifyRoleServiceParams {
+  actionPayload: UserAccess;
+  userId: string;
+  rolesId: string[];
+  action: "revoke" | "assign";
+}
 
 @Injectable()
 export class UsersService {
@@ -67,12 +74,10 @@ export class UsersService {
   /** Assign roles to user
    * - Accessible only by users with 'owner' or 'user_manager' role
    */
-  async assignRole(
-    actionPayload: UserAccess,
-    userId: string,
-    rolesId: string[]
-  ): Promise<ApiResponse<UserResponse>> {
+  async assignRole(params: ModifyRoleServiceParams): Promise<ApiResponse<UserResponse>> {
     return this.prisma.$transaction(async tx => {
+      const {rolesId, userId, action, actionPayload} = params;
+
       const userIncludes = {
         where: {
           id: userId
@@ -99,11 +104,9 @@ export class UsersService {
         error: "User Not Found",
       });
 
-      const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
-
       // Prevent self-assignment
       if (targetUser.id === actionPayload.userId) throw new ForbiddenException({
-        message: 'You cannot assign roles to yourself',
+        message: `You cannot ${action} roles to yourself`,
         error: "Permission Denied",
       } as BaseException);
 
@@ -129,15 +132,30 @@ export class UsersService {
 
       // Block restricted roles
       if (newRolesName.some(r => restrictedRoles.includes(r))) throw new ForbiddenException({
-        message: 'owner and self roles cannot be assigned',
+        message: `owner and self roles cannot be ${action}ed`,
         error: 'Permission Denied',
       } as BaseException);
 
-      // Check for duplicate assignments
-      if (targetRoles.some(r => newRolesName.includes(r))) throw new ConflictException({
-        message: 'User already has some of these roles',
-        error: 'Conflict User Roles',
-      } as BaseException);
+      // Target Roles in Array
+      const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
+
+      if (action === "assign") {
+        const existingRoles = newRolesName.filter(r => targetRoles.includes(r));
+
+        // Check for duplicate assignments
+        if (existingRoles.length > 0) throw new ConflictException({
+          message: `User already has these roles: ${existingRoles.join(", ")}`,
+          error: 'Conflict User Roles',
+        } as BaseException);
+      } else {
+        const missingRoles = newRolesName.filter(role => !targetRoles.includes(role));
+
+        // Check exist all roles in targetRoles
+        if (missingRoles.length > 0) throw new BadRequestException({
+          message: `User does not have these roles: ${missingRoles.join(", ")}`,
+          error: 'Roles Not Found in Target Roles',
+        } as BaseException);
+      }
 
       const rolesManager: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER];
       const rolesManagerStrict: string[] = structuredClone(rolesManager);
@@ -190,42 +208,6 @@ export class UsersService {
         message: "roles successfully assigned to this user.",
         data
       };
-    });
-  }
-
-  async revokeRole(
-    actionPayload: UserAccess,
-    userId: string,
-    rolesId: string[]
-  ): Promise<ApiResponse<UserResponse>> {
-    return this.prisma.$transaction(async tx => {
-      const userIncludes = {
-        where: {
-          id: userId
-        },
-        include: {
-          userRoles: {
-            include: {
-              role: {
-                include: {
-                  rolePermissions: {
-                    include: {permission: true}
-                  }
-                }
-              }
-            }
-          }
-        }
-      };
-
-      const targetUser = await tx.user.findUnique(userIncludes);
-
-      if (!targetUser) throw new NotFoundException({
-        message: "User not exist in database",
-        error: "User Not Found",
-      });
-
-      const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
     });
   }
 }
