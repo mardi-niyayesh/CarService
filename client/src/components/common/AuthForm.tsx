@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import imgLogin from "../../../assets/imglogin.png";
 import FormInput from "./FormInput";
+import { useEffect } from "react";
+import { type AuthFormProps } from "../../types/auth.types";
 
 // pattern Email
 const emailPattern =
@@ -9,14 +11,13 @@ const emailPattern =
 // pattern Password
 const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
 
-type AuthFormProps = {
-  type: "register" | "login";
-  onSubmit: (data: any) => void;
-  isPending?: boolean;
-  error?: string | null;
-};
-
-function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
+function AuthForm({
+  type,
+  onSubmit,
+  isPending,
+  error,
+  resetForm,
+}: AuthFormProps) {
   //Register or login ?
   const isRegister = type === "register";
 
@@ -24,13 +25,38 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm({
     mode: "onChange",
     defaultValues: isRegister
-      ? { email: "", password: "", firstname: "", age: undefined, rules: false }
-      : { email: "", password: "" },
+      ? {
+          email: "",
+          password: "",
+          display_name: "",
+          age: undefined,
+          rules: false,
+        }
+      : { email: "", password: "", rememberMe: true },
   });
-
+  useEffect(() => {
+    if (resetForm) {
+      reset(
+        isRegister
+          ? {
+              email: "",
+              password: "",
+              display_name: "",
+              age: undefined,
+              rules: false,
+            }
+          : {
+              email: "",
+              password: "",
+              rememberMe: true,
+            },
+      );
+    }
+  }, [reset, isRegister]);
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
   };
@@ -85,6 +111,27 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
                 },
               }}
             />
+            {/* forgat password and remember me*/}
+            {!isRegister && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    {...register("rememberMe")}
+                  />
+                  <label className="text-sm text-gray-600">
+                    مرا به خاطر بسپار
+                  </label>
+                </div>
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  رمز عبور را فراموش کرده‌اید؟
+                </Link>
+              </div>
+            )}
 
             {/*FirstName form*/}
             {isRegister && (
@@ -95,7 +142,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
                   type="text"
                   placeholder="نام خود را وارد کنید"
                   register={register}
-                  error={errors.firstname}
+                  error={errors.display_name}
                   validation={{
                     required: "نام کاربری نمی‌تواند خالی باشد",
                     minLength: {
@@ -131,7 +178,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
                   }}
                 />
 
-                {/* چک‌باکس قوانین */}
+                {/*check bos roles*/}
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
