@@ -74,7 +74,7 @@ export class UsersService {
   /** Assign roles to user
    * - Accessible only by users with 'owner' or 'user_manager' role
    */
-  async assignRole(params: ModifyRoleServiceParams): Promise<ApiResponse<UserResponse>> {
+  async modifyRole(params: ModifyRoleServiceParams): Promise<ApiResponse<UserResponse>> {
     return this.prisma.$transaction(async tx => {
       const {rolesId, userId, action, actionPayload} = params;
 
@@ -139,6 +139,11 @@ export class UsersService {
       // Target Roles in Array
       const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
 
+      if (targetRoles.some(r => r === ROLES.OWNER)) throw new ForbiddenException({
+        message: "The 'owner' role is immutable; modifications to this account's privileges are strictly prohibited.",
+        error: 'Permission Denied',
+      } as BaseException);
+
       if (action === "assign") {
         const existingRoles = newRolesName.filter(r => targetRoles.includes(r));
 
@@ -157,13 +162,11 @@ export class UsersService {
         } as BaseException);
       }
 
-      const rolesManager: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER];
-      const rolesManagerStrict: string[] = structuredClone(rolesManager);
-      rolesManagerStrict.push(ROLES.OWNER);
+      const rolesManagerStrict: string[] = [ROLES.ROLE_MANAGER, ROLES.USER_MANAGER, ROLES.OWNER];
 
       const isActorOwner: boolean = actionPayload.roles.includes(ROLES.OWNER);
       const isTargetManager: boolean = targetRoles.some(r => rolesManagerStrict.includes(r));
-      const isNewRoleManager: boolean = newRolesName.some(r => rolesManager.includes(r));
+      const isNewRoleManager: boolean = newRolesName.some(r => rolesManagerStrict.includes(r));
 
       /**
        * action role != 'owner':
@@ -171,13 +174,24 @@ export class UsersService {
        * - if target user role = 'role_manager' | 'user_manager' | 'owner'
        */
       if (!isActorOwner && (isTargetManager || isNewRoleManager)) throw new ForbiddenException({
-        message: "Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).",
+        message: `Management level protection: You don't have enough privilege to ${action} high-level roles (role_manager, user_manager).`,
         error: "Permission Denied",
       } as BaseException);
 
-      await tx.userRole.createMany({
-        data: rolesId.map(r => ({role_id: r, user_id: targetUser.id}))
-      });
+      if (action === "assign") {
+        await tx.userRole.createMany({
+          data: rolesId.map(r => ({role_id: r, user_id: targetUser.id}))
+        });
+      } else {
+        await tx.userRole.deleteMany({
+          where: {
+            user_id: userId,
+            role_id: {
+              in: rolesId
+            }
+          }
+        });
+      }
 
       const newUserData = await tx.user.findUnique(userIncludes);
 

@@ -171,12 +171,17 @@ export class UsersController {
     type: UserDto.UserRoleAssignedConflictRes,
     description: 'Conflict: The user already possesses this role.'
   })
-  async assignRole(
+  assignRole(
     @Req() req: AccessRequest,
-    @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
+    @Body(new ZodPipe(UserDto.UserRoleAssigned)) body: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ): Promise<ApiResponse<UserResponse>> {
-    return await this.usersService.assignRole(req.user, params.id, data.rolesId);
+    return this.usersService.modifyRole({
+      rolesId: body.rolesId,
+      userId: params.id,
+      action: "assign",
+      actionPayload: req.user
+    });
   }
 
   @Permission({
@@ -211,15 +216,14 @@ export class UsersController {
   @ApiBody({type: UserDto.UserRoleAssignedDto})
   revokeRole(
     @Req() req: AccessRequest,
-    @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
+    @Body(new ZodPipe(UserDto.UserRoleAssigned)) body: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    console.log(req.user);
-    console.log(data.rolesId);
-    console.log(params.id);
-
-    return {
-      test: true
-    };
+    return this.usersService.modifyRole({
+      rolesId: body.rolesId,
+      userId: params.id,
+      action: "revoke",
+      actionPayload: req.user
+    });
   }
 }
