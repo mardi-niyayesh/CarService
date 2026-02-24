@@ -1,6 +1,5 @@
-
 // type for props components
- export type FormInputProps = {
+export type FormInputProps = {
   label: string;
   name: string;
   type?: string;
@@ -26,16 +25,17 @@ export type LoginFormData = {
 };
 
 //type props Modle
-export type SuccessModalProps= {
+export type SuccessModalProps = {
   isOpen: boolean;
-  onClose: () => void;  
+  onClose: () => void;
   message: string;
-}
+};
 //type AuthFormProps
- export type AuthFormProps = {
-  type: "register" | "login";
+export type AuthFormProps = {
+  type: "register" | "login" | "forgot-password";
   onSubmit: (data: any) => void;
   isPending?: boolean;
   error?: string | null;
   resetForm?: boolean;
+  successMessage?: string | null;
 };
