@@ -219,7 +219,7 @@ export class UsersService {
       };
 
       return {
-        message: "roles successfully assigned to this user.",
+        message: `Roles successfully ${action === 'assign' ? 'assigned to' : 'revoked from'} this user.`,
         data
       };
     });
