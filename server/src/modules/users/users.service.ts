@@ -1,7 +1,7 @@
 import {ROLES} from "@/common";
 import {PrismaService} from "../prisma/prisma.service";
 import {ApiResponse, BaseException, UserAccess, UserResponse} from "@/types";
-import {BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 
 interface ModifyRoleServiceParams {
   actionPayload: UserAccess;
@@ -86,7 +86,8 @@ export class UsersService {
           userRoles: {
             include: {role: true}
           }
-        }
+        },
+        omit: {password: true}
       });
 
       if (!targetUser) throw new NotFoundException({
@@ -190,12 +191,18 @@ export class UsersService {
               }
             }
           }
-        }
+        },
+        omit: {password: true}
       });
 
-      const newTargetRoles: string[] = newUserData!.userRoles.map(r => r.role.name);
+      if (!newUserData) throw new InternalServerErrorException({
+        message: "User Not Found in database",
+        error: "Something went wrong",
+      } as BaseException);
 
-      const newTargetRolePermissions = newUserData!.userRoles.map(r => r.role.rolePermissions);
+      const newTargetRoles: string[] = newUserData.userRoles.map(r => r.role.name);
+
+      const newTargetRolePermissions = newUserData.userRoles.map(r => r.role.rolePermissions);
 
       const newTargetPermissions: string[] = [...new Set(
         newTargetRolePermissions.map(rp => rp
@@ -205,12 +212,12 @@ export class UsersService {
 
       const data: UserResponse = {
         user: {
-          updated_at: newUserData!.updated_at,
-          created_at: newUserData!.created_at,
-          age: newUserData!.age,
-          id: newUserData!.id,
-          email: newUserData!.email,
-          display_name: newUserData!.display_name,
+          updated_at: newUserData.updated_at,
+          created_at: newUserData.created_at,
+          age: newUserData.age,
+          id: newUserData.id,
+          email: newUserData.email,
+          display_name: newUserData.display_name,
           roles: newTargetRoles,
           permissions: newTargetPermissions
         }
