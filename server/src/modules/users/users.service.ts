@@ -192,4 +192,40 @@ export class UsersService {
       };
     });
   }
+
+  async revokeRole(
+    actionPayload: UserAccess,
+    userId: string,
+    rolesId: string[]
+  ): Promise<ApiResponse<UserResponse>> {
+    return this.prisma.$transaction(async tx => {
+      const userIncludes = {
+        where: {
+          id: userId
+        },
+        include: {
+          userRoles: {
+            include: {
+              role: {
+                include: {
+                  rolePermissions: {
+                    include: {permission: true}
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+      const targetUser = await tx.user.findUnique(userIncludes);
+
+      if (!targetUser) throw new NotFoundException({
+        message: "User not exist in database",
+        error: "User Not Found",
+      });
+
+      const targetRoles: string[] = targetUser.userRoles.map(r => r.role.name);
+    });
+  }
 }

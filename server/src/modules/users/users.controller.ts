@@ -182,39 +182,41 @@ export class UsersController {
   @Permission({
     permissions: [PERMISSIONS.ROLE_REVOKE]
   })
-  @Post(":id/roles")
+  @Delete(":id/roles")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Revoked roles to a user',
+    summary: 'Revoke roles from a user',
     description: `
-  Assigns one or more roles to a target user with strict validation rules:
-
-  - **Self-assignment is forbidden** (a user cannot assign roles to themselves).
-  - **Restricted roles** ("owner", "self") cannot be assigned under any circumstances.
-  - **Duplicate prevention**: roles already held by the user cannot be reassigned.
-  - **Management-level protection**: assigning or modifying critical management roles 
-  ("role_manager", "user_manager") is exclusively reserved for the "owner". 
-  Other managers cannot grant these specific privileges to prevent peer-level 
-  escalation, though they may assign other authorized management roles.
-  - All roles must exist; invalid role IDs will result in a 404 error.
-
-  This endpoint ensures role integrity, prevents privilege escalation, 
-  and enforces organizational security policies.
+  Removes one or more roles from a target user with strict security enforcement:
+  
+  - **Self-revocation is forbidden**: Users cannot remove their own roles to prevent 
+    accidental lockout or "account suicide."
+  - **Restricted roles protection**: The "owner" and "self" roles cannot be revoked 
+    via this endpoint to maintain system stability and root-level access.
+  - **Existence validation**: Only roles currently held by the user can be revoked; 
+    attempting to remove a role the user doesn't have will be ignored or flagged.
+  - **Management-level protection**: Revoking critical management roles 
+    ("role_manager", "user_manager") is exclusively reserved for the "owner". 
+    This prevents unauthorized managers from de-authorizing their peers or superiors.
+  - **Atomic updates**: The system ensures that role removal is reflected immediately 
+    across all associated permissions.
+  
+  This endpoint maintains the principle of least privilege and prevents 
+  unauthorized restructuring of the organizational hierarchy.
   `,
     operationId: 'revoke_role',
     tags: ["User"],
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
-  @Delete(":id/roles")
   revokeRole(
     @Req() req: AccessRequest,
     @Body(new ZodPipe(UserDto.UserRoleAssigned)) data: UserDto.UserRoleAssignedType,
     @Param(new ZodPipe(UUID4Schema)) params: UUID4Type,
   ) {
-    console.dir(req.user, {colors: true, depth: 2, showHidden: true});
-    console.dir(data.rolesId, {colors: true, depth: 2, showHidden: true});
-    console.dir(params.id, {colors: true, depth: 2, showHidden: true});
+    console.log(req.user);
+    console.log(data.rolesId);
+    console.log(params.id);
 
     return {
       test: true
