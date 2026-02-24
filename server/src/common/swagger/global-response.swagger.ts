@@ -2,6 +2,13 @@ import {getDefaultMessage} from "@/lib";
 import {ApiProperty} from "@nestjs/swagger";
 import {ApiResponse, BaseApiResponseData, ZodFieldError} from "@/types";
 
+function getFormatPath(path: string): string {
+  if (path.startsWith("/")) {
+    return `/api${path}`;
+  }
+  return `/api/${path}`;
+}
+
 interface GetNormalErrorTypes {
   message: string;
   statusCode: number;
@@ -21,7 +28,7 @@ export function getNormalErrorResponse(props: GetNormalErrorTypes) {
     @ApiProperty({example: getDefaultMessage(props.statusCode)})
     detail: string;
 
-    @ApiProperty({example: props.path})
+    @ApiProperty({example: getFormatPath(props.path)})
     path: string;
 
     @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
@@ -87,7 +94,7 @@ export function getBaseOkResponseSchema<T>(props: { create?: boolean, response: 
     @ApiProperty({example: props.create ? "Resource Created" : "Resource Successfully"})
     detail: string;
 
-    @ApiProperty({example: props.path})
+    @ApiProperty({example: getFormatPath(props.path)})
     path: string;
 
     @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
@@ -121,7 +128,7 @@ export function getBaseErrorBodyResponseSchema(props: GetZodErrorTypes) {
     @ApiProperty({example: "Invalid Request."})
     detail: string;
 
-    @ApiProperty({example: props.path})
+    @ApiProperty({example: getFormatPath(props.path)})
     path: string;
 
     @ApiProperty({example: "2026-02-08T02:11:20.630Z"})
