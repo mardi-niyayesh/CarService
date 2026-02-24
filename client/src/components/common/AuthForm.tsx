@@ -18,8 +18,10 @@ function AuthForm({
   error,
   resetForm,
 }: AuthFormProps) {
-  //Register or login ?
+  //Register or login or forgotPassword?
   const isRegister = type === "register";
+  const isLogin = type === "login";
+  const isForgotPassword = type === "forgot-password";
 
   const {
     register,
@@ -36,27 +38,31 @@ function AuthForm({
           age: undefined,
           rules: false,
         }
-      : { email: "", password: "", rememberMe: true },
+      : isLogin
+        ? { email: "", password: "", rememberMe: true }
+        : { email: "" },
   });
   useEffect(() => {
     if (resetForm) {
-      reset(
-        isRegister
-          ? {
-              email: "",
-              password: "",
-              display_name: "",
-              age: undefined,
-              rules: false,
-            }
-          : {
-              email: "",
-              password: "",
-              rememberMe: true,
-            },
-      );
+      if (isRegister) {
+        reset({
+          email: "",
+          password: "",
+          display_name: "",
+          age: undefined,
+          rules: false,
+        });
+      } else if (isLogin) {
+        reset({
+          email: "",
+          password: "",
+          rememberMe: true,
+        });
+      } else {
+        reset({ email: "" });
+      }
     }
-  }, [reset, isRegister]);
+  }, [reset, isRegister, isLogin, resetForm]);
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
   };
@@ -66,7 +72,7 @@ function AuthForm({
       <div className="bg-white rounded-2xl shadow-xl mt-10 overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 p-6 sm:p-8 lg:p-10">
           <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 mb-6 text-center">
-            {isRegister ? "ثبت نام" : "ورود"}
+            {isRegister ? "ثبت نام" : isLogin ? "ورود" : "فراموشی رمز عبور"}
           </h1>
 
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
@@ -88,31 +94,33 @@ function AuthForm({
             />
 
             {/*Password form*/}
-            <FormInput
-              label="رمز عبور"
-              name="password"
-              type="password"
-              placeholder="رمز عبور خود را وارد کنید"
-              register={register}
-              error={errors.password}
-              validation={{
-                required: "رمز عبور نمی‌تواند خالی باشد",
-                minLength: {
-                  value: 6,
-                  message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
-                },
-                maxLength: {
-                  value: 20,
-                  message: "رمز عبور باید حداکثر ۲۰ کاراکتر باشد",
-                },
-                pattern: {
-                  value: patternPassword,
-                  message: "رمز عبور باید شامل حداقل یک حرف و یک عدد باشد",
-                },
-              }}
-            />
+            {(isLogin || isRegister) && (
+              <FormInput
+                label="رمز عبور"
+                name="password"
+                type="password"
+                placeholder="رمز عبور خود را وارد کنید"
+                register={register}
+                error={errors.password}
+                validation={{
+                  required: "رمز عبور نمی‌تواند خالی باشد",
+                  minLength: {
+                    value: 6,
+                    message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "رمز عبور باید حداکثر ۲۰ کاراکتر باشد",
+                  },
+                  pattern: {
+                    value: patternPassword,
+                    message: "رمز عبور باید شامل حداقل یک حرف و یک عدد باشد",
+                  },
+                }}
+              />
+            )}
             {/* forgat password and remember me*/}
-            {!isRegister && (
+            {isLogin && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <input
@@ -131,6 +139,13 @@ function AuthForm({
                   رمز عبور را فراموش کرده‌اید؟
                 </Link>
               </div>
+            )}
+
+            {isForgotPassword && (
+              <p className="text-sm text-gray-600 text-center">
+                لطفاً ایمیل خود را وارد کنید. لینک بازیابی رمز عبور برای ایمیل
+                شما ارسال خواهد شد.
+              </p>
             )}
 
             {/*FirstName form*/}
@@ -232,10 +247,14 @@ function AuthForm({
               {isPending
                 ? isRegister
                   ? "در حال ثبت‌نام..."
-                  : "در حال ورود..."
+                  : isLogin
+                    ? "در حال ورود..."
+                    : "در حال ارسال..."
                 : isRegister
                   ? "ثبت‌نام"
-                  : "ورود"}
+                  : isLogin
+                    ? "ورود"
+                    : "ارسال لینک بازیابی"}
             </button>
 
             <p className="text-center text-sm text-gray-600 mt-4">
