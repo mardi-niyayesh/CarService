@@ -30,74 +30,76 @@ export class AuthService {
 
   /** create user in db */
   async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<UserResponse>> {
-    const user: User | null = await this.prisma.user.findUnique({
-      where: {
-        email: createData.email,
-      }
-    });
+    return this.prisma.$transaction(async tx => {
+      const user: User | null = await tx.user.findUnique({
+        where: {
+          email: createData.email,
+        }
+      });
 
-    if (user) throw new ConflictException({
-      message: 'User already exists in database',
-      error: 'Conflict Users'
-    } as BaseException);
+      if (user) throw new ConflictException({
+        message: 'User already exists in database',
+        error: 'Conflict Users'
+      } as BaseException);
 
-    const hashPassword: string = await hashSecret(createData.password);
+      const hashPassword: string = await hashSecret(createData.password);
 
-    const selfRole = await this.prisma.role.findUnique({
-      where: {
-        name: ROLES.SELF
-      }
-    });
+      const selfRole = await tx.role.findUnique({
+        where: {
+          name: ROLES.SELF
+        }
+      });
 
-    if (!selfRole) throw new InternalServerErrorException({
-      message: 'self role not exist in database',
-      error: 'Self Role not exist'
-    } as BaseException);
+      if (!selfRole) throw new InternalServerErrorException({
+        message: 'self role not exist in database',
+        error: 'Self Role not exist'
+      } as BaseException);
 
-    const newUser = await this.prisma.user.create({
-      data: {
-        ...createData,
-        password: hashPassword
-      }
-    });
+      const newUser = await tx.user.create({
+        data: {
+          ...createData,
+          password: hashPassword
+        }
+      });
 
-    const roles = await this.prisma.userRole.create({
-      data: {
-        role_id: selfRole.id,
-        user_id: newUser.id
-      },
-      include: {
-        role: {
-          include: {
-            rolePermissions: {
-              include: {permission: true}
+      const roles = await tx.userRole.create({
+        data: {
+          role_id: selfRole.id,
+          user_id: newUser.id
+        },
+        include: {
+          role: {
+            include: {
+              rolePermissions: {
+                include: {permission: true}
+              }
             }
           }
         }
-      }
+      });
+
+      const permissions = [...new Set(
+        roles.role.rolePermissions.map(p => p.permission.name)
+      )];
+
+      const data: UserResponse = {
+        user: {
+          roles: [roles.role.name],
+          updated_at: newUser.updated_at,
+          created_at: newUser.created_at,
+          age: newUser.age,
+          id: newUser.id,
+          email: newUser.email,
+          display_name: newUser.display_name,
+          permissions
+        }
+      };
+
+      return {
+        message: "user created successfully",
+        data
+      };
     });
-
-    const permissions = [...new Set(
-      roles.role.rolePermissions.map(p => p.permission.name)
-    )];
-
-    const data: UserResponse = {
-      user: {
-        roles: [roles.role.name],
-        updated_at: newUser.updated_at,
-        created_at: newUser.created_at,
-        age: newUser.age,
-        id: newUser.id,
-        email: newUser.email,
-        display_name: newUser.display_name,
-        permissions
-      }
-    };
-
-    return {
-      message: "user created successfully",
-      data
-    };
   }
 
   /** login users */
