@@ -50,7 +50,7 @@ export function getUnauthorizedResponse(path: string) {
 /** example response when too many requests from one ip in 1 minutes */
 export class TooManyRequestResponse extends getNormalErrorResponse({
   message: "Too many requests. Try again 5 minutes later.",
-  path: "/auth/register",
+  path: "auth/register",
   error: "Too Many Requests From Your IP",
   statusCode: 429
 }) {}
