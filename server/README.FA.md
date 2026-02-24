@@ -46,15 +46,15 @@
 1. **کلون کردن پروژه**
 
    ```bash
-   git clone https://github.com/mardi-niyayesh/CarService.git
-   cd CarService/server
+   git clone https://github.com/mardi-niyayesh/car_service.git
+   cd car_service/server
    ```
 
    **با ssh**
 
    ```bash
-   git clone git@github.com:mardi-niyayesh/CarService.git
-   cd CarService/server
+   git clone git@github.com:mardi-niyayesh/car_service.git
+   cd car_service/server
    ```
 
 2. **نصب وابستگی‌ها**
