@@ -153,7 +153,7 @@ export class UsersService {
        * - if target user role = 'role_manager' | 'user_manager' | 'owner'
        */
       if (!isActorOwner && (isTargetManager || isNewRoleManager)) throw new ForbiddenException({
-        message: "Management level protection: Only the owner can assign management roles.",
+        message: "Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).",
         error: "Permission Denied",
       } as BaseException);
 

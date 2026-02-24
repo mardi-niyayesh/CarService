@@ -52,7 +52,7 @@ export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
 
 /** forbidden response */
 export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse({
-  message: "Management level protection: Only the owner can assign management roles.",
+  message: "Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).",
   statusCode: 403,
   error: "Permission Denied",
   path: "users/:id/roles"
