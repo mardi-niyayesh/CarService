@@ -67,16 +67,32 @@ maintainability, and fully standardized API responses.
 3. Create a `.env` file:
    ```env
    # for config and development
-   NODE_ENV="production"
-
+   NODE_ENV="development"
+   
+   # Port
    PORT="3000"
 
-   # Database
-   DATABASE_URL="postgresql://user:password@localhost:5432/car_service"
-
-   # JWT
-   JWT_SECRET="your_secret_key"
+   # DB URL
+   # your_user_name → your database username
+   # your_password → your database password
+   # car_service   → target database name
+   DATABASE_URL="postgresql://your_user_name:your_password@localhost:5432/car_service?pool_timeout=10&connect_timeout=15"
+   
+   CLIENT_RESET_PASSWORD="http://localhost:5173/reset-password"
+   
+   # JWT Secret
+   # type in terminal for create secres: node -e "console.log(require('crypto').randomBytes(64).toString('hex'));"
+   JWT_SECRET="JWT_ACCESS_SECRET"
+   
+   # JWT Expires
    JWT_EXPIRES="1h"
+   
+   # Email Config
+   EMAIL_SERVICE="service"
+   EMAIL_USER="yourmil@service.co"
+   EMAIL_PASS="xxxx xxxx xxxx xxxx"
+   EMAIL_FROM="Car Service <yourmil@service.co>"
+   EMAIL_HOST="email host"
    ```
 
 4. Create Database and Collation:<br><br>
