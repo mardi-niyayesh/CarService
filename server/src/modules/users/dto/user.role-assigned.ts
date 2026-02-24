@@ -20,7 +20,7 @@ export type UserRoleAssignedType = z.infer<typeof UserRoleAssigned>;
 export class UserRoleAssignedDto extends createZodDto(UserRoleAssigned) {}
 
 /** data response */
-const userResponse = structuredClone(createUserResponse);
+export const userResponse = structuredClone(createUserResponse);
 
 userResponse.data.user.roles = [
   "self",
@@ -42,17 +42,17 @@ userResponse.data.user.permissions = [
 
 /** ok response */
 export class RoleAssignOkRes extends getBaseOkResponseSchema<UserResponse>({
-  path: "/users/4361f7f4-2759-4e24-a147-8a3a44c5b459/roles",
+  path: "/users/:id/roles",
   create: false,
   response: {
-    message: "roles successfully assigned to this user.",
+    message: "Roles successfully assign to this user.",
     data: userResponse.data
   }
 }) {}
 
 /** forbidden response */
 export class UserRoleAssignedForbiddenRes extends getNormalErrorResponse({
-  message: "Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).",
+  message: `Management level protection: You don't have enough privilege to assign high-level roles (role_manager, user_manager).`,
   statusCode: 403,
   error: "Permission Denied",
   path: "users/:id/roles"

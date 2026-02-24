@@ -214,6 +214,7 @@ export class UsersController {
   })
   @ApiParam(UUID4Dto("user"))
   @ApiBody({type: UserDto.UserRoleAssignedDto})
+  @ApiOkResponse({type: UserDto.RoleRevokeOkRes})
   @ApiBadRequestResponse({
     type: getBadRequestUUIDParams(":id/roles"),
     description: 'Validation failed. Ensure the ID is a valid UUIDv4.'
@@ -221,6 +222,10 @@ export class UsersController {
   @ApiUnauthorizedResponse({
     type: getUnauthorizedResponse(":id/roles"),
     description: 'Invalid or missing authentication token.'
+  })
+  @ApiForbiddenResponse({
+    type: UserDto.UserRoleRevokedForbiddenRes,
+    description: 'Access denied: Target user or new role is a manager/owner or requester lacks sufficient rank.'
   })
   @ApiNotFoundResponse({
     type: UserDto.NotFoundGetUserResponse,
