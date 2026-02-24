@@ -78,26 +78,16 @@ export class UsersService {
     return this.prisma.$transaction(async tx => {
       const {rolesId, userId, action, actionPayload} = params;
 
-      const userIncludes = {
+      const targetUser = await tx.user.findUnique({
         where: {
           id: userId
         },
         include: {
           userRoles: {
-            include: {
-              role: {
-                include: {
-                  rolePermissions: {
-                    include: {permission: true}
-                  }
-                }
-              }
-            }
+            include: {role: true}
           }
         }
-      };
-
-      const targetUser = await tx.user.findUnique(userIncludes);
+      });
 
       if (!targetUser) throw new NotFoundException({
         message: "User not exist in database",
@@ -111,14 +101,7 @@ export class UsersService {
       } as BaseException);
 
       const roles = await tx.role.findMany({
-        where: {
-          OR: rolesId.map(r => ({id: r}))
-        },
-        include: {
-          rolePermissions: {
-            include: {permission: true}
-          }
-        }
+        where: {id: {in: rolesId}},
       });
 
       // Validate all roles exist
@@ -193,7 +176,22 @@ export class UsersService {
         });
       }
 
-      const newUserData = await tx.user.findUnique(userIncludes);
+      const newUserData = await tx.user.findUnique({
+        where: {id: userId},
+        include: {
+          userRoles: {
+            include: {
+              role: {
+                include: {
+                  rolePermissions: {
+                    include: {permission: true}
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
 
       const newTargetRoles: string[] = newUserData!.userRoles.map(r => r.role.name);
 
