@@ -167,7 +167,7 @@ export class AuthController {
   }
 
   /** Send Email for Reset password */
-  @Post("forget-password")
+  @Post("forgot-password")
   @HttpCode(HttpStatus.OK)
   @ApiBody({type: AuthDto.ForgotPasswordSchema})
   @ApiOperation({
@@ -189,7 +189,7 @@ export class AuthController {
   - **Please check your email for the existing reset link. 
   - **You must wait until the token expires before requesting a new one.`
   })
-  forgetPassword(
+  forgotPassword(
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
     return this.authService.forgotPassword(body.email);

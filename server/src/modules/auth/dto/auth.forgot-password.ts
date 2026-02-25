@@ -16,7 +16,7 @@ export type ForgotPasswordType = z.infer<typeof ForgotPassword>;
 /** schema for swagger */
 export class ForgotPasswordSchema extends createZodDto(ForgotPassword) {}
 
-const path = "/auth/forget-password";
+const path = "/auth/forgot-password";
 
 export class OkForgotPasswordRes extends getBaseOkResponseSchema<ForgotApiResponse>({
   path,
