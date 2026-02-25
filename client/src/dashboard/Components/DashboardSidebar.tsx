@@ -9,6 +9,9 @@ import reserv from "../../../assets/reserve.png";
 import comment from "../../../assets/comment.png";
 import logout from "../../../assets/logout.png";
 
+//
+import { Link } from "react-router-dom";
+
 const DashboardSidebar = () => {
   return (
     <div className="flex flex-col items-start w-full">
@@ -37,99 +40,109 @@ const DashboardSidebar = () => {
       {/*Menue*/}
       <div className="mt-5 w-full max-w-[400px] bg-[#EDEDED] rounded-2xl p-2 md:p-3">
         {/* items wallet*/}
-        <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
-          <div className="flex items-center gap-2 md:gap-3">
+        <Link to="/dashboard/wallet">
+          <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img
+                src={wallet}
+                alt="wallet"
+                className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              />
+              <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+                کیف پول
+              </p>
+            </div>
             <img
-              src={wallet}
-              alt="wallet"
-              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              src={ArrowLeft}
+              alt="ArrowLeft"
+              className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
-            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-              کیف پول
-            </p>
           </div>
-          <img
-            src={ArrowLeft}
-            alt="ArrowLeft"
-            className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
-          />
-        </div>
+        </Link>
 
         {/* items reserve*/}
-        <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
-          <div className="flex items-center gap-2 md:gap-3">
+        <Link to="/dashboard/reserve">
+          <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img
+                src={reserv}
+                alt="reserv"
+                className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              />
+              <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+                رزروهای من
+              </p>
+            </div>
             <img
-              src={reserv}
-              alt="reserv"
-              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              src={ArrowLeft}
+              alt="ArrowLeft"
+              className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
-            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-              رزروهای من
-            </p>
           </div>
-          <img
-            src={ArrowLeft}
-            alt="ArrowLeft"
-            className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
-          />
-        </div>
+        </Link>
 
         {/* item address*/}
-        <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
-          <div className="flex items-center gap-2 md:gap-3">
+        <Link to="/dashboard/address">
+          <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img
+                src={location}
+                alt="location"
+                className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              />
+              <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+                آدرس‌های من
+              </p>
+            </div>
             <img
-              src={location}
-              alt="location"
-              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              src={ArrowLeft}
+              alt="ArrowLeft"
+              className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
-            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-              آدرس‌های من
-            </p>
           </div>
-          <img
-            src={ArrowLeft}
-            alt="ArrowLeft"
-            className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
-          />
-        </div>
+        </Link>
 
         {/* items card*/}
-        <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
-          <div className="flex items-center gap-2 md:gap-3">
+        <Link to="/dashboard/card">
+          <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img
+                src={card}
+                alt="card"
+                className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              />
+              <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+                پرداخت‌های من
+              </p>
+            </div>
             <img
-              src={card}
-              alt="card"
-              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              src={ArrowLeft}
+              alt="ArrowLeft"
+              className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
-            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-              پرداخت‌های من
-            </p>
           </div>
-          <img
-            src={ArrowLeft}
-            alt="ArrowLeft"
-            className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
-          />
-        </div>
+        </Link>
 
         {/* item comment*/}
-        <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
-          <div className="flex items-center gap-2 md:gap-3">
+        <Link to="/dashboard/comment">
+          <div className="flex justify-between items-center p-2 md:p-3 border-b-2 border-[#F3F3F3] hover:bg-blue-600 transition-all duration-300 rounded-lg cursor-pointer group">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img
+                src={comment}
+                alt="comment"
+                className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              />
+              <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+                نظرات من
+              </p>
+            </div>
             <img
-              src={comment}
-              alt="comment"
-              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+              src={ArrowLeft}
+              alt="ArrowLeft"
+              className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
             />
-            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-              نظرات من
-            </p>
           </div>
-          <img
-            src={ArrowLeft}
-            alt="ArrowLeft"
-            className="w-4 h-4 md:w-5 md:h-5 opacity-60 group-hover:brightness-0 group-hover:invert group-hover:opacity-100 transition-all duration-300"
-          />
-        </div>
+        </Link>
 
         {/* item logout*/}
         <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 hover:bg-red-500 transition-all duration-300 rounded-lg cursor-pointer group">
