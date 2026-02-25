@@ -12,6 +12,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword";
+import DashboardLayout from "./dashboard/Components/DashboardLayout";
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
          <Route path="/register" element={<RegisterPage />} />
          <Route path="/login" element={<LoginPage />} />
          <Route path="/forgot-password" element={<ForgotPassword />} />
+         <Route path="/dashboard" element={<DashboardLayout />} />
       </Routes>
       <Footer />
     </>
