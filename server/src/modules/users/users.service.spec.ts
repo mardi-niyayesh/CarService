@@ -33,14 +33,13 @@ describe("UsersService", (): void => {
             name: "self",
             rolePermissions: [
               {
-                permission: [{name: "user.self"}]
+                permission: [
+                  {name: "user.self"},
+                ]
               }
             ]
           }
         }
-      ],
-      userPermissions: [
-        {permissions: {name: "user.self"}}
       ]
     } as unknown as User;
 
@@ -54,7 +53,7 @@ describe("UsersService", (): void => {
   });
 
   it('if user not exist should to exception: ', async () => {
-    prisma.user.findFirst.mockResolvedValue(null);
+    prisma.user.findUnique.mockResolvedValue(null);
 
     // noinspection ES6RedundantAwait
     await expect(
