@@ -18,6 +18,7 @@ import CommentPages from "./dashboard/Pages/CommentPages";
 import ReservePages from "./dashboard/Pages/ReservePages";
 import WalletPages from "./dashboard/Pages/WalletPages";
 import CardPages from "./dashboard/Pages/CardPages";
+import LogoutPage from "./dashboard/Pages/LogoutPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/dashboard/reserve" element={<ReservePages />} />
         <Route path="/dashboard/wallet" element={<WalletPages />} />
         <Route path="/dashboard/card" element={<CardPages />} />
+        <Route path="/dashboard/logout" element={<LogoutPage />} />
       </Routes>
       <Footer />
     </>
