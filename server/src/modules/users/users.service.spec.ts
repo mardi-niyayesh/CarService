@@ -64,6 +64,7 @@ describe("UsersService", (): void => {
 
     expect((result.data.user as unknown as User).password).toBeUndefined();
     expect(result.data.user.email).toBe(fakeUser.email);
+    expect(result.data.user.roles).toEqual(["self", "user_manager"]);
     expect(result.message).toBe("User found successfully");
   });
 
