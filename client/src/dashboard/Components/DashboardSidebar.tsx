@@ -145,16 +145,18 @@ const DashboardSidebar = () => {
         </Link>
 
         {/* item logout*/}
-        <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 hover:bg-red-500 transition-all duration-300 rounded-lg cursor-pointer group">
-          <img
-            src={logout}
-            alt="logout"
-            className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
-          />
-          <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
-            خروج
-          </p>
-        </div>
+        <Link to="/dashboard/logout">
+          <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 hover:bg-red-500 transition-all duration-300 rounded-lg cursor-pointer group">
+            <img
+              src={logout}
+              alt="logout"
+              className="w-5 h-5 md:w-6 md:h-6 group-hover:brightness-0 group-hover:invert transition-all duration-300"
+            />
+            <p className="text-[12px] md:text-[13px] font-medium text-[#494949] group-hover:text-white transition-all duration-300">
+              خروج
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );
