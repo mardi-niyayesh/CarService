@@ -1,11 +1,11 @@
+import {date} from "@/lib";
+import {PERMISSIONS, ROLES} from "@/common";
 import {UsersService} from "./users.service";
-import {NotFoundException} from "@nestjs/common";
+import {ForbiddenException, NotFoundException} from "@nestjs/common";
 import {User} from "@/modules/prisma/generated/client";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 import {it, expect, describe, afterEach, beforeEach} from "vitest";
 import {type DeepMockProxy, mockDeep, mockReset} from "vitest-mock-extended";
-
-const date = new Date();
 
 type PrismaMock = DeepMockProxy<PrismaService>;
 
@@ -13,73 +13,115 @@ describe("UsersService", (): void => {
   let service: UsersService;
   let prisma: PrismaMock;
 
+  // Start All
   beforeEach((): void => {
     prisma = mockDeep<PrismaService>();
     service = new UsersService(prisma);
+
+    prisma.$transaction.mockImplementation(async fn => fn(prisma));
   });
 
-  it('should find user and don`t send password: ', async (): Promise<void> => {
-    const fakeUser = {
-      id: "2a55bda6-e1fc-4047-9725-aeec8fcc9ec4",
-      createdAt: date,
-      updatedAt: date,
-      email: "user@example.com",
-      password: "example_password",
-      display_name: "first user",
-      age: 20,
-      userRoles: [
-        {
-          role: {
-            name: "self",
-            rolePermissions: [
-              {
-                permission: {name: "user.self"}
-              }
-            ]
-          }
-        },
-        {
-          role: {
-            name: "user_manager",
-            rolePermissions: [
-              {permission: {name: "role.revoke"}},
-              {permission: {name: "role.assign"}},
-              {permission: {name: "user.delete"}},
-              {permission: {name: "user.view"}}
-            ]
-          }
-        }
-      ]
-    } as unknown as User;
-
-    prisma.user.findUnique.mockResolvedValue(fakeUser);
-
-    const result = await service.findOne(fakeUser.id);
-
-    expect((result.data.user as unknown as User).password).toBeUndefined();
-    expect(result.data.user.email).toBe(fakeUser.email);
-    expect(result.data.user.roles).toEqual(["self", "user_manager"]);
-    expect(result.data.user.permissions).toEqual([
-      "user.self",
-      "role.revoke",
-      "role.assign",
-      "user.delete",
-      "user.view"
-    ]);
-    expect(result.message).toBe("User found successfully");
-  });
-
-  it('if user not exist should to exception: ', async () => {
-    prisma.user.findUnique.mockResolvedValue(null);
-
-    // noinspection ES6RedundantAwait
-    await expect(
-      service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")
-    ).rejects.toThrow(NotFoundException);
-  });
-
-  /** reset all */
+  // Reset All
   afterEach((): void => {
     mockReset(prisma);
+  });
+
+  // ======================================================
+  // Find One Method Tests
+  // ======================================================
+
+  describe("findOne()", (): void => {
+    // success
+    it('should find user and don`t send password: ', async (): Promise<void> => {
+      const fakeUser = {
+        id: "2a55bda6-e1fc-4047-9725-aeec8fcc9ec4",
+        createdAt: date,
+        updatedAt: date,
+        email: "user@example.com",
+        password: "example_password",
+        display_name: "first user",
+        age: 20,
+        userRoles: [
+          {
+            role: {
+              name: "self",
+              rolePermissions: [
+                {
+                  permission: {name: "user.self"}
+                }
+              ]
+            }
+          },
+          {
+            role: {
+              name: "user_manager",
+              rolePermissions: [
+                {permission: {name: "role.revoke"}},
+                {permission: {name: "role.assign"}},
+                {permission: {name: "user.delete"}},
+                {permission: {name: "user.view"}}
+              ]
+            }
+          }
+        ]
+      } as unknown as User;
+
+      prisma.user.findUnique.mockResolvedValue(fakeUser);
+
+      const result = await service.findOne(fakeUser.id);
+
+      expect((result.data.user as unknown as User).password).toBeUndefined();
+      expect(result.data.user.email).toBe(fakeUser.email);
+      expect(result.data.user.roles).toEqual(["self", "user_manager"]);
+      expect(result.data.user.permissions).toEqual([
+        "user.self",
+        "role.revoke",
+        "role.assign",
+        "user.delete",
+        "user.view"
+      ]);
+      expect(result.message).toBe("User found successfully");
+    });
+
+    // Not Found
+    it('if user not exist should to exception: ', async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
+
+      // noinspection ES6RedundantAwait
+      await expect(
+        service.findOne("2a55bda6-e1fc-4047-9725-aeec8fcc9ec3")
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+
+  // ======================================================
+  // modifyRole Method Tests
+  // ======================================================
+
+  describe("modifyRole()", (): void => {
+    const adminPayload = {
+      userId: "admin-id",
+      roles: [ROLES.USER_MANAGER],
+      permissions: [
+        PERMISSIONS.ROLE_REVOKE,
+        PERMISSIONS.ROLE_ASSIGN,
+      ]
+    };
+    const targetUserId = "target-id";
+    const roleId = "role-id";
+
+    // --- Security & Protection Tests ---
+    describe("Security Rules", (): void => {
+      it("should throw ForbiddenException for self-modification", async (): Promise<void> => {
+        // noinspection ES6RedundantAwait
+        await expect(service.modifyRole({
+          actionPayload: adminPayload,
+          userId: adminPayload.userId, // self
+          rolesId: [roleId],
+          action: "assign"
+        })).rejects.toThrow(ForbiddenException);
+      });
+    });
   });
 });
