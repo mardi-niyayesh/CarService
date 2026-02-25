@@ -33,9 +33,7 @@ describe("UsersService", (): void => {
             name: "self",
             rolePermissions: [
               {
-                permission: [
-                  {name: "user.self"},
-                ]
+                permission: {name: "user.self"}
               }
             ]
           }
@@ -44,14 +42,10 @@ describe("UsersService", (): void => {
           role: {
             name: "user_manager",
             rolePermissions: [
-              {
-                permission: [
-                  {name: "role.revoke"},
-                  {name: "role.assign"},
-                  {name: "user.delete"},
-                  {name: "user.view"},
-                ]
-              }
+              {permission: {name: "role.revoke"}},
+              {permission: {name: "role.assign"}},
+              {permission: {name: "user.delete"}},
+              {permission: {name: "user.view"}}
             ]
           }
         }
@@ -65,6 +59,13 @@ describe("UsersService", (): void => {
     expect((result.data.user as unknown as User).password).toBeUndefined();
     expect(result.data.user.email).toBe(fakeUser.email);
     expect(result.data.user.roles).toEqual(["self", "user_manager"]);
+    expect(result.data.user.permissions).toEqual([
+      "user.self",
+      "role.revoke",
+      "role.assign",
+      "user.delete",
+      "user.view"
+    ]);
     expect(result.message).toBe("User found successfully");
   });
 
