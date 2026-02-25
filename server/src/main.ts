@@ -7,10 +7,13 @@ import cookieParser from "cookie-parser";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import {NestExpressApplication} from "@nestjs/platform-express";
 import {ResponseInterceptors, ResponseException} from "./common";
+import {Logger} from "@nestjs/common";
 
 /** run application */
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ["log", "error", "debug", "warn", "verbose", "fatal"],
+  });
 
   // base url
   app.setGlobalPrefix('api');
@@ -56,6 +59,9 @@ async function bootstrap(): Promise<void> {
       customCssUrl: "/static/styles/swagger.css"
     });
   }
+
+  const logger = new Logger("bootstrap");
+  logger.log("Application started.");
 
   // listen app on default port
   await app.listen(process.env.PORT ?? 3000);
