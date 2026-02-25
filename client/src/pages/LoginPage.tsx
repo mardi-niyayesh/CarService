@@ -50,7 +50,7 @@ function LoginPage() {
   //SuccessModal
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    navigate("/");
+    navigate("/dashboard");
   };
   //SuccessModal
   const handleCloseErrorModal = () => {
