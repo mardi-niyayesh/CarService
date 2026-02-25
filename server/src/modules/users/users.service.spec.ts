@@ -1,11 +1,11 @@
 import {date} from "@/lib";
 import {PERMISSIONS, ROLES} from "@/common";
 import {UsersService} from "./users.service";
-import {BadRequestException, ConflictException, ForbiddenException, NotFoundException} from "@nestjs/common";
-import {User} from "@/modules/prisma/generated/client";
+import {Role, User} from "@/modules/prisma/generated/client";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 import {it, expect, describe, afterEach, beforeEach} from "vitest";
 import {type DeepMockProxy, mockDeep, mockReset} from "vitest-mock-extended";
+import {BadRequestException, ConflictException, ForbiddenException, NotFoundException} from "@nestjs/common";
 
 type PrismaMock = DeepMockProxy<PrismaService>;
 
@@ -177,6 +177,45 @@ describe("UsersService", (): void => {
           rolesId: [roleId],
           actionPayload: {...adminPayload, roles: [ROLES.OWNER]}
         })).rejects.toThrow(BadRequestException);
+      });
+
+      it('should block modification if target user is an OWNER', async () => {
+        prisma.user.findUnique.mockResolvedValue({
+          id: targetUserId,
+          userRoles: [{role: {name: ROLES.OWNER}}]
+        } as unknown as User);
+
+        prisma.role.findMany.mockResolvedValue([{
+          id: roleId, name: "any-role",
+        }] as Role[]);
+
+        // noinspection ES6RedundantAwait
+        await expect(service.modifyRole({
+          action: "assign",
+          userId: targetUserId,
+          rolesId: [roleId],
+          actionPayload: {...adminPayload, roles: [ROLES.OWNER]}
+        })).rejects.toThrow(ForbiddenException);
+      });
+
+      it('should prevent non-owner from assigning management roles', async () => {
+        prisma.user.findUnique.mockResolvedValue({id: targetUserId, userRoles: []} as unknown as User);
+
+        prisma.role.findMany.mockResolvedValue([{
+          id: roleId,
+          name: ROLES.ROLE_MANAGER,
+          created_at: date,
+          updated_at: date,
+          description: null
+        }]);
+
+        // noinspection ES6RedundantAwait
+        await expect(service.modifyRole({
+          action: "assign",
+          userId: targetUserId,
+          rolesId: [roleId],
+          actionPayload: adminPayload
+        })).rejects.toThrow(ForbiddenException);
       });
     });
   });
