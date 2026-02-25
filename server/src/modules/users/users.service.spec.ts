@@ -1,7 +1,7 @@
 import {date} from "@/lib";
 import {PERMISSIONS, ROLES} from "@/common";
 import {UsersService} from "./users.service";
-import {ForbiddenException, NotFoundException} from "@nestjs/common";
+import {BadRequestException, ConflictException, ForbiddenException, NotFoundException} from "@nestjs/common";
 import {User} from "@/modules/prisma/generated/client";
 import {PrismaService} from "@/modules/prisma/prisma.service";
 import {it, expect, describe, afterEach, beforeEach} from "vitest";
@@ -114,6 +114,11 @@ describe("UsersService", (): void => {
     // --- Security & Protection Tests ---
     describe("Security Rules", (): void => {
       it("should throw ForbiddenException for self-modification", async (): Promise<void> => {
+        prisma.user.findUnique.mockResolvedValue({
+          id: adminPayload.userId,
+          userRoles: []
+        } as unknown as User);
+
         // noinspection ES6RedundantAwait
         await expect(service.modifyRole({
           actionPayload: adminPayload,
@@ -121,6 +126,57 @@ describe("UsersService", (): void => {
           rolesId: [roleId],
           action: "assign"
         })).rejects.toThrow(ForbiddenException);
+      });
+    });
+
+    // --- Logical Validation Tests ---
+    describe("Logical Validation", (): void => {
+      it('should throw ConflictException if assigning an existing role', async () => {
+        prisma.user.findUnique.mockResolvedValue({
+          id: targetUserId,
+          userRoles: [{role: {name: "editor"}}]
+        } as unknown as User);
+        prisma.role.findMany.mockResolvedValue([
+          {
+            id: roleId,
+            name: "editor",
+            created_at: date,
+            updated_at: date,
+            description: "desc"
+          }
+        ]);
+
+        // noinspection ES6RedundantAwait
+        await expect(service.modifyRole({
+          action: "assign",
+          userId: targetUserId,
+          rolesId: [roleId],
+          actionPayload: {...adminPayload, roles: [ROLES.OWNER]}
+        })).rejects.toThrow(ConflictException);
+      });
+
+      it('should throw BadRequestException if revoking a non-assigned role', async () => {
+        prisma.user.findUnique.mockResolvedValue({
+          id: targetUserId,
+          userRoles: [{role: {name: "viewer"}}]
+        } as unknown as User);
+        prisma.role.findMany.mockResolvedValue([
+          {
+            id: roleId,
+            name: "editor",
+            created_at: date,
+            updated_at: date,
+            description: "desc"
+          }
+        ]);
+
+        // noinspection ES6RedundantAwait
+        await expect(service.modifyRole({
+          action: "revoke",
+          userId: targetUserId,
+          rolesId: [roleId],
+          actionPayload: {...adminPayload, roles: [ROLES.OWNER]}
+        })).rejects.toThrow(BadRequestException);
       });
     });
   });
