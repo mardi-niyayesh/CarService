@@ -39,6 +39,21 @@ describe("UsersService", (): void => {
               }
             ]
           }
+        },
+        {
+          role: {
+            name: "user_manager",
+            rolePermissions: [
+              {
+                permission: [
+                  {name: "role.revoke"},
+                  {name: "role.assign"},
+                  {name: "user.delete"},
+                  {name: "user.view"},
+                ]
+              }
+            ]
+          }
         }
       ]
     } as unknown as User;
