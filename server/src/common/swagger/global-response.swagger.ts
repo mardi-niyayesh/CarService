@@ -44,14 +44,21 @@ export function getNormalErrorResponse(props: GetNormalErrorTypes) {
   return NormalErrorResponse;
 }
 
+function getDynamicClassName(source, path: string): string {
+  return `${source}_${path.replace(/[:/]/g, "_")}`;
+}
+
 /** example response when user not authorized */
 export function getUnauthorizedResponse(path: string) {
-  return class UnauthorizedResponse extends getNormalErrorResponse({
-    message: "Access token missing or expired.",
-    statusCode: 401,
-    error: "accessToken Expires",
-    path
-  }) {};
+  const className = getDynamicClassName("Unauthorized", path);
+  return {
+    [className]: class extends getNormalErrorResponse({
+      message: "Access token missing or expired.",
+      statusCode: 401,
+      error: "accessToken Expires",
+      path
+    }) {}
+  }[className];
 }
 
 /** example response when too many requests from one ip in 1 minutes */
@@ -64,12 +71,15 @@ export class TooManyRequestResponse extends getNormalErrorResponse({
 
 /** get schema for swagger when not allowed */
 export function getForbiddenResponse(path: string) {
-  return class ForbiddenResponse extends getNormalErrorResponse({
-    message: "Your role not access to this action.",
-    statusCode: 403,
-    error: "Permission Denied",
-    path
-  }) {};
+  const className = getDynamicClassName("Forbidden", path);
+  return {
+    [className]: class extends getNormalErrorResponse({
+      message: "Your role not access to this action.",
+      statusCode: 403,
+      error: "Permission Denied",
+      path
+    }) {}
+  }[className];
 }
 
 /** get schema when request is ok */
@@ -145,8 +155,12 @@ export function getBaseErrorBodyResponseSchema(props: GetZodErrorTypes) {
 }
 
 export function getBadRequestUUIDParams(path: string) {
-  return class BadRequestUUIDParams extends getBaseErrorBodyResponseSchema({
-    path,
-    errors: [{field: "id", error: "Invalid UUIDv4"}],
-  }) {};
+  const className = getDynamicClassName("BadRequest", path);
+
+  return {
+    [className]: class extends getBaseErrorBodyResponseSchema({
+      path,
+      errors: [{field: "id", error: "Invalid UUIDv4"}],
+    }) {}
+  }[className];
 }
