@@ -243,15 +243,15 @@ export class AuthService {
         error: 'User Not Found'
       } as BaseException);
 
+      const expireMinutes: number = 15;
+
       if (user.passwordToken) throw new ConflictException({
-        message: 'A password reset token is already active. Please check your Inbox Email or spam.',
+        message: `A password reset token is already active. Please check your Inbox Email or spam. or try again ${expireMinutes} minutes later`,
         error: 'Email Already Send'
       } as BaseException);
 
       const token: string = generateRandomToken();
       const hashedToken: string = hashSecretToken(token);
-
-      const expireMinutes: number = 15;
 
       const resetLink: string = `${process.env.CLIENT_RESET_PASSWORD}?token=${token}`;
 
@@ -266,8 +266,6 @@ export class AuthService {
       });
 
       try {
-        await this.emailService.sendHtmlEmail(to, html);
-
         await tx.passwordToken.create({
           data: {
             user_id: user.id,
@@ -275,6 +273,8 @@ export class AuthService {
             expires_at: new Date(Date.now() + expireMinutes * 60 * 1000)
           }
         });
+
+        await this.emailService.sendHtmlEmail(to, html);
 
         return {
           message: "Email sent successfully, Please check your inbox",

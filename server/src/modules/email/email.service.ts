@@ -27,6 +27,8 @@ export class EmailService {
 
   @OnEvent("password.changed")
   passwordChanged(payload: PayloadEventEmail) {
+    console.log(payload.email);
+    console.log(payload.html);
     return this.miler.sendMail({
       to: payload.email,
       subject: "Your Password Successfully Changed.",
