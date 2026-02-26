@@ -1,15 +1,14 @@
-import path from "node:path";
 import {ROLES} from "@/common";
 import * as AuthDto from "./dto";
 import type {StringValue} from "ms";
-import {readFileSync} from "node:fs";
 import {randomUUID} from "node:crypto";
 import {JwtService} from "@nestjs/jwt";
 import {User} from "../prisma/generated/client";
+import {EventEmitter2} from "@nestjs/event-emitter";
 import {PrismaService} from "../prisma/prisma.service";
 import {EmailService} from "@/modules/email/email.service";
-import {compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
-import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse, BaseException} from "@/types";
+import {buildEmailHtml, compareSecret, generateRandomToken, hashSecret, hashSecretToken} from "@/lib";
+import type {AccessTokenPayload, RefreshTokenPayload, ApiResponse, UserResponse, LoginResponse, BaseException, NormalizedClientInfo} from "@/types";
 import {BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 
 @Injectable()
@@ -18,6 +17,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   /** generate new accessToken with payload */
@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   /** create user in db */
-  async register(createData: AuthDto.CreateUserInput): Promise<ApiResponse<UserResponse>> {
+  async register(createData: AuthDto.CreateUserInput, clientInfo: NormalizedClientInfo): Promise<ApiResponse<UserResponse>> {
     return this.prisma.$transaction(async tx => {
       const user: User | null = await tx.user.findUnique({
         where: {
@@ -94,6 +94,11 @@ export class AuthService {
           permissions
         }
       };
+
+      this.eventEmitter.emit("signup.welcome", {
+        email: data.user.email,
+        clientInfo
+      });
 
       return {
         message: "user created successfully",
@@ -222,7 +227,7 @@ export class AuthService {
   }
 
   /** send email to user for reset password */
-  async forgotPassword(to: string): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
+  async forgotPassword(to: string, clientInfo: NormalizedClientInfo): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
     return this.prisma.$transaction(async tx => {
       const user = await tx.user.findUnique({
         where: {
@@ -248,22 +253,17 @@ export class AuthService {
 
       const expireMinutes: number = 15;
 
-      const templatePath: string = path.join(process.cwd(), "public/html/forgot-password.html");
+      const resetLink: string = `${process.env.CLIENT_RESET_PASSWORD}?token=${token}`;
 
-      let html: string;
-      try {
-        html = readFileSync(templatePath, 'utf8');
-
-        const resetLink: string = `${process.env.CLIENT_RESET_PASSWORD}?token=${token}`;
-
-        html = html.replace("{{resetLink}}", resetLink);
-        html = html.replace("{{expireMinutes}}", expireMinutes.toString());
-      } catch (err) {
-        throw new InternalServerErrorException({
-          message: 'Failed to load email template',
-          error: (err as Error).message,
-        } as BaseException);
-      }
+      const html: string = buildEmailHtml({
+        contentName: "forgot-password",
+        clientInfo,
+        extra: {
+          resetLink,
+          expireMinutes: expireMinutes.toString()
+        },
+        title: "Reset Your Password",
+      });
 
       try {
         await this.emailService.sendHtmlEmail(to, html);

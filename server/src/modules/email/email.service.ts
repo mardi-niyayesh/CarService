@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {MailerService} from "@nestjs-modules/mailer";
+import {OnEvent} from "@nestjs/event-emitter";
 
 @Injectable()
 export class EmailService {
@@ -12,5 +13,10 @@ export class EmailService {
       text: "Hello from NestJS + Gmail + Nodemailer",
       html,
     });
+  }
+
+  @OnEvent("signup.welcome")
+  sendSignupNotif(payload: { email: string }) {
+    console.log(payload.email);
   }
 }

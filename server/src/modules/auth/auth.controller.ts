@@ -17,9 +17,9 @@ import * as AuthDto from "./dto";
 import {isProduction} from "@/lib";
 import {AuthService} from "./auth.service";
 import type {CookieOptions, Response} from "express";
-import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public} from "@/common";
-import type {RefreshRequest, LoginResponse, ApiResponse, UserResponse} from "@/types";
 import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {RefreshTokenGuard, ZodPipe, TooManyRequestResponse, Public, NormalizeClientInfo} from "@/common";
+import type {RefreshRequest, LoginResponse, ApiResponse, UserResponse, NormalizedClientInfo} from "@/types";
 
 /**
  * Authentication endpoints for user registration, login, and token refresh.
@@ -65,9 +65,10 @@ export class AuthController {
   @ApiConflictResponse({type: AuthDto.CreateUserConflictResponse})
   @ApiTooManyRequestsResponse({type: TooManyRequestResponse})
   register(
+    @NormalizeClientInfo() clientInfo: NormalizedClientInfo,
     @Body(new ZodPipe(AuthDto.CreateUser)) data: AuthDto.CreateUserInput
   ): Promise<ApiResponse<UserResponse>> {
-    return this.authService.register(data);
+    return this.authService.register(data, clientInfo);
   }
 
   /**
@@ -190,9 +191,10 @@ export class AuthController {
   - **You must wait until the token expires before requesting a new one.`
   })
   forgotPassword(
+    @NormalizeClientInfo() clientInfo: NormalizedClientInfo,
     @Body(new ZodPipe(AuthDto.ForgotPassword)) body: AuthDto.ForgotPasswordType
   ): Promise<ApiResponse<AuthDto.ForgotApiResponse>> {
-    return this.authService.forgotPassword(body.email);
+    return this.authService.forgotPassword(body.email, clientInfo);
   }
 
   /** reset password with token */
