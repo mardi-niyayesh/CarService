@@ -71,6 +71,11 @@ export function buildEmailHtml(options: BuildEmailOptions): string {
     html = html.replaceAll("{{miladiDate}}", getLocalDate("en-CA"));
     html = html.replaceAll("{{shamsiDate}}", getLocalDate("fa-IR"));
 
+    const now = new Date();
+    html = html.replaceAll("{{iranTime}}", now.toLocaleTimeString("fa-IR", {hour12: false, timeZone: "Asia/Tehran"}));
+    html = html.replaceAll("{{utcTime}}", now.toUTCString().split(" ")[4]);
+
+
     // Replace Title
     html = html.replaceAll("{{title}}", title);
 
