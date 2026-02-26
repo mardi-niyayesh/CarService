@@ -4,14 +4,26 @@ import {getLocalDate} from "@/lib";
 import {BaseException, NormalizedClientInfo} from "@/types";
 import {InternalServerErrorException} from "@nestjs/common";
 
-interface BuildEmailOptions {
+interface BuildEmailOptionsBase {
   title: string;
-  contentName: string;
   clientInfo: NormalizedClientInfo;
   siteName?: string;
   siteUrl?: string;
-  extra?: Record<string, string>;
 }
+
+interface BuildEmailOptionsWithHtml extends BuildEmailOptionsBase {
+  extra?: Record<string, string>;
+  contentName?: string;
+  contentHtml?: never;
+}
+
+interface BuildEmailHtmlOptionsWithoutHtml extends BuildEmailOptionsBase {
+  contentHtml?: string;
+  contentName?: never;
+  extra?: never;
+}
+
+type BuildEmailOptions = | BuildEmailOptionsWithHtml | BuildEmailHtmlOptionsWithoutHtml;
 
 export function buildEmailHtml(options: BuildEmailOptions): string {
   const {
@@ -21,16 +33,25 @@ export function buildEmailHtml(options: BuildEmailOptions): string {
     extra = {},
     siteUrl = process.env.CLIENT_ADDRESS!,
     siteName = process.env.CLIENT_NAME!,
+    contentHtml,
   } = options;
   try {
     const layoutPath: string = path.join(process.cwd(), "public/html/email.html");
     let html: string = readFileSync(layoutPath, "utf8");
 
-    const contentPath: string = path.join(process.cwd(), `public/html/${contentName}.html`);
-    let content: string = readFileSync(contentPath, "utf8");
+    let content: string = "";
 
-    for (const key in extra) {
-      content = content.replaceAll(`{{${key}}}`, extra[key]);
+    if (contentName) {
+      const contentPath: string = path.join(process.cwd(), `public/html/${contentName}.html`);
+      let contentFile: string = readFileSync(contentPath, "utf8");
+
+      for (const key in extra) {
+        contentFile = contentFile.replaceAll(`{{${key}}}`, extra[key]);
+      }
+
+      content = contentFile;
+    } else if (contentHtml) {
+      content = contentHtml;
     }
 
     const clientMap: Record<string, string | null> = {
