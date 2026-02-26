@@ -1,12 +1,12 @@
 import * as Modules from "./modules";
 import {throttlerConfig} from "@/lib";
-import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {APP_GUARD} from "@nestjs/core";
 import {ScheduleModule} from "@nestjs/schedule";
 import {EventEmitterModule} from "@nestjs/event-emitter";
+import {ClientInfoMiddleware} from "@/common/middlewares";
 import {AccessTokenGuard, PermissionGuard} from "./common";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
-import {ClientInfoMiddleware} from "@/common/middlewares";
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 
 @Module({
   imports: [
