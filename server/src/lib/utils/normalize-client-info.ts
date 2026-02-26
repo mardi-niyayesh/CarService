@@ -1,12 +1,4 @@
-export interface NormalizedClientInfo {
-  ip: string | null;
-  browser: string | null;
-  os: string | null;
-  device: string | null;
-  country: string | null;
-  city: string | null;
-  lang: string | null;
-}
+import {NormalizedClientInfo} from "@/types";
 
 export function normalizeClientInfo(input: Express.Request["clientInfo"]): NormalizedClientInfo {
   const {ip, ua, geo, lang} = input;
