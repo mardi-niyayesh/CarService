@@ -97,7 +97,15 @@ export class AuthService {
 
       this.eventEmitter.emit("signup.welcome", {
         email: data.user.email,
-        clientInfo
+        html: buildEmailHtml({
+          title: `Welcome To ${process.env.CLIENT_NAME!}`,
+          clientInfo,
+          contentName: "welcome",
+          extra: {
+            siteName: process.env.CLIENT_NAME!,
+            dashboardLink: process.env.CLIENT_DASHBOARD!,
+          }
+        })
       });
 
       return {
@@ -274,7 +282,7 @@ export class AuthService {
           }
         });
 
-        await this.emailService.sendHtmlEmail(to, html);
+        await this.emailService.forgotPassword(to, html);
 
         return {
           message: "Email sent successfully, Please check your inbox",

@@ -11,7 +11,15 @@ interface PayloadEventEmail {
 export class EmailService {
   constructor(private readonly miler: MailerService) {}
 
-  sendHtmlEmail(to: string, html: string) {
+  @OnEvent("signup.welcome")
+  signupWelcome(payload: PayloadEventEmail) {
+    return this.miler.sendMail({
+      to: payload.email,
+      html: payload.html,
+    });
+  }
+
+  forgotPassword(to: string, html: string) {
     return this.miler.sendMail({
       to,
       subject: "Reset Password",
@@ -20,15 +28,8 @@ export class EmailService {
     });
   }
 
-  @OnEvent("signup.welcome")
-  sendSignupNotif(payload: PayloadEventEmail) {
-    console.log(payload.email);
-  }
-
   @OnEvent("password.changed")
   passwordChanged(payload: PayloadEventEmail) {
-    console.log(payload.email);
-    console.log(payload.html);
     return this.miler.sendMail({
       to: payload.email,
       subject: "Your Password Successfully Changed.",
