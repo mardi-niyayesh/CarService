@@ -28,8 +28,7 @@
       ]
     },
     "types": [
-      "vitest/globals",
-      "node"
+      "node",
     ],
     "typeRoots": [
       "./node_modules/@types",

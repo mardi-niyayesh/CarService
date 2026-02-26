@@ -1,11 +1,12 @@
 import * as Modules from "./modules";
 import {throttlerConfig} from "@/lib";
-import {Module} from '@nestjs/common';
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {APP_GUARD} from "@nestjs/core";
 import {ScheduleModule} from "@nestjs/schedule";
 import {EventEmitterModule} from "@nestjs/event-emitter";
 import {AccessTokenGuard, PermissionGuard} from "./common";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
+import {ClientInfoMiddleware} from "@/common/middlewares";
 
 @Module({
   imports: [
@@ -46,4 +47,8 @@ import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
     }
   ]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ClientInfoMiddleware).forRoutes("*");
+  }
+}
