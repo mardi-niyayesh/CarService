@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import imgLogin from "../../../assets/imglogin.png";
 import FormInput from "./FormInput";
+import { useEffect } from "react";
+import { type AuthFormProps } from "../../types/auth.types";
 
 // pattern Email
 const emailPattern =
@@ -9,28 +11,59 @@ const emailPattern =
 // pattern Password
 const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
 
-type AuthFormProps = {
-  type: "register" | "login";
-  onSubmit: (data: any) => void;
-  isPending?: boolean;
-  error?: string | null;
-};
-
-function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
-  //Register or login ?
+function AuthForm({
+  type,
+  onSubmit,
+  isPending,
+  error,
+  resetForm,
+}: AuthFormProps) {
+  //Register or login or forgotPassword or reset-password?
   const isRegister = type === "register";
+  const isLogin = type === "login";
+  const isForgotPassword = type === "forgot-password";
+  const isResetPassword = type === "reset-password";
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm({
     mode: "onChange",
     defaultValues: isRegister
-      ? { email: "", password: "", firstname: "", age: undefined, rules: false }
-      : { email: "", password: "" },
+      ? {
+          email: "",
+          password: "",
+          display_name: "",
+          age: undefined,
+          rules: false,
+        }
+      : isLogin
+        ? { email: "", password: "", rememberMe: true }
+        : { email: "" },
   });
-
+  useEffect(() => {
+    if (resetForm) {
+      if (isRegister) {
+        reset({
+          email: "",
+          password: "",
+          display_name: "",
+          age: undefined,
+          rules: false,
+        });
+      } else if (isLogin) {
+        reset({
+          email: "",
+          password: "",
+          rememberMe: true,
+        });
+      } else {
+        reset({ email: "" });
+      }
+    }
+  }, [reset, isRegister, isLogin, resetForm]);
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
   };
@@ -40,7 +73,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
       <div className="bg-white rounded-2xl shadow-xl mt-10 overflow-hidden max-w-4xl w-full flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 p-6 sm:p-8 lg:p-10">
           <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 mb-6 text-center">
-            {isRegister ? "ثبت نام" : "ورود"}
+            {isRegister ? "ثبت نام" : isLogin ? "ورود" : "فراموشی رمز عبور"}
           </h1>
 
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
@@ -62,29 +95,59 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
             />
 
             {/*Password form*/}
-            <FormInput
-              label="رمز عبور"
-              name="password"
-              type="password"
-              placeholder="رمز عبور خود را وارد کنید"
-              register={register}
-              error={errors.password}
-              validation={{
-                required: "رمز عبور نمی‌تواند خالی باشد",
-                minLength: {
-                  value: 6,
-                  message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
-                },
-                maxLength: {
-                  value: 20,
-                  message: "رمز عبور باید حداکثر ۲۰ کاراکتر باشد",
-                },
-                pattern: {
-                  value: patternPassword,
-                  message: "رمز عبور باید شامل حداقل یک حرف و یک عدد باشد",
-                },
-              }}
-            />
+            {(isLogin || isRegister) && (
+              <FormInput
+                label="رمز عبور"
+                name="password"
+                type="password"
+                placeholder="رمز عبور خود را وارد کنید"
+                register={register}
+                error={errors.password}
+                validation={{
+                  required: "رمز عبور نمی‌تواند خالی باشد",
+                  minLength: {
+                    value: 6,
+                    message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "رمز عبور باید حداکثر ۲۰ کاراکتر باشد",
+                  },
+                  pattern: {
+                    value: patternPassword,
+                    message: "رمز عبور باید شامل حداقل یک حرف و یک عدد باشد",
+                  },
+                }}
+              />
+            )}
+            {/* forgat password and remember me*/}
+            {isLogin && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    {...register("rememberMe")}
+                  />
+                  <label className="text-sm text-gray-600">
+                    مرا به خاطر بسپار
+                  </label>
+                </div>
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  رمز عبور را فراموش کرده‌اید؟
+                </Link>
+              </div>
+            )}
+
+            {isForgotPassword && (
+              <p className="text-sm text-gray-600 text-center">
+                لطفاً ایمیل خود را وارد کنید. لینک بازیابی رمز عبور برای ایمیل
+                شما ارسال خواهد شد.
+              </p>
+            )}
 
             {/*FirstName form*/}
             {isRegister && (
@@ -95,7 +158,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
                   type="text"
                   placeholder="نام خود را وارد کنید"
                   register={register}
-                  error={errors.firstname}
+                  error={errors.display_name}
                   validation={{
                     required: "نام کاربری نمی‌تواند خالی باشد",
                     minLength: {
@@ -131,7 +194,7 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
                   }}
                 />
 
-                {/* چک‌باکس قوانین */}
+                {/*check bos roles*/}
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -185,10 +248,14 @@ function AuthForm({ type, onSubmit, isPending, error }: AuthFormProps) {
               {isPending
                 ? isRegister
                   ? "در حال ثبت‌نام..."
-                  : "در حال ورود..."
+                  : isLogin
+                    ? "در حال ورود..."
+                    : "در حال ارسال..."
                 : isRegister
                   ? "ثبت‌نام"
-                  : "ورود"}
+                  : isLogin
+                    ? "ورود"
+                    : "ارسال لینک بازیابی"}
             </button>
 
             <p className="text-center text-sm text-gray-600 mt-4">

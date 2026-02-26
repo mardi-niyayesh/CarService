@@ -19,3 +19,4 @@ const DesktopMenu = ({ closeMenu }: DesktopMenuProps) => {
 };
 
 export default DesktopMenu;
+

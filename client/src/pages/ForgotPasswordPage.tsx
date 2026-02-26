@@ -1,13 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+//components
 import AuthForm from "../components/common/AuthForm";
-import { loginUser } from "../services/api";
-import { type LoginFormData } from "../types/auth.types";
 import SuccessModal from "../components/common/SuccessModal";
 import ErrorModal from "../components/common/ErrorModal";
+//api
+import { forgotPassword } from "../services/api";
+//hook
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function LoginPage() {
+const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   //SuccessModal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,55 +17,49 @@ function LoginPage() {
   //ErrorModal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
   const mutation = useMutation({
-    mutationFn: loginUser,
+    mutationFn: (data: { email: string }) => forgotPassword(data.email),
     onSuccess: (data) => {
-      const token = data?.response?.data?.accessToken;
-
-      if (token) {
-        localStorage.setItem("token", token);
-        setModalMessage(
-          "ورود شما با موفقیت انجام شد! به خانواده کارسرویس خوش آمدید.",
-        );
-        setIsModalOpen(true);
-      } else {
-        console.error("توکن یافت نشد. ساختار پاسخ:", data);
-        setErrorMessage(
-           "خطایی در ورود رخ داد. لطفاً مجدداً تلاش کنید.",
-        );
-        setIsErrorModalOpen(true);
-      }
+      console.log("success", data);
+      setModalMessage(
+        "لینک بازیابی رمز عبور با موفقیت برای ایمیل شما ارسال شد",
+      );
+      setIsModalOpen(true);
     },
     onError: (error: Error) => {
       console.error("خطا:", error);
       setErrorMessage(
-        error.message || "خطایی در ورود رخ داد. لطفاً مجدداً تلاش کنید.",
+        "خطایی در ارسال لینک بازیابی رخ داد لطفا ایمیل خود را مجدد وارد کنید",
       );
       setIsErrorModalOpen(true);
     },
   });
 
-  const handleLogin = (data: LoginFormData) => {
+  const handleSubmit = (data: { email: string }) => {
     mutation.mutate(data);
   };
   //SuccessModal
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    navigate("/dashboard");
+    navigate("/reset-password");
   };
   //SuccessModal
   const handleCloseErrorModal = () => {
     setIsErrorModalOpen(false);
   };
-
   return (
     <>
       <AuthForm
-        type="login"
-        onSubmit={handleLogin}
+        type="forgot-password"
+        onSubmit={handleSubmit}
         isPending={mutation.isPending}
         error={mutation.error?.message}
+        successMessage={
+          mutation.isSuccess
+            ? mutation.data?.message ||
+              "لینک بازیابی رمز عبور به ایمیل شما ارسال شد"
+            : null
+        }
       />
       <SuccessModal
         isOpen={isModalOpen}
@@ -77,6 +73,6 @@ function LoginPage() {
       />
     </>
   );
-}
+};
 
-export default LoginPage;
+export default ForgotPasswordPage;
