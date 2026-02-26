@@ -19,8 +19,8 @@ export function buildEmailHtml(options: BuildEmailOptions): string {
     contentName,
     clientInfo,
     extra = {},
-    siteUrl = process.env.CLIENT_SITE!,
-    siteName = "Car Service",
+    siteUrl = process.env.CLIENT_ADDRESS!,
+    siteName = process.env.CLIENT_NAME!,
   } = options;
   try {
     const layoutPath: string = path.join(process.cwd(), "public/html/email.html");
@@ -44,18 +44,21 @@ export function buildEmailHtml(options: BuildEmailOptions): string {
     };
 
     for (const key in clientMap) {
-      html = html.replace(`{{${key}}}`, clientMap[key] ?? "Unknown");
+      html = html.replaceAll(`{{${key}}}`, clientMap[key] ?? "Unknown");
     }
 
-    html = html.replace("{{miladiDate}}", getLocalDate("en-CA"));
-    html = html.replace("{{shamsiDate}}", getLocalDate("fa-IR"));
+    html = html.replaceAll("{{miladiDate}}", getLocalDate("en-CA"));
+    html = html.replaceAll("{{shamsiDate}}", getLocalDate("fa-IR"));
 
-    html = html.replace("{{siteName}}", siteName);
-    html = html.replace("{{siteUrl}}", siteUrl);
+    // Replace Title
+    html = html.replaceAll("{{title}}", title);
 
-    html = html.replace("{{title}}", title);
+    // Replace Site Info
+    html = html.replaceAll("{{siteName}}", siteName);
+    html = html.replaceAll("{{siteUrl}}", siteUrl);
 
-    html = html.replace("{{{content}}}", content);
+    // Replace Main Content
+    html = html.replaceAll("{{{content}}}", content);
 
     return html;
   } catch (e) {

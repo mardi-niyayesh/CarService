@@ -9,8 +9,8 @@ export class EmailService {
   sendHtmlEmail(to: string, html: string) {
     return this.miler.sendMail({
       to,
-      subject: "Test Email",
-      text: "Hello from NestJS + Gmail + Nodemailer",
+      subject: "Reset Password",
+      text: "Reset Your password with token",
       html,
     });
   }
