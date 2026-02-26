@@ -1,6 +1,11 @@
 import {Injectable} from '@nestjs/common';
-import {MailerService} from "@nestjs-modules/mailer";
 import {OnEvent} from "@nestjs/event-emitter";
+import {MailerService} from "@nestjs-modules/mailer";
+
+interface PayloadEventEmail {
+  email: string;
+  html: string;
+}
 
 @Injectable()
 export class EmailService {
@@ -16,7 +21,16 @@ export class EmailService {
   }
 
   @OnEvent("signup.welcome")
-  sendSignupNotif(payload: { email: string }) {
+  sendSignupNotif(payload: PayloadEventEmail) {
     console.log(payload.email);
+  }
+
+  @OnEvent("password.changed")
+  passwordChanged(payload: PayloadEventEmail) {
+    return this.miler.sendMail({
+      to: payload.email,
+      subject: "Your Password Successfully Changed.",
+      html: payload.html,
+    });
   }
 }

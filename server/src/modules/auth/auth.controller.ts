@@ -211,8 +211,9 @@ export class AuthController {
   @ApiBadRequestResponse({type: AuthDto.BadRequestResetPasswordRes})
   @ApiNotFoundResponse({type: AuthDto.NotFoundResetPasswordRes})
   resetPassword(
+    @NormalizeClientInfo() clientInfo: NormalizedClientInfo,
     @Body(new ZodPipe(AuthDto.ResetPassword)) body: AuthDto.ResetPasswordType
   ): Promise<ApiResponse<void>> {
-    return this.authService.resetPassword(body.token, body.password);
+    return this.authService.resetPassword(body.token, body.password, clientInfo);
   }
 }

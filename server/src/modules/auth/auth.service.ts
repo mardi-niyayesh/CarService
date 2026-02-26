@@ -294,8 +294,8 @@ export class AuthService {
   }
 
   /** Reset password with token */
-  async resetPassword(token: string, password: string): Promise<ApiResponse<void>> {
-    return this.prisma.$transaction(async tx => {
+  async resetPassword(token: string, password: string, clientInfo: NormalizedClientInfo): Promise<ApiResponse<void>> {
+    const result = await this.prisma.$transaction(async tx => {
       const hashedToken: string = hashSecretToken(token);
 
       const findToken = await tx.passwordToken.findFirst({
@@ -331,7 +331,29 @@ export class AuthService {
 
       return {
         message: "Password reset successfully",
+        email: findToken.user.email
       };
     });
+
+    try {
+      const html: string = buildEmailHtml({
+        clientInfo,
+        contentHtml:
+          `<h1>Password Updated</h1>
+          <p>Your password has been changed successfully.</p>`,
+        title: "Your Password Updated",
+      });
+
+      this.eventEmitter.emit("password.changed", {
+        email: result.email,
+        html
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    return {
+      message: result.message,
+    };
   }
 }
