@@ -3,20 +3,33 @@ import {throttlerConfig} from "@/lib";
 import {Module} from '@nestjs/common';
 import {APP_GUARD} from "@nestjs/core";
 import {ScheduleModule} from "@nestjs/schedule";
+import {EventEmitterModule} from "@nestjs/event-emitter";
 import {AccessTokenGuard, PermissionGuard} from "./common";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
 
 @Module({
   imports: [
+    // Throttler Module -Rate Limits
     ThrottlerModule.forRoot(throttlerConfig),
+
+    // Event Emitter -Events
+    EventEmitterModule.forRoot(),
+
+    // Scheduler Module -Corn Jobs
     ScheduleModule.forRoot(),
     Modules.SchedulerModule,
+
+    // Cli Modules -for scripts
+    Modules.CliModule,
+
+    // Email Module
+    Modules.EmailModule,
+
+    // Core App Modules
     Modules.PrismaModule,
     Modules.AuthModule,
     Modules.UsersModule,
-    Modules.CliModule,
     Modules.RolesModule,
-    Modules.EmailModule,
   ],
   providers: [
     {
