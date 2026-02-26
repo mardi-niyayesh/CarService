@@ -18,10 +18,11 @@ function AuthForm({
   error,
   resetForm,
 }: AuthFormProps) {
-  //Register or login or forgotPassword?
+  //Register or login or forgotPassword or reset-password?
   const isRegister = type === "register";
   const isLogin = type === "login";
   const isForgotPassword = type === "forgot-password";
+  const isResetPassword = type === "reset-password";
 
   const {
     register,
