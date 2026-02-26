@@ -8,7 +8,8 @@ TRUNCATE TABLE
     roles,
     permissions,
     role_permission,
-    user_roles
+    user_roles,
+    password_tokens
     CASCADE;
 
 SET SESSION_REPLICATION_ROLE = origin;

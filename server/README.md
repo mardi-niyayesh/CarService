@@ -99,7 +99,7 @@ maintainability, and fully standardized API responses.
 
    **automat (recommended):**
    ```bash
-   npm run seed:database
+   npm run db:setup
    ```
    **Finish. 🏁 (and go to 5th)**<br><br><br>
 
