@@ -11,7 +11,8 @@ import QuestionPage from "./pages/QuestionPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import ForgotPassword from "./pages/ForgotPassword";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import DashboardLayout from "./dashboard/Components/DashboardLayout";
 import AddressPages from "./dashboard/Pages/AddressPages";
 import CommentPages from "./dashboard/Pages/CommentPages";
@@ -33,7 +34,8 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<DashboardLayout />} />
         <Route path="/dashboard/address" element={<AddressPages />} />
         <Route path="/dashboard/comment" element={<CommentPages />} />
