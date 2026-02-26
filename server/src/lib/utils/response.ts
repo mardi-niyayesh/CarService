@@ -2,9 +2,6 @@ import z from 'zod';
 import {ZodFieldError} from "@/types";
 import {HttpStatus} from "@nestjs/common";
 
-/** Get present tense and convert to string */
-export const getServerTime: () => string = () => new Date().toISOString();
-
 /** get Default message with status code */
 export function getDefaultMessage(status: HttpStatus): string {
   const defaultMessages: Partial<Record<HttpStatus, string>> = {
