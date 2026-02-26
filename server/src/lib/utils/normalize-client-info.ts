@@ -1,6 +1,3 @@
-import type {Lookup} from "geoip-lite";
-import type {IResult} from "ua-parser-js";
-
 export interface NormalizedClientInfo {
   ip: string | null;
   browser: string | null;
@@ -11,12 +8,7 @@ export interface NormalizedClientInfo {
   lang: string | null;
 }
 
-export function normalizeClientInfo(input: {
-  ip: string | null;
-  ua: IResult;
-  geo: Lookup | null;
-  lang: string | null;
-}): NormalizedClientInfo {
+export function normalizeClientInfo(input: Express.Request["clientInfo"]): NormalizedClientInfo {
   const {ip, ua, geo, lang} = input;
 
   return {
