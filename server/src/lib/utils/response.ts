@@ -2,9 +2,6 @@ import z from 'zod';
 import {ZodFieldError} from "@/types";
 import {HttpStatus} from "@nestjs/common";
 
-/** date for responses */
-export const date = new Date();
-
 /** Get present tense and convert to string */
 export const getServerTime: () => string = () => new Date().toISOString();
 
