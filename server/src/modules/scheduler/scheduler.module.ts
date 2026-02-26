@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {TokenCleanerService} from "./token-cleaner.service";
+import {TokenCleanerService} from "./jobs/token-cleaner.jobs";
 
 @Module({
   providers: [TokenCleanerService],
