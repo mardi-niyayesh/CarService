@@ -87,10 +87,11 @@ export class AuthController {
   @ApiBadRequestResponse({type: AuthDto.LoginUserBadRequestResponse})
   @ApiUnauthorizedResponse({type: AuthDto.LoginUserInvalidAuthResponse})
   async login(
+    @NormalizeClientInfo() clientInfo: NormalizedClientInfo,
     @Body(new ZodPipe(AuthDto.LoginUser)) data: AuthDto.LoginUserInput,
     @Res({passthrough: true}) res: Response
   ): Promise<ApiResponse<LoginResponse>> {
-    const loginResponse = await this.authService.login(data);
+    const loginResponse = await this.authService.login(data, clientInfo);
 
     const remember: number = data.remember
       ? 7 * 24 * 60 * 60 * 1000

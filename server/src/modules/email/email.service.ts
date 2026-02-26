@@ -11,7 +11,7 @@ interface PayloadEventEmail {
 export class EmailService {
   constructor(private readonly miler: MailerService) {}
 
-  @OnEvent("signup.welcome")
+  @OnEvent(["signup.welcome", "login.welcome"])
   signupWelcome(payload: PayloadEventEmail) {
     return this.miler.sendMail({
       to: payload.email,

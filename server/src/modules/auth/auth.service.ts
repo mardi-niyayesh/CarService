@@ -95,18 +95,21 @@ export class AuthService {
         }
       };
 
-      this.eventEmitter.emit("signup.welcome", {
-        email: data.user.email,
-        html: buildEmailHtml({
-          title: `Welcome To ${process.env.CLIENT_NAME!}`,
-          clientInfo,
-          contentName: "welcome",
-          extra: {
-            siteName: process.env.CLIENT_NAME!,
-            dashboardLink: process.env.CLIENT_DASHBOARD!,
-          }
-        })
-      });
+      try {
+        this.eventEmitter.emit("signup.welcome", {
+          email: data.user.email,
+          html: buildEmailHtml({
+            title: `Welcome To ${process.env.CLIENT_NAME!}`,
+            clientInfo,
+            contentName: "welcome",
+            extra: {
+              titleText: "Welcome to " + process.env.CLIENT_NAME!,
+              messageText: "Your account has been successfully created.",
+              dashboardLink: process.env.CLIENT_DASHBOARD!,
+            }
+          })
+        });
+      } catch (_) { /* empty */ }
 
       return {
         message: "user created successfully",
@@ -116,7 +119,7 @@ export class AuthService {
   }
 
   /** login users */
-  async login(loginData: AuthDto.LoginUserInput): Promise<LoginResponse & { refreshToken: string }> {
+  async login(loginData: AuthDto.LoginUserInput, clientInfo: NormalizedClientInfo): Promise<LoginResponse & { refreshToken: string }> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: loginData.email,
@@ -188,6 +191,22 @@ export class AuthService {
         remember: loginData.remember,
       }
     });
+
+    try {
+      this.eventEmitter.emit("login.welcome", {
+        email: user.email,
+        html: buildEmailHtml({
+          title: `New Login Detected`,
+          clientInfo,
+          contentName: "welcome",
+          extra: {
+            titleText: "New Login Detected",
+            messageText: "Your account was just accessed. If this was you, no action is needed.",
+            dashboardLink: process.env.CLIENT_DASHBOARD!,
+          }
+        })
+      });
+    } catch (_) {/* empty */}
 
     return {
       user: {
@@ -356,9 +375,7 @@ export class AuthService {
         email: result.email,
         html
       });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (_) {/* empty */}
 
     return {
       message: result.message,
