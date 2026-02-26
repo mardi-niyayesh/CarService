@@ -70,20 +70,48 @@
             margin-top: 25px;
             line-height: 1.5;
         }
+
+        .site-info {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 15px;
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
+
+    <!-- Date -->
     <div class="date-box">
-        <span>{{miladiDate}}</span> |
-        <span style="direction: rtl;">{{shamsiDate}}</span>
+        <strong>Gregorian:</strong> {{miladiDate}} |
+        <strong>Jalali:</strong> <span style="direction: rtl;">{{shamsiDate}}</span>
     </div>
 
-    {{{content}}}
+    <!-- Client Info -->
+    <div class="system-info">
+        <strong>Client Info:</strong><br>
+        IP: {{ip}}<br>
+        Browser: {{browser}}<br>
+        OS: {{os}}<br>
+        Device: {{device}}<br>
+        Location: {{city}}, {{country}}<br>
+        Language: {{lang}}
+    </div>
+
+    <!-- Main Content -->
+    <div style="margin-top: 25px;">
+        {{{content}}}
+    </div>
+
+    <!-- Site Info -->
+    <div class="site-info">
+        <strong>{{siteName}}</strong><br>
+        <a href="{{siteUrl}}" style="color:#4facfe;">{{siteUrl}}</a>
+    </div>
 
     <div class="footer">
-        &copy; 2026 Car Service. All rights reserved.
+        &copy; 2026 {{siteName}}. All rights reserved.
     </div>
 </div>
 </body>
