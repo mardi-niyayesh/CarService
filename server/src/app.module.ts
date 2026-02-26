@@ -10,13 +10,13 @@ import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
   imports: [
     ThrottlerModule.forRoot(throttlerConfig),
     ScheduleModule.forRoot(),
+    Modules.SchedulerModule,
     Modules.PrismaModule,
     Modules.AuthModule,
     Modules.UsersModule,
-    Modules.SchedulerModule,
     Modules.CliModule,
     Modules.RolesModule,
-    Modules.EmailModule
+    Modules.EmailModule,
   ],
   providers: [
     {
