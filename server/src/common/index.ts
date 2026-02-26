@@ -6,3 +6,4 @@ export * from "./constants";
 export * from "./exceptions";
 export * from "./decorators";
 export * from "./interceptors";
+export * from "./middlewares";

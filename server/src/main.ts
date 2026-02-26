@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import helmet from "helmet";
 import path from "node:path";
+import {Logger} from "@nestjs/common";
 import {AppModule} from './app.module';
 import {NestFactory} from '@nestjs/core';
 import cookieParser from "cookie-parser";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import {NestExpressApplication} from "@nestjs/platform-express";
-import {ResponseInterceptors, ResponseException} from "./common";
-import {Logger} from "@nestjs/common";
+import {ResponseInterceptors, ResponseException, NotFoundException} from "./common";
 
 /** run application */
 async function bootstrap(): Promise<void> {
@@ -28,7 +28,10 @@ async function bootstrap(): Promise<void> {
   app.use(cookieParser());
 
   // change response structure
-  app.useGlobalFilters(new ResponseException());
+  app.useGlobalFilters(
+    new NotFoundException(),
+    new ResponseException(),
+  );
   app.useGlobalInterceptors(new ResponseInterceptors());
 
   // Swagger Version 1
