@@ -56,6 +56,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
+    "ua-parser-js": "^2.0.9",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -68,6 +69,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cron": "^2.0.1",
     "@types/express": "^5.0.0",
+    "@types/geoip-lite": "^1.4.4",
     "@types/node": "^22.19.11",
     "@types/nodemailer": "^7.0.11",
     "@types/passport-jwt": "^4.0.1",

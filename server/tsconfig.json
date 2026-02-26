@@ -30,6 +30,10 @@
     "types": [
       "vitest/globals",
       "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
     ]
   }
 }
