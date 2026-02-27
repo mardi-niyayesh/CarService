@@ -9,6 +9,7 @@ import { LogoutUser } from "../Api/DashboardApi";
 //Modal
 import SuccessModal from "../../components/common/SuccessModal";
 import ErrorModal from "../../components/common/ErrorModal";
+import WarningModal from "../../components/common/WarningModal ";
 
 const LogoutPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const LogoutPage = () => {
   //ErrorModal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  //WarningModal
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
   //state loading
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,33 +54,30 @@ const LogoutPage = () => {
       }
       // error 401
       else if (result.statusCode === 401) {
-        console.log("status: 401");
-        if (result.message?.includes("expired refresh token")) {
-          setErrorMessage("نشست شما منقضی شده است لطفا دوباره وارد سیستم شوید");
-        } else {
-          setErrorMessage("شما وارد سیستم نشده اید. ابتدا وارد سیستم شوید");
-        }
-        setIsErrorModalOpen(true);
-        localStorage.clear();
-
+        setWarningMessage(
+          `نشست شما به پایان رسیده است . لطفا برای ادامه کار مجدد وارد حساب کاربری خود شوید`,
+        );
+        setIsWarningModalOpen(true);
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       }
-      // error 403
+      //error 403
       else if (result.statusCode === 403) {
-        console.log("status: 403");
-        if (result.message?.includes("Refresh token already revoked")) {
-          setErrorMessage("نشست شما قبلا باطل شده است لطفا مجدد وارد شوید");
-        } else {
-          setErrorMessage("شما دسترسی به این عملیات را ندارید");
-        }
-        setIsErrorModalOpen(true);
-        localStorage.clear();
-
+        setWarningMessage(
+          ` نشست شما در دستگاه دیگری پایان یافته است.
+        اگر خودتان وارد سیستم شده‌اید، لطفاً مجدداً وارد شوید.
+        اگر این کار را نکرده‌اید، برای امنیت حساب خود رمز عبور را تغییر دهید.`,
+        );
+        setIsWarningModalOpen(true);
         setTimeout(() => {
           navigate("/login");
         }, 3000);
+      }
+      //error 500
+      else if (result.statusCode === 500) {
+        setErrorMessage("خطای سرور. لطفاً بعداً دوباره تلاش کنید.");
+        setIsErrorModalOpen(true);
       }
     } catch (err) {
       console.log("خطا :", err);
@@ -151,10 +152,17 @@ const LogoutPage = () => {
           message={errorMessage}
           onClose={() => {
             setIsErrorModalOpen(false);
-            navigate("/login");
           }}
         />
       )}
+      <WarningModal
+        isOpen={isWarningModalOpen}
+        message={warningMessage}
+        onClose={() => {
+          setIsWarningModalOpen(false);
+        }}
+        title=" توجه"
+      />
     </div>
   );
 };
