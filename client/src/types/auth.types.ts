@@ -16,6 +16,7 @@ export type RegisterFormData = {
   firstname: string;
   age: number;
   rules: boolean;
+  s
 };
 
 //type for Login Form
@@ -32,10 +33,16 @@ export type SuccessModalProps = {
 };
 //type AuthFormProps
 export type AuthFormProps = {
-  type: "register" | "login" | "forgot-password";
+  type: "register" | "login" | "forgot-password"|"reset-password";
   onSubmit: (data: any) => void;
   isPending?: boolean;
   error?: string | null;
   resetForm?: boolean;
   successMessage?: string | null;
+   token?: string | null;
 };
+//type ResetPassword
+export type ResetPasswordtype={
+  password:string,
+  token:string
+}
