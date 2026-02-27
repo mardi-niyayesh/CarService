@@ -1,5 +1,6 @@
 import { type RegisterFormData } from "../types/auth.types";
 import { type LoginFormData } from "../types/auth.types";
+import { type resetPasswordtype } from "../types/auth.types";
 
 export const registerUser = async (userData: RegisterFormData) => {
   try {
@@ -57,5 +58,23 @@ export const forgotPassword = async (email: string) => {
   } catch (error) {
     console.error("خطا در درخواست:", error);
     throw error;
+  }
+};
+
+export const resetPassword = async ({ password, token }: resetPasswordtype) => {
+  try {
+    const response = await fetch("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password, token }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.log("خطا در تنظیم مجدد رمز عبور");
+    }
+    return data;
+  } catch (err) {
+    console.log("خطا در تنظیم مجدد رمز عبور");
+    return err;
   }
 };

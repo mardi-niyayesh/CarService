@@ -1,11 +1,17 @@
+//hooks
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+//components
 import AuthForm from "../components/common/AuthForm";
+//api
 import { loginUser } from "../services/api";
+//types
 import { type LoginFormData } from "../types/auth.types";
+//Modal
 import SuccessModal from "../components/common/SuccessModal";
 import ErrorModal from "../components/common/ErrorModal";
-import { useState } from "react";
+import WarningModal from "../components/common/WarningModal ";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -15,26 +21,48 @@ function LoginPage() {
   //ErrorModal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  //WarningModal
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [WarningMessage, setWarningMessage] = useState("");
 
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
       const token = data?.response?.data?.accessToken;
-
-      if (token) {
+      //error 400
+      if (data.statusCode === 400) {
+        setWarningMessage(`مشکلی در اطلاعات ورود وجود داره:
+          ایمیل رو با فرمت صحیح وارد کن
+      رمز عبور باید حداقل ۶ تا حرف و عدد داشته باشه
+      مقدار "مرا به خاطر بسپار" رو درست انتخاب کن `);
+        setIsErrorModalOpen(true);
+      }
+      //error 401
+      else if (data.statusCode === 401) {
+        setModalMessage("اییمل یا رمز عبور اشتباه است لطفا مجدد تلاش کنید");
+        setIsWarningModalOpen(true);
+      }
+      //error 500
+      else if (data.statusCode === 500) {
+        setErrorMessage("خطای سرور. لطفاً بعداً دوباره تلاش کنید.");
+        setIsErrorModalOpen(true);
+      }
+      //success
+      else if (token) {
         localStorage.setItem("token", token);
         setModalMessage(
           "ورود شما با موفقیت انجام شد! به خانواده کارسرویس خوش آمدید.",
         );
         setIsModalOpen(true);
-      } else {
-        console.error("توکن یافت نشد. ساختار پاسخ:", data);
-        setErrorMessage(
-           "خطایی در ورود رخ داد. لطفاً مجدداً تلاش کنید.",
-        );
+      }
+      //other error
+      else {
+        // console.error("ساختار نامعتبر پاسخ:", data);
+        setErrorMessage("خطایی در ورود رخ داد. لطفاً مجدداً تلاش کنید.");
         setIsErrorModalOpen(true);
       }
     },
+
     onError: (error: Error) => {
       console.error("خطا:", error);
       setErrorMessage(
@@ -56,6 +84,10 @@ function LoginPage() {
   const handleCloseErrorModal = () => {
     setIsErrorModalOpen(false);
   };
+  // WarningModal
+  const handleCloseWarningModal = () => {
+    setIsWarningModalOpen(false);
+  };
 
   return (
     <>
@@ -74,6 +106,12 @@ function LoginPage() {
         isOpen={isErrorModalOpen}
         onClose={handleCloseErrorModal}
         message={errorMessage}
+      />
+      <WarningModal
+        isOpen={isWarningModalOpen}
+        onClose={handleCloseWarningModal}
+        message={WarningMessage}
+        title="توجه"
       />
     </>
   );

@@ -1,8 +1,12 @@
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+//icon img
 import imgLogin from "../../../assets/imglogin.png";
 import FormInput from "./FormInput";
-import { useEffect } from "react";
+//hooks
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useSearchParams } from "react-router-dom";
+
+//types
 import { type AuthFormProps } from "../../types/auth.types";
 
 // pattern Email
@@ -17,13 +21,27 @@ function AuthForm({
   isPending,
   error,
   resetForm,
+  token: propToken,
 }: AuthFormProps) {
+  const [searchParams] = useSearchParams();
+  const [tokenError, setTokenError] = useState("");
+
+  //get token for Url or propToken
+  const token = searchParams.get("token") || propToken;
+
   //Register or login or forgotPassword or reset-password?
   const isRegister = type === "register";
   const isLogin = type === "login";
   const isForgotPassword = type === "forgot-password";
   const isResetPassword = type === "reset-password";
-
+  //
+  useEffect(() => {
+    if (isResetPassword && !token) {
+      setTokenError("لینک بازیابی رمز عبور معتبر نیست");
+    } else {
+      setTokenError("");
+    }
+  }, [isResetPassword, token]);
   const {
     register,
     handleSubmit,
@@ -41,7 +59,9 @@ function AuthForm({
         }
       : isLogin
         ? { email: "", password: "", rememberMe: true }
-        : { email: "" },
+        : isResetPassword
+          ? { password: "" }
+          : { email: "" }, //forgot password
   });
   useEffect(() => {
     if (resetForm) {
@@ -65,7 +85,11 @@ function AuthForm({
     }
   }, [reset, isRegister, isLogin, resetForm]);
   const handleFormSubmit = (data: any) => {
-    onSubmit(data);
+    if (isResetPassword) {
+      onSubmit({ ...data, token });
+    } else {
+      onSubmit(data);
+    }
   };
 
   return (
@@ -78,24 +102,26 @@ function AuthForm({
 
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             {/*Email form*/}
-            <FormInput
-              label="ایمیل"
-              name="email"
-              type="email"
-              placeholder="ایمیل خود را وارد کنید"
-              register={register}
-              error={errors.email}
-              validation={{
-                required: "ایمیل نمی‌تواند خالی باشد",
-                pattern: {
-                  value: emailPattern,
-                  message: "ایمیل وارد شده معتبر نمی‌باشد",
-                },
-              }}
-            />
+            {!isResetPassword && (
+              <FormInput
+                label="ایمیل"
+                name="email"
+                type="email"
+                placeholder="ایمیل خود را وارد کنید"
+                register={register}
+                error={errors.email}
+                validation={{
+                  required: "ایمیل نمی‌تواند خالی باشد",
+                  pattern: {
+                    value: emailPattern,
+                    message: "ایمیل وارد شده معتبر نمی‌باشد",
+                  },
+                }}
+              />
+            )}
 
             {/*Password form*/}
-            {(isLogin || isRegister) && (
+            {(isLogin || isRegister || isResetPassword) && (
               <FormInput
                 label="رمز عبور"
                 name="password"
@@ -148,7 +174,11 @@ function AuthForm({
                 شما ارسال خواهد شد.
               </p>
             )}
-
+            {isResetPassword && (
+              <p className="text-sm text-gray-600 text-center">
+                رمز عبور جدید خود را وارد کنید
+              </p>
+            )}
             {/*FirstName form*/}
             {isRegister && (
               <>
@@ -250,12 +280,16 @@ function AuthForm({
                   ? "در حال ثبت‌نام..."
                   : isLogin
                     ? "در حال ورود..."
-                    : "در حال ارسال..."
+                    : isResetPassword
+                      ? "در حال تغییر رمز..."
+                      : "در حال ارسال..."
                 : isRegister
                   ? "ثبت‌نام"
                   : isLogin
                     ? "ورود"
-                    : "ارسال لینک بازیابی"}
+                    : isResetPassword
+                      ? "تغییر رمز عبور"
+                      : "ارسال لینک بازیابی"}
             </button>
 
             <p className="text-center text-sm text-gray-600 mt-4">
