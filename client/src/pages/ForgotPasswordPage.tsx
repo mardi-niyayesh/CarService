@@ -3,6 +3,7 @@ import AuthForm from "../components/common/AuthForm";
 //modal
 import SuccessModal from "../components/common/SuccessModal";
 import ErrorModal from "../components/common/ErrorModal";
+import WarningModal from "../components/common/WarningModal ";
 //api
 import { forgotPassword } from "../services/api";
 //hook
@@ -18,21 +19,63 @@ const ForgotPasswordPage = () => {
   //ErrorModal
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  //WarningModal
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [WarningMessage, setWarningMessage] = useState("");
   const mutation = useMutation({
     mutationFn: (data: { email: string }) => forgotPassword(data.email),
     onSuccess: (data) => {
       console.log("success", data);
-      setModalMessage(
-        "لینک بازیابی رمز عبور با موفقیت برای ایمیل شما ارسال شد",
-      );
-      setIsModalOpen(true);
+
+      //error 404
+      if (data.statusCode === 404) {
+        setWarningMessage(
+          "شما ثبت نام نکرده اید . ابتدا وارد حساب کاربری خود شوید",
+        );
+        setIsWarningModalOpen(true);
+        setTimeout(() => {
+          navigate("/register");
+        }, 3000);
+      }
+      //error 409
+      else if (data.statusCode === 409) {
+        setWarningMessage(
+          "یک لینک فعال قبلاً برای این ایمیل ارسال شده است. لطفاً صندوق ورودی یا اسپم خود را بررسی کنید.",
+        );
+        setIsWarningModalOpen(true);
+      }
+      //error 500
+      else if (data.statusCode === 500) {
+        setErrorMessage("خطای سرور. لطفاً بعداً دوباره تلاش کنید.");
+        setIsErrorModalOpen(true);
+      }
+      //other error
+      else if (data.success === false) {
+        setWarningMessage("خطایی رخ داده است");
+        setIsWarningModalOpen(true);
+      }
+      //success
+      else {
+        setModalMessage(
+          "لینک بازیابی رمز عبور با موفقیت برای ایمیل شما ارسال شد",
+        );
+        setIsModalOpen(true);
+      }
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
       console.error("خطا:", error);
-      setErrorMessage(
-        "خطایی در ارسال لینک بازیابی رخ داد لطفا ایمیل خود را مجدد وارد کنید",
-      );
-      setIsErrorModalOpen(true);
+
+      if (error?.status === 409 || error?.message?.includes("409")) {
+        setWarningMessage(
+          "یک لینک فعال قبلاً برای این ایمیل ارسال شده است. لطفاً صندوق ورودی یا اسپم خود را بررسی کنید.",
+        );
+        setIsWarningModalOpen(true);
+      } else {
+        setErrorMessage(
+          "خطایی در ارسال لینک بازیابی رخ داد لطفا ایمیل خود را مجدد وارد کنید",
+        );
+        setIsErrorModalOpen(true);
+      }
     },
   });
 
@@ -47,6 +90,10 @@ const ForgotPasswordPage = () => {
   //ErrorModal
   const handleCloseErrorModal = () => {
     setIsErrorModalOpen(false);
+  };
+  // WarningModal
+  const handleCloseWarningModal = () => {
+    setIsWarningModalOpen(false);
   };
   return (
     <>
@@ -71,6 +118,12 @@ const ForgotPasswordPage = () => {
         isOpen={isErrorModalOpen}
         onClose={handleCloseErrorModal}
         message={errorMessage}
+      />
+      <WarningModal
+        isOpen={isWarningModalOpen}
+        onClose={handleCloseWarningModal}
+        message={WarningMessage}
+        title="توجه"
       />
     </>
   );
