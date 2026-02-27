@@ -1,5 +1,6 @@
 //components
 import AuthForm from "../components/common/AuthForm";
+//modal
 import SuccessModal from "../components/common/SuccessModal";
 import ErrorModal from "../components/common/ErrorModal";
 //api
@@ -43,7 +44,7 @@ const ForgotPasswordPage = () => {
     setIsModalOpen(false);
     navigate("/reset-password");
   };
-  //SuccessModal
+  //ErrorModal
   const handleCloseErrorModal = () => {
     setIsErrorModalOpen(false);
   };
